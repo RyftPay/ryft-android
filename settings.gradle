@@ -1,0 +1,4 @@
+rootProject.name='ryft-android'
+include ':ryft-sdk'
+include ':ryft-core'
+include ':ryft-ui'

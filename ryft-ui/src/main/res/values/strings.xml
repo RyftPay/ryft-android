@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="ryft_example_primary_button_hint">Pay now</string>
+    <string name="ryft_example_secondary_button_hint">Cancel</string>
+
+    <string name="ryft_pay">Pay now</string>
+    <string name="ryft_taking_payment">Taking payment…</string>
+    <string name="ryft_cancel">Cancel</string>
+    <string name="ryft_card_number">Card number</string>
+    <string name="ryft_card_expiry_date">MM/YY</string>
+    <string name="ryft_card_cvc">CVC</string>
+    <string name="ryft_payment_form_header_title">Credit / Debit Card</string>
+
+    <string name="ryft_bad_track_data">Your CVC or card expiration is invalid</string>
+    <string name="ryft_declined_do_not_honour">Your bank has declined this card</string>
+    <string name="ryft_expired_card">Your card has expired</string>
+    <string name="ryft_gateway_reject">Your bank have declined this payment</string>
+    <string name="ryft_insufficient_funds">Your payment method does not have sufficient funds</string>
+    <string name="ryft_invalid_card_number">Your card number is invalid</string>
+    <string name="ryft_restricted_card">Your card has been restricted</string>
+    <string name="ryft_security_violation">Security violation</string>
+    <string name="ryft_3ds_authentication_failure">You failed to successfully authorize your payment method</string>
+    <string name="ryft_unknown_error">An unknown error occurred</string>
+    <string name="ryft_network_error">A network error occurred, please check your internet connection</string>
+
+</resources>

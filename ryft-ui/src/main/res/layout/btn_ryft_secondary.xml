@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.ryftpay.android.ui.component.RyftButton
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/button_ryft"
+    style="@style/RyftSecondaryButton">
+
+    <TextView
+        android:id="@+id/text_ryft_button"
+        tools:text="@string/ryft_example_secondary_button_hint"
+        style="@style/RyftSecondaryButtonText"/>
+
+</com.ryftpay.android.ui.component.RyftButton>

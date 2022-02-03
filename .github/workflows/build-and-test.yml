@@ -1,0 +1,23 @@
+name: build-and-test
+
+on:
+  pull_request:
+    branches: [ master ]
+  push:
+    branches: [ master ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup - Ruby and bundler dependencies
+      uses: ruby/setup-ruby@v1.57.0
+      with:
+        ruby-version: 2.6
+        bundler-cache: true
+
+    - name: Check
+      run: bundle exec fastlane check

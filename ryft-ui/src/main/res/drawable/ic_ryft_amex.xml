@@ -1,0 +1,15 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="@dimen/ryft_card_icon_width"
+    android:height="@dimen/ryft_card_icon_height"
+    android:viewportWidth="25"
+    android:viewportHeight="18">
+    <path
+        android:fillColor="#FF1F72CD"
+        android:strokeColor="#FFD9D9D9"
+        android:strokeWidth="0.25"
+        android:pathData="M0.13 2.51c0-1.31 1.07-2.38 2.38-2.38h19.99c1.31 0 2.38 1.07 2.38 2.38v12.38c0 1.31-1.07 2.38-2.38 2.38h-19.99c-1.31 0-2.38-1.07-2.38-2.38z"/>
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:fillType="evenOdd"
+        android:pathData="M4.5 6.1l-2.33 5.4h2.8l0.34-0.86h0.8l0.34 0.86h3.07v-0.66l0.27 0.66h1.59l0.27-0.67v0.67h6.4l0.77-0.84 0.73 0.84h3.28l-2.34-2.68 2.34-2.71H19.6l-0.76 0.82-0.7-0.82h-6.95l-0.6 1.39-0.61-1.4H7.2v0.64L6.89 6.11H4.5Zm9.54 0.77h3.67l1.12 1.27L20 6.87h1.12l-1.7 1.95 1.7 1.92h-1.17l-1.12-1.28-1.17 1.28h-3.6V6.87Zm0.9 1.51v-0.7h2.3l1 1.12-1.05 1.14h-2.24V9.17h2V8.38h-2Zm-9.9-1.5H6.4l1.55 3.65V6.87h1.5l1.18 2.62 1.1-2.62h1.49v3.87h-0.9L12.3 7.7l-1.32 3.03h-0.8L8.86 7.7v3.03H7.01L6.66 9.87h-1.9L4.4 10.74H3.41l1.63-3.87Zm0.04 2.2l0.63-1.55 0.62 1.54H5.08Z"/>
+</vector>

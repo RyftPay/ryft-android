@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="ryftPrimaryButtonBackground">#2581E3</color>
+    <color name="ryftPrimaryButtonBorder">#1E6CC0</color>
+    <color name="ryftPrimaryButtonText">#FFFFFF</color>
+    <color name="ryftSecondaryButtonBackground">#242424</color>
+    <color name="ryftSecondaryButtonBorder">#3E4042</color>
+    <color name="ryftSecondaryButtonText">#949494</color>
+    <color name="ryftInputFieldBackground">#222427</color>
+    <color name="ryftInputFieldBorder">#3E4042</color>
+    <color name="ryftInputFieldErrorBorder">#E86161</color>
+    <color name="ryftInputFieldSelectedBorder">#2581E3</color>
+    <color name="ryftInputFieldHintText">#959497</color>
+    <color name="ryftInputFieldText">#EEEEEE</color>
+    <color name="ryftTitleText">#FFFFFF</color>
+    <color name="ryftDivider">#4E5156</color>
+
+</resources>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="RyftBottomSheetDialog" parent="Theme.MaterialComponents.DayNight.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+    </style>
+
+    <style name="RyftFullscreenDialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowIsFloating">false</item>
+    </style>
+
+    <style name="RyftButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:layout_margin">12dp</item>
+        <item name="android:enabled">true</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <style name="RyftPrimaryButton" parent="RyftButton">
+        <item name="android:background">@drawable/bg_ryft_button_primary</item>
+    </style>
+
+    <style name="RyftSecondaryButton" parent="RyftButton">
+        <item name="android:background">@drawable/bg_ryft_button_secondary</item>
+    </style>
+
+    <style name="RyftButtonText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:fontFamily">@font/ryft_nunito</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="RyftPrimaryButtonText" parent="RyftButtonText">
+        <item name="android:textColor">@color/ryftPrimaryButtonText</item>
+        <item name="android:textColorHint">@color/ryftPrimaryButtonText</item>
+    </style>
+
+    <style name="RyftSecondaryButtonText" parent="RyftButtonText">
+        <item name="android:textColor">@color/ryftSecondaryButtonText</item>
+        <item name="android:textColorHint">@color/ryftSecondaryButtonText</item>
+    </style>
+
+    <style name="RyftInputField">
+        <item name="android:layout_height">40dp</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:background">@drawable/bg_ryft_input_field</item>
+        <item name="android:fontFamily">@font/ryft_nunito</item>
+        <item name="android:textColor">@color/ryftInputFieldText</item>
+        <item name="android:textColorHint">@color/ryftInputFieldHintText</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="RyftCardNumberInputField" parent="RyftInputField">
+        <item name="android:inputType">number</item>
+        <item name="android:digits">0123456789</item>
+        <item name="android:hint">@string/ryft_card_number</item>
+        <item name="android:maxLength">19</item>
+        <item name="android:drawableEnd">@drawable/ic_ryft_unknown_card</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
+    <style name="RyftCardExpiryDateInputField" parent="RyftInputField">
+        <item name="android:inputType">number</item>
+        <item name="android:digits">0123456789</item>
+        <item name="android:hint">@string/ryft_card_expiry_date</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
+    <style name="RyftCardCvcInputField" parent="RyftInputField">
+        <item name="android:inputType">number</item>
+        <item name="android:digits">0123456789</item>
+        <item name="android:hint">@string/ryft_card_cvc</item>
+        <item name="android:drawableEnd">@drawable/ic_ryft_cvc</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
+    <style name="RyftPaymentFormHeaderText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:paddingStart">24dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:fontFamily">@font/ryft_nunito_bold</item>
+        <item name="android:textColor">@color/ryftTitleText</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="RyftDivider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">@color/ryftDivider</item>
+    </style>
+
+</resources>

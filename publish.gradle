@@ -1,0 +1,63 @@
+apply plugin: "maven-publish"
+
+task sourcesJar(type: Jar) {
+    archiveClassifier.set('sources')
+    if (project.plugins.findPlugin("com.android.library")) {
+        // For Android libraries
+        from android.sourceSets.main.java.srcDirs
+        from android.sourceSets.main.kotlin.srcDirs
+    } else {
+        // For Kotlin libraries
+        from sourceSets.main.java.srcDirs
+        from sourceSets.main.kotlin.srcDirs
+    }
+}
+
+afterEvaluate { project ->
+    publishing {
+        publications {
+            release(MavenPublication) {
+                groupId rootProject.ext.group
+                artifactId project.artifactId
+                version rootProject.ext.version
+
+                if (project.plugins.findPlugin("com.android.library")) {
+                    from components.release
+                } else {
+                    from components.java
+                }
+
+                artifact sourcesJar
+
+                pom {
+                    name = project.artifactName
+                    description = project.artifactDescrption
+                    url = "https://github.com/RyftPay/ryft-android"
+
+                    licenses {
+                        license {
+                            name = "The MIT License"
+                            url = "https://raw.githubusercontent.com/RyftPay/ryft-android/master/LICENSE"
+                            distribution = "repo"
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id = "ryftpay"
+                            name = "Ryft"
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    artifacts {
+        archives sourcesJar
+    }
+}
+
+task cleanBuildPublishLocal(type: GradleBuild) {
+    tasks = ['clean', 'build', 'publishToMavenLocal']
+}

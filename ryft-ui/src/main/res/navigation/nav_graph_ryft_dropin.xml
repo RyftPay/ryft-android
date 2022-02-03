@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_ryft_dropin"
+    app:startDestination="@id/destination_fragment_ryft_payment">
+
+    <dialog android:id="@+id/destination_fragment_ryft_payment"
+        android:name="com.ryftpay.android.ui.fragment.RyftPaymentFragment"
+        android:label="RyftPaymentFragment"
+        tools:layout="@layout/fragment_ryft_payment">
+        <action android:id="@+id/action_ryft_payment_to_ryft_three_d_secure"
+            app:destination="@+id/destination_fragment_ryft_three_d_secure" />
+    </dialog>
+
+    <dialog android:id="@+id/destination_fragment_ryft_three_d_secure"
+        android:name="com.ryftpay.android.ui.fragment.RyftThreeDSecureFragment"
+        android:label="RyftThreeDSecureFragment"
+        tools:layout="@layout/fragment_ryft_three_d_secure">
+    </dialog>
+</navigation>

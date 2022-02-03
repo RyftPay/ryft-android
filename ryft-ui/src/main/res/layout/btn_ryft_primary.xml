@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.ryftpay.android.ui.component.RyftButton
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/button_ryft"
+    android:elevation="8dp"
+    android:alpha="0.7"
+    style="@style/RyftPrimaryButton">
+
+    <TextView
+        android:id="@+id/text_ryft_button"
+        tools:text="@string/ryft_example_primary_button_hint"
+        style="@style/RyftPrimaryButtonText"/>
+
+</com.ryftpay.android.ui.component.RyftButton>

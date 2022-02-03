@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.ryftpay.android.ui.component.RyftPaymentFormFooter
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/partial_ryft_payment_form_footer"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="88dp">
+
+    <LinearLayout
+        android:id="@+id/row_ryft_pay_cancel"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_margin="24dp"
+        android:baselineAligned="false">
+
+        <include
+            android:id="@+id/button_ryft_pay"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="2"
+            android:layout_marginEnd="6dp"
+            layout="@layout/btn_ryft_primary" />
+
+        <include
+            android:id="@+id/button_ryft_cancel"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:layout_marginStart="6dp"
+            layout="@layout/btn_ryft_secondary" />
+
+    </LinearLayout>
+
+</com.ryftpay.android.ui.component.RyftPaymentFormFooter>
