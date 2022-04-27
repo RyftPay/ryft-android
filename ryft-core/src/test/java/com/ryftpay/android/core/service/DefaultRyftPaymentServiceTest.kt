@@ -5,7 +5,7 @@ import com.ryftpay.android.core.TestData.CLIENT_SECRET
 import com.ryftpay.android.core.TestData.LAST_PAYMENT_ERROR
 import com.ryftpay.android.core.TestData.PAYMENT_SESSION_ID
 import com.ryftpay.android.core.TestData.SUB_ACCOUNT_ID
-import com.ryftpay.android.core.TestData.cardPaymentMethod
+import com.ryftpay.android.core.TestData.cardDetails
 import com.ryftpay.android.core.TestData.paymentSessionResponse
 import com.ryftpay.android.core.TestData.requiredActionResponse
 import com.ryftpay.android.core.TestData.ryftErrorResponse
@@ -13,6 +13,7 @@ import com.ryftpay.android.core.api.payment.AttemptPaymentRequest
 import com.ryftpay.android.core.api.payment.PaymentSessionResponse
 import com.ryftpay.android.core.client.RyftApiClient
 import com.ryftpay.android.core.model.error.RyftError
+import com.ryftpay.android.core.model.payment.PaymentMethod
 import com.ryftpay.android.core.model.payment.PaymentSession
 import com.ryftpay.android.core.model.payment.PaymentSessionError
 import com.ryftpay.android.core.model.payment.PaymentSessionStatus
@@ -38,10 +39,11 @@ internal class DefaultRyftPaymentServiceTest {
         client,
         paymentListener
     )
+    private val paymentMethod = PaymentMethod.card(cardDetails)
 
     @Test
     fun `attemptPayment calls listener on attempting payment`() {
-        paymentService.attemptPayment(CLIENT_SECRET, cardPaymentMethod, subAccountId = null)
+        paymentService.attemptPayment(CLIENT_SECRET, paymentMethod, subAccountId = null)
 
         verify {
             paymentListener.onAttemptingPayment()
@@ -50,11 +52,11 @@ internal class DefaultRyftPaymentServiceTest {
 
     @Test
     fun `attemptPayment calls client without sub account id when sub account id is null`() {
-        paymentService.attemptPayment(CLIENT_SECRET, cardPaymentMethod, subAccountId = null)
+        paymentService.attemptPayment(CLIENT_SECRET, paymentMethod, subAccountId = null)
 
         val expected = AttemptPaymentRequest.from(
             CLIENT_SECRET,
-            cardPaymentMethod
+            paymentMethod
         )
 
         verify {
@@ -69,11 +71,11 @@ internal class DefaultRyftPaymentServiceTest {
 
     @Test
     fun `attemptPayment calls client with sub account id when sub account id is present`() {
-        paymentService.attemptPayment(CLIENT_SECRET, cardPaymentMethod, SUB_ACCOUNT_ID)
+        paymentService.attemptPayment(CLIENT_SECRET, paymentMethod, SUB_ACCOUNT_ID)
 
         val expected = AttemptPaymentRequest.from(
             CLIENT_SECRET,
-            cardPaymentMethod
+            paymentMethod
         )
 
         verify {
@@ -91,7 +93,7 @@ internal class DefaultRyftPaymentServiceTest {
         val exception = Exception("bang")
         givenAttemptPaymentThrows(exception)
 
-        paymentService.attemptPayment(CLIENT_SECRET, cardPaymentMethod, subAccountId = null)
+        paymentService.attemptPayment(CLIENT_SECRET, paymentMethod, subAccountId = null)
 
         verify {
             paymentListener.onError(error = null, exception)
@@ -103,7 +105,7 @@ internal class DefaultRyftPaymentServiceTest {
         val response = Response.error<PaymentSessionResponse>(500, ResponseBody.create(null, "injiojf-3"))
         this.givenAttemptPaymentReturns(response)
 
-        paymentService.attemptPayment(CLIENT_SECRET, cardPaymentMethod, subAccountId = null)
+        paymentService.attemptPayment(CLIENT_SECRET, paymentMethod, subAccountId = null)
 
         verify {
             paymentListener.onError(RyftError.Unknown, throwable = null)
@@ -118,7 +120,7 @@ internal class DefaultRyftPaymentServiceTest {
         )
         this.givenAttemptPaymentReturns(response)
 
-        paymentService.attemptPayment(CLIENT_SECRET, cardPaymentMethod, subAccountId = null)
+        paymentService.attemptPayment(CLIENT_SECRET, paymentMethod, subAccountId = null)
 
         verify {
             paymentListener.onError(RyftError.from(ryftErrorResponse), throwable = null)
@@ -133,7 +135,7 @@ internal class DefaultRyftPaymentServiceTest {
         val response = Response.success(unexpectedPayment)
         this.givenAttemptPaymentReturns(response)
 
-        paymentService.attemptPayment(CLIENT_SECRET, cardPaymentMethod, subAccountId = null)
+        paymentService.attemptPayment(CLIENT_SECRET, paymentMethod, subAccountId = null)
 
         verify {
             paymentListener.onError(RyftError.Unknown, throwable = null)
@@ -150,7 +152,7 @@ internal class DefaultRyftPaymentServiceTest {
         val response = Response.success(paymentWithUserError)
         this.givenAttemptPaymentReturns(response)
 
-        paymentService.attemptPayment(CLIENT_SECRET, cardPaymentMethod, subAccountId = null)
+        paymentService.attemptPayment(CLIENT_SECRET, paymentMethod, subAccountId = null)
 
         verify {
             paymentListener.onPaymentHasError(
@@ -171,7 +173,7 @@ internal class DefaultRyftPaymentServiceTest {
         val response = Response.success(paymentRequiringRedirect)
         this.givenAttemptPaymentReturns(response)
 
-        paymentService.attemptPayment(CLIENT_SECRET, cardPaymentMethod, subAccountId = null)
+        paymentService.attemptPayment(CLIENT_SECRET, paymentMethod, subAccountId = null)
 
         verify {
             paymentListener.onPaymentRequiresRedirect(
@@ -192,7 +194,7 @@ internal class DefaultRyftPaymentServiceTest {
         val response = Response.success(approvedPayment)
         this.givenAttemptPaymentReturns(response)
 
-        paymentService.attemptPayment(CLIENT_SECRET, cardPaymentMethod, subAccountId = null)
+        paymentService.attemptPayment(CLIENT_SECRET, paymentMethod, subAccountId = null)
 
         verify {
             paymentListener.onPaymentApproved(PaymentSession.from(approvedPayment))
