@@ -118,6 +118,7 @@ internal class RyftPaymentFragment :
         }
         dialog?.setCancelable(false)
         // TODO load payment session to fetch amount & currency
+        // TODO call google pay loadPaymentData & handle result
     }
 
     override fun onPaymentApproved(response: PaymentSession) {

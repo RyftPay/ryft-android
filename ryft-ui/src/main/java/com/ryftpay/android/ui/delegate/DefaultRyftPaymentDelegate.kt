@@ -64,6 +64,7 @@ internal class DefaultRyftPaymentDelegate(
         listener.onPayByGooglePay()
     }
 
+    // TODO add method to show the google pay header, called when it's available
     private fun showCardOnlyHeader() {
         cardOnlyHeader.visibility = View.VISIBLE
         googlePayHeader.visibility = View.GONE
