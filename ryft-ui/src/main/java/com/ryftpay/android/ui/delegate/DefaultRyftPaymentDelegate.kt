@@ -2,8 +2,8 @@ package com.ryftpay.android.ui.delegate
 
 import android.view.View
 import com.ryftpay.android.ui.component.RyftPaymentFormBody
+import com.ryftpay.android.ui.component.RyftPaymentFormCardOnlyHeader
 import com.ryftpay.android.ui.component.RyftPaymentFormFooter
-import com.ryftpay.android.ui.component.RyftPaymentFormHeader
 import com.ryftpay.android.ui.listener.RyftPaymentFormBodyListener
 import com.ryftpay.android.ui.listener.RyftPaymentFormFooterListener
 import com.ryftpay.android.ui.listener.RyftPaymentFormListener
@@ -15,13 +15,13 @@ internal class DefaultRyftPaymentDelegate(
     RyftPaymentFormBodyListener,
     RyftPaymentFormFooterListener {
 
-    private lateinit var header: RyftPaymentFormHeader
+    private lateinit var cardOnlyHeader: RyftPaymentFormCardOnlyHeader
     private lateinit var body: RyftPaymentFormBody
     private lateinit var footer: RyftPaymentFormFooter
 
     override fun onViewCreated(root: View) {
-        header = root.findViewById(R.id.partial_ryft_payment_form_header)
-        header.initialise()
+        cardOnlyHeader = root.findViewById(R.id.partial_ryft_payment_form_card_only_header)
+        cardOnlyHeader.initialise()
         body = root.findViewById(R.id.partial_ryft_payment_form_body)
         body.initialise(listener = this)
         footer = root.findViewById(R.id.partial_ryft_payment_form_footer)

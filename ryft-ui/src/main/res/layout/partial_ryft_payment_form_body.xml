@@ -4,14 +4,13 @@
     android:id="@+id/partial_ryft_payment_form_body"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="124dp">
+    android:layout_height="141dp">
 
     <LinearLayout
         android:id="@+id/row_ryft_card_number"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_marginTop="16dp"
         android:layout_marginLeft="24dp"
         android:layout_marginRight="24dp"
         android:baselineAligned="false">
@@ -48,5 +47,7 @@
             style="@style/RyftCardCvcInputField"/>
 
     </LinearLayout>
+
+    <include layout="@layout/partial_ryft_divider"/>
 
 </com.ryftpay.android.ui.component.RyftPaymentFormBody>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.ryftpay.android.ui.component.RyftPaymentFormCardOnlyHeader
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/partial_ryft_payment_form_card_only_header"
+    android:layout_width="match_parent"
+    android:layout_height="68dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/text_ryft_payment_form_card_only_header"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        style="@style/RyftPaymentFormCardOnlyHeaderText"
+        tools:text="@string/ryft_payment_form_card_only_header_title" />
+
+    <include layout="@layout/partial_ryft_divider"/>
+
+</com.ryftpay.android.ui.component.RyftPaymentFormCardOnlyHeader>

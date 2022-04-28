@@ -7,13 +7,9 @@
     android:orientation="vertical"
     android:background="@color/ryftBackground">
 
-    <include layout="@layout/partial_ryft_payment_form_header"/>
-
-    <include layout="@layout/partial_ryft_divider"/>
+    <include layout="@layout/partial_ryft_payment_form_card_only_header"/>
 
     <include layout="@layout/partial_ryft_payment_form_body"/>
-
-    <include layout="@layout/partial_ryft_divider"/>
 
     <include layout="@layout/partial_ryft_payment_form_footer"/>
 

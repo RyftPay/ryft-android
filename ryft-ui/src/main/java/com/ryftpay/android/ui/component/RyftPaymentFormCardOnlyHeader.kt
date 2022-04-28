@@ -6,7 +6,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.ryftpay.ui.R
 
-internal class RyftPaymentFormHeader @JvmOverloads constructor(
+internal class RyftPaymentFormCardOnlyHeader @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null
 ) : LinearLayout(context, attrs) {
@@ -14,7 +14,7 @@ internal class RyftPaymentFormHeader @JvmOverloads constructor(
     private lateinit var title: TextView
 
     internal fun initialise() {
-        title = findViewById(R.id.text_ryft_payment_form_header)
-        title.text = context.getString(R.string.ryft_payment_form_header_title)
+        title = findViewById(R.id.text_ryft_payment_form_card_only_header)
+        title.text = context.getString(R.string.ryft_payment_form_card_only_header_title)
     }
 }
