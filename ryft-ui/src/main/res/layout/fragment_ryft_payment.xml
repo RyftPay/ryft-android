@@ -7,7 +7,12 @@
     android:orientation="vertical"
     android:background="@color/ryftBackground">
 
-    <include layout="@layout/partial_ryft_payment_form_card_only_header"/>
+    <include
+        layout="@layout/partial_ryft_payment_form_card_only_header"
+        android:visibility="visible"/>
+    <include
+        layout="@layout/partial_ryft_payment_form_googlepay_header"
+        android:visibility="gone"/>
 
     <include layout="@layout/partial_ryft_payment_form_body"/>
 

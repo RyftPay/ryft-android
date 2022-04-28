@@ -87,7 +87,7 @@ internal class RyftPaymentFragment :
         dismiss()
     }
 
-    override fun onPay(card: RyftCard) {
+    override fun onPayByCard(card: RyftCard) {
         if (input.testMode) {
             Handler(Looper.getMainLooper()).postDelayed({
                 dismiss()
@@ -107,6 +107,17 @@ internal class RyftPaymentFragment :
             ),
             subAccountId = input.configuration.subAccountId
         )
+    }
+
+    override fun onPayByGooglePay() {
+        if (input.testMode) {
+            Handler(Looper.getMainLooper()).postDelayed({
+                dismiss()
+            }, 3000)
+            return
+        }
+        dialog?.setCancelable(false)
+        // TODO load payment session to fetch amount & currency
     }
 
     override fun onPaymentApproved(response: PaymentSession) {
