@@ -6,6 +6,7 @@
 
     <string name="ryft_pay">Pay now</string>
     <string name="ryft_taking_payment">Taking payment…</string>
+    <string name="ryft_or">or</string>
     <string name="ryft_cancel">Cancel</string>
     <string name="ryft_card_number">Card number</string>
     <string name="ryft_card_expiry_date">MM/YY</string>

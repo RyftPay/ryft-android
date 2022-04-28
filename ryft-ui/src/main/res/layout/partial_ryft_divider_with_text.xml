@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/partial_ryft_divider_with_text"
+    android:layout_width="match_parent"
+    android:layout_height="17dp"
+    android:background="@color/ryftBackground">
+
+    <View style="@style/RyftDivider"/>
+
+    <TextView
+        style="@style/RyftDividerText"
+        android:text="@string/ryft_or"/>
+
+</RelativeLayout>
