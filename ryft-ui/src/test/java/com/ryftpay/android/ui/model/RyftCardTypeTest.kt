@@ -69,7 +69,7 @@ internal class RyftCardTypeTest {
         unknown.iconDrawableId shouldBeEqualTo R.drawable.ic_ryft_unknown_card
         unknown.maxFormattedCardLength shouldBeEqualTo 19
         unknown.availableForGooglePay shouldBeEqualTo false
-        unknown.googlePayName shouldBeEqualTo "INVALID"
+        unknown.googlePayName shouldBeEqualTo null
     }
 
     @Test
