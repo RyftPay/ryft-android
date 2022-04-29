@@ -20,6 +20,8 @@ internal class RyftCardTypeTest {
         visa.binRanges shouldBeEqualTo listOf(RyftCardBinRange(min = 4, max = 4))
         visa.iconDrawableId shouldBeEqualTo R.drawable.ic_ryft_visa
         visa.maxFormattedCardLength shouldBeEqualTo 19
+        visa.availableForGooglePay shouldBeEqualTo true
+        visa.googlePayName shouldBeEqualTo "VISA"
     }
 
     @Test
@@ -35,6 +37,8 @@ internal class RyftCardTypeTest {
         )
         mastercard.iconDrawableId shouldBeEqualTo R.drawable.ic_ryft_mastercard
         mastercard.maxFormattedCardLength shouldBeEqualTo 19
+        mastercard.availableForGooglePay shouldBeEqualTo true
+        mastercard.googlePayName shouldBeEqualTo "MASTERCARD"
     }
 
     @Test
@@ -50,6 +54,8 @@ internal class RyftCardTypeTest {
         )
         amex.iconDrawableId shouldBeEqualTo R.drawable.ic_ryft_amex
         amex.maxFormattedCardLength shouldBeEqualTo 17
+        amex.availableForGooglePay shouldBeEqualTo false
+        amex.googlePayName shouldBeEqualTo "AMEX"
     }
 
     @Test
@@ -62,6 +68,8 @@ internal class RyftCardTypeTest {
         unknown.binRanges shouldBeEqualTo listOf()
         unknown.iconDrawableId shouldBeEqualTo R.drawable.ic_ryft_unknown_card
         unknown.maxFormattedCardLength shouldBeEqualTo 19
+        unknown.availableForGooglePay shouldBeEqualTo false
+        unknown.googlePayName shouldBeEqualTo "INVALID"
     }
 
     @Test
@@ -94,6 +102,11 @@ internal class RyftCardTypeTest {
         amexCardNumber: String
     ) {
         RyftCardType.fromCardNumber(amexCardNumber) shouldBeEqualTo RyftCardType.Amex
+    }
+
+    @Test
+    internal fun `getGooglePaySupportedTypeNames should return visa and mastercard`() {
+        RyftCardType.getGooglePaySupportedTypeNames() shouldBeEqualTo listOf("VISA", "MASTERCARD")
     }
 
     private fun unknownCardNumbers(): Array<String> = arrayOf(

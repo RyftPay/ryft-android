@@ -7,7 +7,7 @@ data class RyftPublicApiKey(
         require(value.startsWith(KEY_PREFIX)) { "The API key you have provided is invalid, please check you are using your public API key" }
     }
 
-    internal fun getEnvironment(): RyftEnvironment =
+    fun getEnvironment(): RyftEnvironment =
         if (value.startsWith(SANDBOX_KEY_PREFIX)) {
             RyftEnvironment.Sandbox
         } else RyftEnvironment.Prod

@@ -13,6 +13,7 @@ import androidx.annotation.VisibleForTesting
 import androidx.annotation.VisibleForTesting.PRIVATE
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.common.api.ApiException
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.ryftpay.android.core.client.RyftApiClientFactory
 import com.ryftpay.android.core.model.api.RyftPublicApiKey
@@ -31,6 +32,9 @@ import com.ryftpay.android.ui.dropin.RyftPaymentError
 import com.ryftpay.android.ui.dropin.RyftPaymentResult
 import com.ryftpay.android.ui.listener.RyftPaymentFormListener
 import com.ryftpay.android.ui.model.RyftCard
+import com.ryftpay.android.ui.service.DefaultGooglePayService
+import com.ryftpay.android.ui.service.GooglePayService
+import com.ryftpay.android.ui.service.PaymentsClientFactory
 import com.ryftpay.android.ui.util.RyftPublicApiKeyParceler
 import com.ryftpay.android.ui.viewmodel.RyftPaymentResultViewModel
 import com.ryftpay.ui.R
@@ -45,7 +49,8 @@ internal class RyftPaymentFragment :
 
     private lateinit var delegate: RyftPaymentDelegate
     private lateinit var input: Arguments
-    private lateinit var service: RyftPaymentService
+    private lateinit var ryftPaymentService: RyftPaymentService
+    private lateinit var googlePayService: GooglePayService
     private lateinit var paymentResultViewModel: RyftPaymentResultViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,14 +75,19 @@ internal class RyftPaymentFragment :
         savedInstanceState: Bundle?
     ) {
         super.onViewCreated(root, savedInstanceState)
-        service = DefaultRyftPaymentService(
+        ryftPaymentService = DefaultRyftPaymentService(
             RyftApiClientFactory(input.publicApiKey).createRyftApiClient(),
             paymentListener = this
         )
+        googlePayService = DefaultGooglePayService(
+            PaymentsClientFactory.createPaymentsClient(
+                input.publicApiKey.getEnvironment(),
+                activity = requireActivity()
+            )
+        )
         setupPaymentResultViewModel()
         setupThreeDSecureResultObserver()
-        delegate = DefaultRyftPaymentDelegate(listener = this)
-        delegate.onViewCreated(root)
+        checkGooglePayBeforeInitialisingDelegate(root)
     }
 
     override fun getTheme(): Int = R.style.RyftBottomSheetDialog
@@ -95,7 +105,7 @@ internal class RyftPaymentFragment :
             return
         }
         dialog?.setCancelable(false)
-        service.attemptPayment(
+        ryftPaymentService.attemptPayment(
             clientSecret = input.configuration.clientSecret,
             paymentMethod = PaymentMethod.card(
                 CardDetails(
@@ -169,12 +179,32 @@ internal class RyftPaymentFragment :
             ?.savedStateHandle
             ?.getLiveData<RyftThreeDSecureFragment.Result>(RyftThreeDSecureFragment.RESULT_BUNDLE_KEY)
             ?.observe(viewLifecycleOwner) { result ->
-                service.loadPaymentSession(
+                ryftPaymentService.loadPaymentSession(
                     result.paymentSessionId,
                     input.configuration.clientSecret,
                     input.configuration.subAccountId
                 )
             }
+    }
+
+    private fun checkGooglePayBeforeInitialisingDelegate(
+        root: View
+    ) {
+        googlePayService.isReadyToPay().addOnCompleteListener { completedTask ->
+            run {
+                val showGooglePay = try {
+                    completedTask.getResult(ApiException::class.java)
+                } catch (exception: ApiException) {
+                    false
+                }
+                initialiseDelegate(root, showGooglePay)
+            }
+        }
+    }
+
+    private fun initialiseDelegate(root: View, showGooglePay: Boolean) {
+        delegate = DefaultRyftPaymentDelegate(listener = this)
+        delegate.onViewCreated(root, showGooglePay)
     }
 
     private fun safeDismiss() {

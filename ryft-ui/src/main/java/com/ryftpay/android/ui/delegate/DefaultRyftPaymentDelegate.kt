@@ -23,7 +23,7 @@ internal class DefaultRyftPaymentDelegate(
     private lateinit var body: RyftPaymentFormBody
     private lateinit var footer: RyftPaymentFormFooter
 
-    override fun onViewCreated(root: View) {
+    override fun onViewCreated(root: View, showGooglePay: Boolean) {
         cardOnlyHeader = root.findViewById(R.id.partial_ryft_payment_form_card_only_header)
         cardOnlyHeader.initialise()
         googlePayHeader = root.findViewById(R.id.partial_ryft_payment_form_googlepay_header)
@@ -32,7 +32,7 @@ internal class DefaultRyftPaymentDelegate(
         body.initialise(listener = this)
         footer = root.findViewById(R.id.partial_ryft_payment_form_footer)
         footer.initialise(listener = this)
-        showCardOnlyHeader()
+        setHeaderVisibility(showGooglePay)
     }
 
     override fun onCardReadyForPayment() {
@@ -64,9 +64,8 @@ internal class DefaultRyftPaymentDelegate(
         listener.onPayByGooglePay()
     }
 
-    // TODO add method to show the google pay header, called when it's available
-    private fun showCardOnlyHeader() {
-        cardOnlyHeader.visibility = View.VISIBLE
-        googlePayHeader.visibility = View.GONE
+    private fun setHeaderVisibility(showGooglePay: Boolean) {
+        cardOnlyHeader.visibility = if (showGooglePay) View.GONE else View.VISIBLE
+        googlePayHeader.visibility = if (showGooglePay) View.VISIBLE else View.GONE
     }
 }
