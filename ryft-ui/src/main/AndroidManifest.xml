@@ -10,6 +10,9 @@
             android:exported="true"
             android:launchMode="singleTask"
             android:theme="@style/Theme.AppCompat.RyftTransparent" />
+        <meta-data
+            android:name="com.google.android.gms.wallet.api.enabled"
+            android:value="true" />
     </application>
 
 </manifest>
