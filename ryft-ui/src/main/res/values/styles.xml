@@ -86,12 +86,9 @@
         <item name="android:maxLines">1</item>
     </style>
 
-    <style name="RyftPaymentFormHeaderText">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">match_parent</item>
+    <style name="RyftPaymentFormCardOnlyHeaderText">
         <item name="android:paddingStart">24dp</item>
         <item name="android:paddingTop">8dp</item>
-        <item name="android:paddingBottom">8dp</item>
         <item name="android:fontFamily">@font/ryft_nunito_bold</item>
         <item name="android:textColor">@color/ryftTitleText</item>
         <item name="android:textSize">14sp</item>
@@ -101,7 +98,21 @@
     <style name="RyftDivider">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
         <item name="android:background">@color/ryftDivider</item>
+    </style>
+
+    <style name="RyftDividerText">
+        <item name="android:layout_width">42dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:layout_marginTop">-2dp</item>
+        <item name="android:background">@color/ryftBackground</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:fontFamily">@font/ryft_nunito_italic</item>
+        <item name="android:textColor">@color/ryftDividerText</item>
     </style>
 
 </resources>

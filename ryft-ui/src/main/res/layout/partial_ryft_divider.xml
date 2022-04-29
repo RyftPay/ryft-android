@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/partial_ryft_divider"
+    android:layout_width="match_parent"
+    android:layout_height="17dp">
+
+    <View style="@style/RyftDivider"/>
+
+</RelativeLayout>

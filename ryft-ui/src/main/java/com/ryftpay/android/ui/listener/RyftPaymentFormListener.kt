@@ -4,5 +4,6 @@ import com.ryftpay.android.ui.model.RyftCard
 
 internal interface RyftPaymentFormListener {
     fun onCancel()
-    fun onPay(card: RyftCard)
+    fun onPayByCard(card: RyftCard)
+    fun onPayByGooglePay()
 }
