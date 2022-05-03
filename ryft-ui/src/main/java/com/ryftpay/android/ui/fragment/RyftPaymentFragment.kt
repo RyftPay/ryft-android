@@ -36,6 +36,10 @@ import com.ryftpay.android.ui.listener.RyftPaymentFormListener
 import com.ryftpay.android.ui.model.RyftCard
 import com.ryftpay.android.ui.service.DefaultGooglePayService
 import com.ryftpay.android.ui.service.GooglePayService
+import com.ryftpay.android.ui.service.request.LoadPaymentDataRequest
+import com.ryftpay.android.ui.service.request.MerchantInfo
+import com.ryftpay.android.ui.service.request.RyftTokenizationSpecification
+import com.ryftpay.android.ui.service.request.TransactionInfo
 import com.ryftpay.android.ui.util.RyftPublicApiKeyParceler
 import com.ryftpay.android.ui.viewmodel.RyftPaymentResultViewModel
 import com.ryftpay.ui.R
@@ -180,7 +184,18 @@ internal class RyftPaymentFragment :
     }
 
     override fun onPaymentLoaded(response: PaymentSession) {
-        // TODO call google pay loadPaymentData & handle result, using amount & currency
+        // TODO pass in these via config
+        val merchantName = "A Merchant"
+        val countryCode = "GB"
+        // TODO handle the result
+        googlePayService.loadPaymentData(
+            activity = requireActivity(),
+            loadPaymentDataRequest = LoadPaymentDataRequest(
+                MerchantInfo.from(merchantName),
+                RyftTokenizationSpecification.from(input.publicApiKey),
+                TransactionInfo.from(response, countryCode)
+            )
+        )
     }
 
     override fun onCancel(dialog: DialogInterface) {
