@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonProperty
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class PaymentSessionResponse(
     @JsonProperty("id") val id: String,
+    @JsonProperty("amount") val amount: Int,
+    @JsonProperty("currency") val currency: String,
     @JsonProperty("returnUrl") val returnUrl: String,
     @JsonProperty("status") val status: String,
     @JsonProperty("lastError") val lastError: String?,

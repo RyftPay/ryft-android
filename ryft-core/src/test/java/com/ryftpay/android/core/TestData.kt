@@ -48,6 +48,8 @@ internal object TestData {
 
     internal val paymentSessionResponse = PaymentSessionResponse(
         id = PAYMENT_SESSION_ID,
+        amount = 483,
+        currency = "GBP",
         returnUrl = "https://my-url.com",
         status = PaymentSessionStatus.PendingPayment.toString(),
         lastError = "invalid_card_number",
