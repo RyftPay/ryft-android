@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.ryftpay.sampleapp">
+
+    <application
+        android:icon="@mipmap/ic_ryft"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_ryft_round"
+        android:theme="@style/Theme.Ryft">
+        <activity
+            android:name="com.ryftpay.sampleapp.activity.LaunchActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name="com.ryftpay.sampleapp.activity.DemoActivity" />
+    </application>
+
+</manifest>
