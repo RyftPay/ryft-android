@@ -26,11 +26,7 @@ internal class DefaultGooglePayService(
                 )
             ),
             activity,
-            LOAD_PAYMENT_DATA_REQUEST_CODE
+            GooglePayService.LOAD_PAYMENT_DATA_REQUEST_CODE
         )
-    }
-
-    companion object {
-        const val LOAD_PAYMENT_DATA_REQUEST_CODE = 739
     }
 }

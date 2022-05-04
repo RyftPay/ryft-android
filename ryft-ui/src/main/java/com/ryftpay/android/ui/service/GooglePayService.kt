@@ -10,4 +10,8 @@ internal interface GooglePayService {
         activity: Activity,
         loadPaymentDataRequest: LoadPaymentDataRequest
     )
+
+    companion object {
+        const val LOAD_PAYMENT_DATA_REQUEST_CODE = 739
+    }
 }

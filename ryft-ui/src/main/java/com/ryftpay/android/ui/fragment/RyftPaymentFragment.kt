@@ -33,6 +33,7 @@ import com.ryftpay.android.ui.dropin.RyftDropInConfiguration
 import com.ryftpay.android.ui.dropin.RyftPaymentError
 import com.ryftpay.android.ui.dropin.RyftPaymentResult
 import com.ryftpay.android.ui.listener.RyftPaymentFormListener
+import com.ryftpay.android.ui.model.GooglePayResult
 import com.ryftpay.android.ui.model.RyftCard
 import com.ryftpay.android.ui.service.DefaultGooglePayService
 import com.ryftpay.android.ui.service.GooglePayService
@@ -41,6 +42,7 @@ import com.ryftpay.android.ui.service.request.googlepay.MerchantInfo
 import com.ryftpay.android.ui.service.request.googlepay.RyftTokenizationSpecification
 import com.ryftpay.android.ui.service.request.googlepay.TransactionInfo
 import com.ryftpay.android.ui.util.RyftPublicApiKeyParceler
+import com.ryftpay.android.ui.viewmodel.GooglePayResultViewModel
 import com.ryftpay.android.ui.viewmodel.RyftPaymentResultViewModel
 import com.ryftpay.ui.R
 import kotlinx.parcelize.Parcelize
@@ -58,6 +60,7 @@ internal class RyftPaymentFragment :
     private lateinit var ryftPaymentService: RyftPaymentService
     private lateinit var googlePayService: GooglePayService
     private lateinit var paymentResultViewModel: RyftPaymentResultViewModel
+    private lateinit var googlePayResultViewModel: GooglePayResultViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,6 +94,7 @@ internal class RyftPaymentFragment :
             )
         )
         setupPaymentResultViewModel()
+        setupGooglePayResultViewModel()
         setupThreeDSecureResultObserver()
         checkGooglePayBeforeInitialisingDelegate(root)
     }
@@ -187,7 +191,6 @@ internal class RyftPaymentFragment :
         // TODO pass in these via config
         val merchantName = "A Merchant"
         val countryCode = "GB"
-        // TODO handle the result
         googlePayService.loadPaymentData(
             activity = requireActivity(),
             loadPaymentDataRequest = LoadPaymentDataRequest(
@@ -205,6 +208,30 @@ internal class RyftPaymentFragment :
 
     private fun setupPaymentResultViewModel() {
         paymentResultViewModel = ViewModelProvider(requireActivity())[RyftPaymentResultViewModel::class.java]
+    }
+
+    private fun setupGooglePayResultViewModel() {
+        googlePayResultViewModel = ViewModelProvider(requireActivity())[GooglePayResultViewModel::class.java]
+        googlePayResultViewModel.getResult().observe(this) { result ->
+            handleGooglePayResult(result)
+        }
+    }
+
+    private fun handleGooglePayResult(result: GooglePayResult) {
+        when (result) {
+            is GooglePayResult.Ok -> {
+                delegate.onGooglePayPaymentProcessing()
+                ryftPaymentService.attemptPayment(
+                    clientSecret = input.configuration.clientSecret,
+                    paymentMethod = PaymentMethod.googlePay(result.paymentData.token),
+                    subAccountId = input.configuration.subAccountId,
+                    listener = this
+                )
+            }
+            else -> {
+                delegate.onGooglePayFailedOrCancelled()
+            }
+        }
     }
 
     private fun setupThreeDSecureResultObserver() {

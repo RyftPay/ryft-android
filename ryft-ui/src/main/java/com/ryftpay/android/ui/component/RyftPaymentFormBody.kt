@@ -94,7 +94,7 @@ internal class RyftPaymentFormBody @JvmOverloads constructor(
             onCardTypeChanged(newCard.type)
         }
         if (newCard.valid && !currentCard.valid) {
-            listener.onCardReadyForPayment()
+            listener.onReadyForCardPayment()
         }
         if (!newCard.valid && currentCard.valid) {
             listener.onAwaitingCardDetails()

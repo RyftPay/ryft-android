@@ -35,21 +35,41 @@ internal class DefaultRyftPaymentDelegate(
         setHeaderVisibility(showGooglePay)
     }
 
-    override fun onCardReadyForPayment() {
-        footer.setState(RyftPaymentFormFooter.State.ReadyForPayment)
+    override fun onGooglePayPaymentProcessing() {
+        toggleFormSubmission(
+            enabled = false,
+            footerState = RyftPaymentFormFooter.State.TakingPayment
+        )
+    }
+
+    override fun onGooglePayFailedOrCancelled() {
+        val footerState = if (body.currentCard.valid) {
+            RyftPaymentFormFooter.State.ReadyForCardPayment
+        } else {
+            RyftPaymentFormFooter.State.AwaitingCardDetails
+        }
+        toggleFormSubmission(
+            enabled = true,
+            footerState = footerState
+        )
+    }
+
+    override fun onReadyForCardPayment() {
+        footer.setState(RyftPaymentFormFooter.State.ReadyForCardPayment)
     }
 
     override fun onAwaitingCardDetails() {
-        footer.setState(RyftPaymentFormFooter.State.AwaitingPaymentDetails)
+        footer.setState(RyftPaymentFormFooter.State.AwaitingCardDetails)
     }
 
     override fun onPayClicked() {
         if (!body.currentCard.valid) {
             return
         }
-        googlePayHeader.toggleGooglePayButton(enabled = false)
-        body.toggleInput(enabled = false)
-        footer.setState(RyftPaymentFormFooter.State.TakingPayment)
+        toggleFormSubmission(
+            enabled = false,
+            footerState = RyftPaymentFormFooter.State.TakingPayment
+        )
         listener.onPayByCard(body.currentCard)
     }
 
@@ -58,14 +78,24 @@ internal class DefaultRyftPaymentDelegate(
     }
 
     override fun onGooglePayClicked() {
-        googlePayHeader.toggleGooglePayButton(enabled = false)
-        body.toggleInput(enabled = false)
-        footer.setState(RyftPaymentFormFooter.State.TakingPayment)
+        toggleFormSubmission(
+            enabled = false,
+            footerState = RyftPaymentFormFooter.State.AwaitingGooglePayDetails
+        )
         listener.onPayByGooglePay()
     }
 
     private fun setHeaderVisibility(showGooglePay: Boolean) {
         cardOnlyHeader.visibility = if (showGooglePay) View.GONE else View.VISIBLE
         googlePayHeader.visibility = if (showGooglePay) View.VISIBLE else View.GONE
+    }
+
+    private fun toggleFormSubmission(
+        enabled: Boolean,
+        footerState: RyftPaymentFormFooter.State
+    ) {
+        googlePayHeader.toggleGooglePayButton(enabled)
+        body.toggleInput(enabled)
+        footer.setState(footerState)
     }
 }
