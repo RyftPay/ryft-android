@@ -1,4 +1,4 @@
-package com.ryftpay.android.ui.service.request
+package com.ryftpay.android.ui.service.request.googlepay
 
 import com.google.android.gms.wallet.IsReadyToPayRequest
 import com.google.android.gms.wallet.PaymentDataRequest

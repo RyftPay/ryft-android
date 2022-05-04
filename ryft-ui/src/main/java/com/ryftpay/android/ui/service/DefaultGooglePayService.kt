@@ -4,8 +4,8 @@ import android.app.Activity
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.wallet.AutoResolveHelper
 import com.google.android.gms.wallet.PaymentsClient
-import com.ryftpay.android.ui.service.request.GooglePayRequestFactory
-import com.ryftpay.android.ui.service.request.LoadPaymentDataRequest
+import com.ryftpay.android.ui.service.request.googlepay.GooglePayRequestFactory
+import com.ryftpay.android.ui.service.request.googlepay.LoadPaymentDataRequest
 
 internal class DefaultGooglePayService(
     private val paymentsClient: PaymentsClient

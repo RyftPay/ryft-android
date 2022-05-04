@@ -36,10 +36,10 @@ import com.ryftpay.android.ui.listener.RyftPaymentFormListener
 import com.ryftpay.android.ui.model.RyftCard
 import com.ryftpay.android.ui.service.DefaultGooglePayService
 import com.ryftpay.android.ui.service.GooglePayService
-import com.ryftpay.android.ui.service.request.LoadPaymentDataRequest
-import com.ryftpay.android.ui.service.request.MerchantInfo
-import com.ryftpay.android.ui.service.request.RyftTokenizationSpecification
-import com.ryftpay.android.ui.service.request.TransactionInfo
+import com.ryftpay.android.ui.service.request.googlepay.LoadPaymentDataRequest
+import com.ryftpay.android.ui.service.request.googlepay.MerchantInfo
+import com.ryftpay.android.ui.service.request.googlepay.RyftTokenizationSpecification
+import com.ryftpay.android.ui.service.request.googlepay.TransactionInfo
 import com.ryftpay.android.ui.util.RyftPublicApiKeyParceler
 import com.ryftpay.android.ui.viewmodel.RyftPaymentResultViewModel
 import com.ryftpay.ui.R

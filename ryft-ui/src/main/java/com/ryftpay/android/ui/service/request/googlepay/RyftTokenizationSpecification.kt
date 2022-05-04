@@ -1,4 +1,4 @@
-package com.ryftpay.android.ui.service.request
+package com.ryftpay.android.ui.service.request.googlepay
 
 import com.ryftpay.android.core.model.api.RyftPublicApiKey
 
