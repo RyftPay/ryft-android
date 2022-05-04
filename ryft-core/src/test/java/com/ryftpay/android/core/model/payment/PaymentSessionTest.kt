@@ -4,6 +4,7 @@ import com.ryftpay.android.core.TestData.paymentSessionResponse
 import com.ryftpay.android.core.TestData.requiredActionResponse
 import org.amshove.kluent.shouldBeEqualTo
 import org.junit.Test
+import java.util.Currency
 
 internal class PaymentSessionTest {
 
@@ -11,6 +12,8 @@ internal class PaymentSessionTest {
     fun `from should return expected non-nullable fields`() {
         val paymentSession = PaymentSession.from(paymentSessionResponse)
         paymentSession.id shouldBeEqualTo paymentSessionResponse.id
+        paymentSession.amount shouldBeEqualTo paymentSessionResponse.amount
+        paymentSession.currency shouldBeEqualTo Currency.getInstance(paymentSessionResponse.currency)
         paymentSession.returnUrl shouldBeEqualTo paymentSessionResponse.returnUrl
         paymentSession.status shouldBeEqualTo PaymentSessionStatus.from(paymentSessionResponse.status)
         paymentSession.lastError shouldBeEqualTo PaymentSessionError.from(paymentSessionResponse.lastError)

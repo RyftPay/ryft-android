@@ -1,9 +1,12 @@
 package com.ryftpay.android.core.model.payment
 
 import com.ryftpay.android.core.api.payment.PaymentSessionResponse
+import java.util.Currency
 
 data class PaymentSession(
     val id: String,
+    val amount: Int,
+    val currency: Currency,
     val returnUrl: String,
     val status: PaymentSessionStatus,
     val lastError: PaymentSessionError?,
@@ -16,6 +19,8 @@ data class PaymentSession(
         internal fun from(response: PaymentSessionResponse): PaymentSession =
             PaymentSession(
                 id = response.id,
+                amount = response.amount,
+                currency = Currency.getInstance(response.currency),
                 returnUrl = response.returnUrl,
                 status = PaymentSessionStatus.from(response.status),
                 lastError = PaymentSessionError.from(response.lastError),

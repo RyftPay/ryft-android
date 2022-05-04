@@ -24,7 +24,9 @@ import com.ryftpay.android.core.model.payment.PaymentSession
 import com.ryftpay.android.core.model.payment.PaymentSessionError
 import com.ryftpay.android.core.service.DefaultRyftPaymentService
 import com.ryftpay.android.core.service.RyftPaymentService
-import com.ryftpay.android.core.service.listener.RyftPaymentListener
+import com.ryftpay.android.core.service.listener.RyftLoadPaymentListener
+import com.ryftpay.android.core.service.listener.RyftPaymentResultListener
+import com.ryftpay.android.ui.client.PaymentsClientFactory
 import com.ryftpay.android.ui.delegate.DefaultRyftPaymentDelegate
 import com.ryftpay.android.ui.delegate.RyftPaymentDelegate
 import com.ryftpay.android.ui.dropin.RyftDropInConfiguration
@@ -34,7 +36,10 @@ import com.ryftpay.android.ui.listener.RyftPaymentFormListener
 import com.ryftpay.android.ui.model.RyftCard
 import com.ryftpay.android.ui.service.DefaultGooglePayService
 import com.ryftpay.android.ui.service.GooglePayService
-import com.ryftpay.android.ui.service.PaymentsClientFactory
+import com.ryftpay.android.ui.service.request.googlepay.LoadPaymentDataRequest
+import com.ryftpay.android.ui.service.request.googlepay.MerchantInfo
+import com.ryftpay.android.ui.service.request.googlepay.RyftTokenizationSpecification
+import com.ryftpay.android.ui.service.request.googlepay.TransactionInfo
 import com.ryftpay.android.ui.util.RyftPublicApiKeyParceler
 import com.ryftpay.android.ui.viewmodel.RyftPaymentResultViewModel
 import com.ryftpay.ui.R
@@ -45,7 +50,8 @@ import java.lang.IllegalArgumentException
 internal class RyftPaymentFragment :
     BottomSheetDialogFragment(),
     RyftPaymentFormListener,
-    RyftPaymentListener {
+    RyftPaymentResultListener,
+    RyftLoadPaymentListener {
 
     private lateinit var delegate: RyftPaymentDelegate
     private lateinit var input: Arguments
@@ -76,8 +82,7 @@ internal class RyftPaymentFragment :
     ) {
         super.onViewCreated(root, savedInstanceState)
         ryftPaymentService = DefaultRyftPaymentService(
-            RyftApiClientFactory(input.publicApiKey).createRyftApiClient(),
-            paymentListener = this
+            RyftApiClientFactory(input.publicApiKey).createRyftApiClient()
         )
         googlePayService = DefaultGooglePayService(
             PaymentsClientFactory.createPaymentsClient(
@@ -115,7 +120,8 @@ internal class RyftPaymentFragment :
                     card.cvc.sanitisedCvc
                 )
             ),
-            subAccountId = input.configuration.subAccountId
+            subAccountId = input.configuration.subAccountId,
+            listener = this
         )
     }
 
@@ -127,8 +133,11 @@ internal class RyftPaymentFragment :
             return
         }
         dialog?.setCancelable(false)
-        // TODO load payment session to fetch amount & currency
-        // TODO call google pay loadPaymentData & handle result
+        ryftPaymentService.loadPaymentSession(
+            clientSecret = input.configuration.clientSecret,
+            subAccountId = input.configuration.subAccountId,
+            listener = this
+        )
     }
 
     override fun onPaymentApproved(response: PaymentSession) {
@@ -154,7 +163,7 @@ internal class RyftPaymentFragment :
         safeDismiss()
     }
 
-    override fun onError(
+    override fun onErrorObtainingPaymentResult(
         error: RyftError?,
         throwable: Throwable?
     ) {
@@ -162,6 +171,31 @@ internal class RyftPaymentFragment :
             RyftPaymentResult.Failed(RyftPaymentError.from(throwable, requireContext()))
         )
         safeDismiss()
+    }
+
+    override fun onErrorLoadingPayment(
+        error: RyftError?,
+        throwable: Throwable?
+    ) {
+        paymentResultViewModel.updateResult(
+            RyftPaymentResult.Failed(RyftPaymentError.from(throwable, requireContext()))
+        )
+        safeDismiss()
+    }
+
+    override fun onPaymentLoaded(response: PaymentSession) {
+        // TODO pass in these via config
+        val merchantName = "A Merchant"
+        val countryCode = "GB"
+        // TODO handle the result
+        googlePayService.loadPaymentData(
+            activity = requireActivity(),
+            loadPaymentDataRequest = LoadPaymentDataRequest(
+                MerchantInfo.from(merchantName),
+                RyftTokenizationSpecification.from(input.publicApiKey),
+                TransactionInfo.from(response, countryCode)
+            )
+        )
     }
 
     override fun onCancel(dialog: DialogInterface) {
@@ -179,10 +213,11 @@ internal class RyftPaymentFragment :
             ?.savedStateHandle
             ?.getLiveData<RyftThreeDSecureFragment.Result>(RyftThreeDSecureFragment.RESULT_BUNDLE_KEY)
             ?.observe(viewLifecycleOwner) { result ->
-                ryftPaymentService.loadPaymentSession(
+                ryftPaymentService.getLatestPaymentResult(
                     result.paymentSessionId,
                     input.configuration.clientSecret,
-                    input.configuration.subAccountId
+                    input.configuration.subAccountId,
+                    listener = this
                 )
             }
     }

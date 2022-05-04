@@ -1,4 +1,4 @@
-package com.ryftpay.android.ui.service
+package com.ryftpay.android.ui.client
 
 import android.app.Activity
 import com.google.android.gms.wallet.PaymentsClient
