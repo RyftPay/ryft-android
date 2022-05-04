@@ -189,3 +189,7 @@ class CheckoutFragment : Fragment(), RyftDropInResultListener {
 Note that if a payment requires further action for the payment to be approved (e.g. 3ds), this is handled internally within the drop-in.
 
 No action is required from you in this use-case and you will either be notified that the payment was then approved, or that it failed (e.g. due to 3ds authentication)
+
+## Sample app
+
+A sample application that demonstrates how to use this SDK can be found [here](https://github.com/RyftPay/ryft-android/tree/master/ryft-sample-app)
