@@ -54,6 +54,8 @@ internal class RyftDropInActivity : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        // Google advises the use of AutoResolveHelper.resolveTask() (see DefaultGooglePayService.kt)
+        // which forces the use of this deprecated method
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             GooglePayService.LOAD_PAYMENT_DATA_REQUEST_CODE ->
