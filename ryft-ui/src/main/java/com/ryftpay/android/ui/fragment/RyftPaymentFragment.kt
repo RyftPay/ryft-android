@@ -37,7 +37,7 @@ import com.ryftpay.android.ui.model.RyftCard
 import com.ryftpay.android.ui.model.googlepay.GooglePayResult
 import com.ryftpay.android.ui.model.googlepay.LoadPaymentDataRequest
 import com.ryftpay.android.ui.model.googlepay.MerchantInfo
-import com.ryftpay.android.ui.model.googlepay.RyftTokenizationSpecification
+import com.ryftpay.android.ui.model.googlepay.TokenizationSpecification
 import com.ryftpay.android.ui.model.googlepay.TransactionInfo
 import com.ryftpay.android.ui.service.DefaultGooglePayService
 import com.ryftpay.android.ui.service.GooglePayService
@@ -192,7 +192,7 @@ internal class RyftPaymentFragment :
             activity = requireActivity(),
             loadPaymentDataRequest = LoadPaymentDataRequest(
                 MerchantInfo.from(input.configuration.googlePayConfiguration.merchantName),
-                RyftTokenizationSpecification.from(input.publicApiKey),
+                TokenizationSpecification.ryft(input.publicApiKey),
                 TransactionInfo.from(
                     response,
                     input.configuration.googlePayConfiguration.merchantCountryCode
