@@ -4,21 +4,21 @@ import com.google.android.gms.wallet.PaymentData
 import org.amshove.kluent.shouldBeEqualTo
 import org.junit.Test
 
-class GooglePayPaymentDataTest {
+class PaymentDataResponseTest {
 
-    private val paymentDataResponse = GooglePayPaymentDataTest::class.java
+    private val paymentDataResponse = PaymentDataResponseTest::class.java
         .getResource("/assets/googlepay/payment-data-response.json")
         ?.readText()
         ?.replace(Regex("\\s+"), "") ?: ""
 
     @Test
     fun `from should return expected fields`() {
-        val googlePayPaymentData = GooglePayPaymentData.from(
+        val paymentDataResponse = PaymentDataResponse.from(
             PaymentData.fromJson(paymentDataResponse)
         )
-        val expected = GooglePayPaymentData(
+        val expected = PaymentDataResponse(
             token = "examplePaymentMethodToken"
         )
-        googlePayPaymentData shouldBeEqualTo expected
+        paymentDataResponse shouldBeEqualTo expected
     }
 }
