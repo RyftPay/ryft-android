@@ -14,8 +14,8 @@ import com.ryftpay.android.core.model.api.RyftPublicApiKey
 import com.ryftpay.android.ui.dropin.RyftDropInConfiguration
 import com.ryftpay.android.ui.dropin.RyftPaymentResult
 import com.ryftpay.android.ui.fragment.RyftPaymentFragment
-import com.ryftpay.android.ui.model.GooglePayPaymentData
-import com.ryftpay.android.ui.model.GooglePayResult
+import com.ryftpay.android.ui.model.googlepay.GooglePayPaymentData
+import com.ryftpay.android.ui.model.googlepay.GooglePayResult
 import com.ryftpay.android.ui.service.GooglePayService
 import com.ryftpay.android.ui.util.RyftPublicApiKeyParceler
 import com.ryftpay.android.ui.viewmodel.GooglePayResultViewModel

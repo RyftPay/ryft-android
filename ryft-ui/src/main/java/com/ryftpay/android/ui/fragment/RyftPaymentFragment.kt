@@ -33,8 +33,8 @@ import com.ryftpay.android.ui.dropin.RyftDropInConfiguration
 import com.ryftpay.android.ui.dropin.RyftPaymentError
 import com.ryftpay.android.ui.dropin.RyftPaymentResult
 import com.ryftpay.android.ui.listener.RyftPaymentFormListener
-import com.ryftpay.android.ui.model.GooglePayResult
 import com.ryftpay.android.ui.model.RyftCard
+import com.ryftpay.android.ui.model.googlepay.GooglePayResult
 import com.ryftpay.android.ui.service.DefaultGooglePayService
 import com.ryftpay.android.ui.service.GooglePayService
 import com.ryftpay.android.ui.service.request.googlepay.LoadPaymentDataRequest

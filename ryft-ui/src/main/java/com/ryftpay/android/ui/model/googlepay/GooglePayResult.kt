@@ -1,4 +1,4 @@
-package com.ryftpay.android.ui.model
+package com.ryftpay.android.ui.model.googlepay
 
 internal sealed class GooglePayResult {
     class Ok(val paymentData: GooglePayPaymentData) : GooglePayResult()

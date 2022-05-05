@@ -1,4 +1,4 @@
-package com.ryftpay.android.ui.model
+package com.ryftpay.android.ui.model.googlepay
 
 import com.google.android.gms.wallet.PaymentData
 import org.amshove.kluent.shouldBeEqualTo
