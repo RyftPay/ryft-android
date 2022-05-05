@@ -1,6 +1,7 @@
 package com.ryftpay.android.ui.service.request.googlepay
 
 import com.ryftpay.android.ui.TestData.sandboxPublicApiKey
+import com.ryftpay.android.ui.model.googlepay.RyftTokenizationSpecification
 import org.amshove.kluent.shouldBeEqualTo
 import org.junit.Test
 

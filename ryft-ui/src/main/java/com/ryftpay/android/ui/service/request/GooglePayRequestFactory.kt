@@ -1,9 +1,13 @@
-package com.ryftpay.android.ui.service.request.googlepay
+package com.ryftpay.android.ui.service.request
 
 import com.google.android.gms.wallet.IsReadyToPayRequest
 import com.google.android.gms.wallet.PaymentDataRequest
 import com.ryftpay.android.ui.extension.formatPriceWithoutCurrencySymbol
 import com.ryftpay.android.ui.model.RyftCardType
+import com.ryftpay.android.ui.model.googlepay.LoadPaymentDataRequest
+import com.ryftpay.android.ui.model.googlepay.MerchantInfo
+import com.ryftpay.android.ui.model.googlepay.RyftTokenizationSpecification
+import com.ryftpay.android.ui.model.googlepay.TransactionInfo
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.Currency

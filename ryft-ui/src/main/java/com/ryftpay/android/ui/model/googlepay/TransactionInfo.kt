@@ -1,4 +1,4 @@
-package com.ryftpay.android.ui.service.request.googlepay
+package com.ryftpay.android.ui.model.googlepay
 
 import com.ryftpay.android.core.model.payment.PaymentSession
 import java.util.Currency

@@ -7,9 +7,9 @@ import com.ryftpay.android.ui.model.RyftCardCvc
 import com.ryftpay.android.ui.model.RyftCardExpiryDate
 import com.ryftpay.android.ui.model.RyftCardNumber
 import com.ryftpay.android.ui.model.RyftCardType
-import com.ryftpay.android.ui.service.request.googlepay.MerchantInfo
-import com.ryftpay.android.ui.service.request.googlepay.RyftTokenizationSpecification
-import com.ryftpay.android.ui.service.request.googlepay.TransactionInfo
+import com.ryftpay.android.ui.model.googlepay.MerchantInfo
+import com.ryftpay.android.ui.model.googlepay.RyftTokenizationSpecification
+import com.ryftpay.android.ui.model.googlepay.TransactionInfo
 import java.util.Currency
 
 internal object TestData {

@@ -1,4 +1,4 @@
-package com.ryftpay.android.ui.service.request.googlepay
+package com.ryftpay.android.ui.model.googlepay
 
 internal data class MerchantInfo(
     val displayName: String

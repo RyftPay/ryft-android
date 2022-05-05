@@ -1,6 +1,7 @@
 package com.ryftpay.android.ui.service.request.googlepay
 
 import com.ryftpay.android.ui.TestData.MERCHANT_NAME
+import com.ryftpay.android.ui.model.googlepay.MerchantInfo
 import org.amshove.kluent.shouldBeEqualTo
 import org.junit.Test
 

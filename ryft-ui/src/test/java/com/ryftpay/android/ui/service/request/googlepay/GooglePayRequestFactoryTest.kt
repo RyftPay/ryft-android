@@ -3,6 +3,8 @@ package com.ryftpay.android.ui.service.request.googlepay
 import com.ryftpay.android.ui.TestData.merchantInfo
 import com.ryftpay.android.ui.TestData.ryftTokenizationSpecification
 import com.ryftpay.android.ui.TestData.transactionInfo
+import com.ryftpay.android.ui.model.googlepay.LoadPaymentDataRequest
+import com.ryftpay.android.ui.service.request.GooglePayRequestFactory
 import org.amshove.kluent.shouldBeEqualTo
 import org.junit.Test
 

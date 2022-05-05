@@ -2,6 +2,7 @@ package com.ryftpay.android.ui.service.request.googlepay
 
 import com.ryftpay.android.ui.TestData.GB_COUNTRY_CODE
 import com.ryftpay.android.ui.TestData.paymentSession
+import com.ryftpay.android.ui.model.googlepay.TransactionInfo
 import org.amshove.kluent.shouldBeEqualTo
 import org.junit.Test
 
