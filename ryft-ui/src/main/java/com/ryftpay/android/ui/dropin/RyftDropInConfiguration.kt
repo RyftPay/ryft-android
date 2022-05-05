@@ -6,5 +6,6 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class RyftDropInConfiguration(
     val clientSecret: String,
-    val subAccountId: String?
+    val subAccountId: String?,
+    val googlePayConfiguration: RyftDropInGooglePayConfiguration
 ) : Parcelable

@@ -188,15 +188,15 @@ internal class RyftPaymentFragment :
     }
 
     override fun onPaymentLoaded(response: PaymentSession) {
-        // TODO pass in these via config
-        val merchantName = "A Merchant"
-        val countryCode = "GB"
         googlePayService.loadPaymentData(
             activity = requireActivity(),
             loadPaymentDataRequest = LoadPaymentDataRequest(
-                MerchantInfo.from(merchantName),
+                MerchantInfo.from(input.configuration.googlePayConfiguration.merchantName),
                 RyftTokenizationSpecification.from(input.publicApiKey),
-                TransactionInfo.from(response, countryCode)
+                TransactionInfo.from(
+                    response,
+                    input.configuration.googlePayConfiguration.merchantCountryCode
+                )
             )
         )
     }

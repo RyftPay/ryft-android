@@ -112,7 +112,11 @@ class CheckoutFragment : Fragment() {
         ryftDropIn.show(
             RyftDropInConfiguration(
                 clientSecret = "<the client secret of the payment-session>",
-                subAccountId = null || "<the Id of the sub-account you are taking payments for>"
+                subAccountId = null || "<the Id of the sub-account you are taking payments for>",
+                googlePayConfiguration = RyftDropInGooglePayConfiguration(
+                    merchantName = "<The name of your business>",
+                    merchantCountryCode = "<The ISO 3166-1 alpha-2 country code of your business>"
+                )
             )
         )
     }
