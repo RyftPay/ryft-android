@@ -3,16 +3,26 @@ package com.ryftpay.android.ui.service
 import android.app.Activity
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.wallet.AutoResolveHelper
+import com.google.android.gms.wallet.IsReadyToPayRequest
+import com.google.android.gms.wallet.PaymentDataRequest
 import com.google.android.gms.wallet.PaymentsClient
-import com.ryftpay.android.ui.service.request.googlepay.GooglePayRequestFactory
-import com.ryftpay.android.ui.service.request.googlepay.LoadPaymentDataRequest
+import com.ryftpay.android.ui.model.googlepay.BaseApiRequest
+import com.ryftpay.android.ui.model.googlepay.LoadPaymentDataRequest
+import com.ryftpay.android.ui.model.googlepay.ReadyToPayRequest
 
 internal class DefaultGooglePayService(
     private val paymentsClient: PaymentsClient
 ) : GooglePayService {
 
+    private val baseApiV2Request = BaseApiRequest(
+        majorApiVersion = 2,
+        minorApiVersion = 0
+    )
+
     override fun isReadyToPay(): Task<Boolean> = paymentsClient.isReadyToPay(
-        GooglePayRequestFactory.isReadyToPayRequest
+        IsReadyToPayRequest.fromJson(
+            ReadyToPayRequest().toApiV2RequestJson(baseApiV2Request).toString()
+        )
     )
 
     override fun loadPaymentData(
@@ -21,16 +31,12 @@ internal class DefaultGooglePayService(
     ) {
         AutoResolveHelper.resolveTask(
             paymentsClient.loadPaymentData(
-                GooglePayRequestFactory.createPaymentDataRequest(
-                    loadPaymentDataRequest
+                PaymentDataRequest.fromJson(
+                    loadPaymentDataRequest.toApiV2RequestJson(baseApiV2Request).toString()
                 )
             ),
             activity,
-            LOAD_PAYMENT_DATA_REQUEST_CODE
+            GooglePayService.LOAD_PAYMENT_DATA_REQUEST_CODE
         )
-    }
-
-    companion object {
-        const val LOAD_PAYMENT_DATA_REQUEST_CODE = 739
     }
 }

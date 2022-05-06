@@ -32,36 +32,40 @@ internal class RyftPaymentFormFooter @JvmOverloads constructor(
             toggleButtons(enabled = false)
             listener.onCancelClicked()
         }
-        transitionToAwaitingPaymentDetails()
+        transitionToAwaitingCardDetails()
     }
 
     internal fun setState(state: State) {
         when (state) {
-            State.AwaitingPaymentDetails -> transitionToAwaitingPaymentDetails()
-            State.ReadyForPayment -> transitionToReadyForPayment()
+            State.AwaitingCardDetails -> transitionToAwaitingCardDetails()
+            State.AwaitingGooglePayDetails -> transitionToAwaitingGooglePayDetails()
+            State.ReadyForCardPayment -> transitionToReadyForCardPayment()
             State.TakingPayment -> transitionToTakingPayment()
         }
     }
 
-    private fun transitionToAwaitingPaymentDetails() {
+    private fun transitionToAwaitingCardDetails() {
         togglePayButton(enabled = false)
         toggleCancelButton(enabled = true)
         payButton.setText(context.getString(R.string.ryft_pay))
-        cancelButton.visibility = View.VISIBLE
-        state = State.AwaitingPaymentDetails
+        state = State.AwaitingCardDetails
     }
 
-    private fun transitionToReadyForPayment() {
+    private fun transitionToAwaitingGooglePayDetails() {
+        toggleButtons(enabled = false)
+        payButton.setText(context.getString(R.string.ryft_pay))
+        state = State.AwaitingGooglePayDetails
+    }
+
+    private fun transitionToReadyForCardPayment() {
         toggleButtons(enabled = true)
         payButton.setText(context.getString(R.string.ryft_pay))
-        cancelButton.visibility = View.VISIBLE
-        state = State.ReadyForPayment
+        state = State.ReadyForCardPayment
     }
 
     private fun transitionToTakingPayment() {
         toggleButtons(enabled = false)
         payButton.setText(context.getString(R.string.ryft_taking_payment))
-        cancelButton.visibility = View.GONE
         state = State.TakingPayment
     }
 
@@ -79,11 +83,13 @@ internal class RyftPaymentFormFooter @JvmOverloads constructor(
     private fun toggleCancelButton(enabled: Boolean) {
         cancelButton.isEnabled = enabled
         cancelButton.isClickable = enabled
+        cancelButton.visibility = if (enabled) View.VISIBLE else View.GONE
     }
 
     internal enum class State {
-        AwaitingPaymentDetails,
-        ReadyForPayment,
+        AwaitingCardDetails,
+        AwaitingGooglePayDetails,
+        ReadyForCardPayment,
         TakingPayment
     }
 }

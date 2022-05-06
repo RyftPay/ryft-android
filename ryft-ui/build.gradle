@@ -31,6 +31,10 @@ android {
         targetCompatibility rootProject.ext.java_version
     }
 
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+
     kotlinOptions {
         jvmTarget = rootProject.ext.kotlin_jvm_target
     }
