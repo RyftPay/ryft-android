@@ -8,7 +8,7 @@ import com.ryftpay.android.ui.model.RyftCardExpiryDate
 import com.ryftpay.android.ui.model.RyftCardNumber
 import com.ryftpay.android.ui.model.RyftCardType
 import com.ryftpay.android.ui.model.googlepay.MerchantInfo
-import com.ryftpay.android.ui.model.googlepay.RyftTokenizationSpecification
+import com.ryftpay.android.ui.model.googlepay.TokenizationSpecification
 import com.ryftpay.android.ui.model.googlepay.TransactionInfo
 import java.util.Currency
 
@@ -113,7 +113,7 @@ internal object TestData {
 
     internal val sandboxPublicApiKey = RyftPublicApiKey(SANDBOX_PUBLIC_API_KEY_VALUE)
     internal val merchantInfo = MerchantInfo(MERCHANT_NAME)
-    internal val ryftTokenizationSpecification = RyftTokenizationSpecification(sandboxPublicApiKey)
+    internal val ryftTokenizationSpecification = TokenizationSpecification.ryft(sandboxPublicApiKey)
     internal val transactionInfo = TransactionInfo(
         paymentSessionId = PAYMENT_SESSION_ID,
         paymentAmount = AMOUNT,
