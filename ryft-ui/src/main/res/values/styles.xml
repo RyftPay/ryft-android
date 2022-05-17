@@ -7,6 +7,19 @@
         <item name="android:windowSoftInputMode">adjustResize</item>
     </style>
 
+    <style name="RyftAlertDialog" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+        <item name="buttonBarNegativeButtonStyle">@style/RyftAlertDialogNegativeButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/RyftAlertDialogPositiveButtonStyle</item>
+    </style>
+
+    <style name="RyftAlertDialogNegativeButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/ryftAlertDialogButtonText</item>
+    </style>
+
+    <style name="RyftAlertDialogPositiveButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/ryftAlertDialogButtonText</item>
+    </style>
+
     <style name="RyftFullscreenDialog">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowFullscreen">false</item>

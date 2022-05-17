@@ -1,6 +1,6 @@
 package com.ryftpay.android.ui.extension
 
-import android.app.AlertDialog
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.ryftpay.ui.R
 
@@ -10,7 +10,7 @@ internal fun Fragment.showAlertWithRetry(
     retryCallback: () -> Unit,
     cancelCallback: () -> Unit
 ) {
-    AlertDialog.Builder(requireContext())
+    AlertDialog.Builder(requireContext(), R.style.RyftAlertDialog)
         .setTitle(title)
         .setMessage(message)
         .setPositiveButton(getString(R.string.ryft_retry)) { _, _ ->
