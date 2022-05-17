@@ -32,6 +32,7 @@ import com.ryftpay.android.ui.delegate.RyftPaymentDelegate
 import com.ryftpay.android.ui.dropin.RyftDropInConfiguration
 import com.ryftpay.android.ui.dropin.RyftPaymentError
 import com.ryftpay.android.ui.dropin.RyftPaymentResult
+import com.ryftpay.android.ui.extension.showAlertWithRetry
 import com.ryftpay.android.ui.listener.RyftPaymentFormListener
 import com.ryftpay.android.ui.model.RyftCard
 import com.ryftpay.android.ui.model.googlepay.GooglePayResult
@@ -181,10 +182,11 @@ internal class RyftPaymentFragment :
         error: RyftError?,
         throwable: Throwable?
     ) {
-        paymentResultViewModel.updateResult(
-            RyftPaymentResult.Failed(RyftPaymentError.from(throwable, requireContext()))
+        showAlertWithRetry(
+            message = getString(R.string.ryft_google_pay_error_message),
+            retryCallback = { onPayByGooglePay() },
+            cancelCallback = { delegate.onGooglePayFailedOrCancelled() }
         )
-        safeDismiss()
     }
 
     override fun onPaymentLoaded(response: PaymentSession) {
