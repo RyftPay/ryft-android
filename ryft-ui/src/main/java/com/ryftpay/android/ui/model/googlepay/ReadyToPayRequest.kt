@@ -4,7 +4,8 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 internal data class ReadyToPayRequest(
-    val existingPaymentMethodRequired: Boolean = true
+    val existingPaymentMethodRequired: Boolean = true,
+    val billingAddressRequired: Boolean
 ) {
     internal fun toApiV2RequestJson(
         baseApiRequest: BaseApiRequest
@@ -16,7 +17,10 @@ internal data class ReadyToPayRequest(
             PaymentMethod.ALLOWED_PAYMENT_METHODS_KEY,
             JSONArray()
                 .put(
-                    CardPaymentMethod().toApiV2RequestJson(tokenizationSpecification = null)
+                    CardPaymentMethod().toApiV2RequestJson(
+                        billingAddressRequired,
+                        tokenizationSpecification = null
+                    )
                 )
         )
     }

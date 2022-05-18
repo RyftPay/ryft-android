@@ -12,14 +12,16 @@ internal class CardPaymentMethodTest {
     @Test
     fun `toApiV2RequestJson should return expected type`() {
         val requestJson = CardPaymentMethod().toApiV2RequestJson(
+            billingAddressRequired = false,
             tokenizationSpecification = null
         )
         requestJson.get("type") shouldBeEqualTo "CARD"
     }
 
     @Test
-    fun `toApiV2RequestJson should return expected parameters`() {
+    fun `toApiV2RequestJson should return expected parameters when billing address is not required`() {
         val requestJson = CardPaymentMethod().toApiV2RequestJson(
+            billingAddressRequired = false,
             tokenizationSpecification = null
         )
         requestJson.get("parameters").toString() shouldBeEqualTo JSONObject()
@@ -38,9 +40,38 @@ internal class CardPaymentMethodTest {
             .toString()
     }
 
+    @Test
+    fun `toApiV2RequestJson should return expected parameters when billing address is required`() {
+        val requestJson = CardPaymentMethod().toApiV2RequestJson(
+            billingAddressRequired = true,
+            tokenizationSpecification = null
+        )
+        requestJson.get("parameters").toString() shouldBeEqualTo JSONObject()
+            .put(
+                "allowedAuthMethods",
+                JSONArray()
+                    .put("PAN_ONLY")
+                    .put("CRYPTOGRAM_3DS")
+            )
+            .put(
+                "allowedCardNetworks",
+                JSONArray()
+                    .put("VISA")
+                    .put("MASTERCARD")
+            )
+            .put("billingAddressRequired", true)
+            .put(
+                "billingAddressParameters",
+                JSONObject()
+                    .put("format", "FULL")
+            )
+            .toString()
+    }
+
     @Test(expected = JSONException::class)
     fun `toApiV2RequestJson should not return tokenization specification when null`() {
         val requestJson = CardPaymentMethod().toApiV2RequestJson(
+            billingAddressRequired = false,
             tokenizationSpecification = null
         )
         requestJson.get("tokenizationSpecification")
@@ -49,6 +80,7 @@ internal class CardPaymentMethodTest {
     @Test
     fun `toApiV2RequestJson should return tokenization specification when provided`() {
         val requestJson = CardPaymentMethod().toApiV2RequestJson(
+            billingAddressRequired = false,
             ryftTokenizationSpecification
         )
         val expected = ryftTokenizationSpecification.toApiV2RequestJson().toString()

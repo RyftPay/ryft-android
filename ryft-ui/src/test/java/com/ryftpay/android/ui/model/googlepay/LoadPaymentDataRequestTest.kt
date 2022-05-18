@@ -11,6 +11,7 @@ internal class LoadPaymentDataRequestTest {
 
     private val loadPaymentDataRequest = LoadPaymentDataRequest(
         merchantInfo,
+        billingAddressRequired = false,
         ryftTokenizationSpecification,
         transactionInfo
     )
@@ -31,7 +32,27 @@ internal class LoadPaymentDataRequestTest {
     fun `toApiV2RequestJson returns json with a card payment method with input tokenization specification`() {
         val requestJson = loadPaymentDataRequest.toApiV2RequestJson(baseApiV2Request)
         requestJson.get("allowedPaymentMethods").toString() shouldBeEqualTo JSONArray()
-            .put(CardPaymentMethod().toApiV2RequestJson(ryftTokenizationSpecification))
+            .put(
+                CardPaymentMethod().toApiV2RequestJson(
+                    billingAddressRequired = false,
+                    ryftTokenizationSpecification
+                )
+            )
+            .toString()
+    }
+
+    @Test
+    fun `toApiV2RequestJson returns json with a card payment method with billing address required when it is`() {
+        val requestJson = loadPaymentDataRequest.copy(
+            billingAddressRequired = true
+        ).toApiV2RequestJson(baseApiV2Request)
+        requestJson.get("allowedPaymentMethods").toString() shouldBeEqualTo JSONArray()
+            .put(
+                CardPaymentMethod().toApiV2RequestJson(
+                    billingAddressRequired = true,
+                    ryftTokenizationSpecification
+                )
+            )
             .toString()
     }
 

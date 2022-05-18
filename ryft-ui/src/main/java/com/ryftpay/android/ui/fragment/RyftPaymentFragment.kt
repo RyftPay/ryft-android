@@ -194,6 +194,7 @@ internal class RyftPaymentFragment :
             activity = requireActivity(),
             loadPaymentDataRequest = LoadPaymentDataRequest(
                 MerchantInfo.from(input.configuration.googlePayConfiguration.merchantName),
+                input.configuration.googlePayConfiguration.billingAddressRequired,
                 TokenizationSpecification.ryft(input.publicApiKey),
                 TransactionInfo.from(
                     response,
@@ -225,7 +226,10 @@ internal class RyftPaymentFragment :
                 delegate.onGooglePayPaymentProcessing()
                 ryftPaymentService.attemptPayment(
                     clientSecret = input.configuration.clientSecret,
-                    paymentMethod = PaymentMethod.googlePay(result.paymentData.token),
+                    paymentMethod = PaymentMethod.googlePay(
+                        result.paymentData.token,
+                        result.paymentData.billingAddress
+                    ),
                     subAccountId = input.configuration.subAccountId,
                     listener = this
                 )
@@ -254,7 +258,9 @@ internal class RyftPaymentFragment :
     private fun checkGooglePayBeforeInitialisingDelegate(
         root: View
     ) {
-        googlePayService.isReadyToPay().addOnCompleteListener { completedTask ->
+        googlePayService.isReadyToPay(
+            input.configuration.googlePayConfiguration.billingAddressRequired
+        ).addOnCompleteListener { completedTask ->
             run {
                 val showGooglePay = try {
                     completedTask.getResult(ApiException::class.java)

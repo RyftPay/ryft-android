@@ -5,7 +5,9 @@ import com.google.android.gms.tasks.Task
 import com.ryftpay.android.ui.model.googlepay.LoadPaymentDataRequest
 
 internal interface GooglePayService {
-    fun isReadyToPay(): Task<Boolean>
+    fun isReadyToPay(
+        billingAddressRequired: Boolean
+    ): Task<Boolean>
     fun loadPaymentData(
         activity: Activity,
         loadPaymentDataRequest: LoadPaymentDataRequest

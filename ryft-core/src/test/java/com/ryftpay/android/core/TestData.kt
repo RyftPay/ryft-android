@@ -5,6 +5,7 @@ import com.ryftpay.android.core.api.error.RyftErrorResponse
 import com.ryftpay.android.core.api.payment.PaymentSessionResponse
 import com.ryftpay.android.core.api.payment.RequiredActionResponse
 import com.ryftpay.android.core.model.api.RyftPublicApiKey
+import com.ryftpay.android.core.model.payment.Address
 import com.ryftpay.android.core.model.payment.CardDetails
 import com.ryftpay.android.core.model.payment.PaymentSessionStatus
 import com.ryftpay.android.core.model.payment.RequiredActionType
@@ -28,6 +29,17 @@ internal object TestData {
         expiryMonth = "10",
         expiryYear = "2030",
         cvc = "100"
+    )
+
+    internal val address = Address(
+        firstName = "John",
+        lastName = "Doe",
+        lineOne = "c/o Google LLC",
+        lineTwo = "1600 Amphitheatre Pkwy",
+        city = "Mountain View",
+        country = "US",
+        postalCode = "94043",
+        region = "CA"
     )
 
     internal val ryftErrorElementResponse = RyftErrorElementResponse(

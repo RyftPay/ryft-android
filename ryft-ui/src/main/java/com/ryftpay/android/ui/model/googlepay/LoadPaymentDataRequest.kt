@@ -5,6 +5,7 @@ import org.json.JSONObject
 
 internal data class LoadPaymentDataRequest(
     val merchantInfo: MerchantInfo,
+    val billingAddressRequired: Boolean,
     val tokenizationSpecification: TokenizationSpecification,
     val transactionInfo: TransactionInfo
 ) {
@@ -17,7 +18,12 @@ internal data class LoadPaymentDataRequest(
         put(
             PaymentMethod.ALLOWED_PAYMENT_METHODS_KEY,
             JSONArray()
-                .put(CardPaymentMethod().toApiV2RequestJson(tokenizationSpecification))
+                .put(
+                    CardPaymentMethod().toApiV2RequestJson(
+                        billingAddressRequired,
+                        tokenizationSpecification
+                    )
+                )
         )
         put(TransactionInfo.KEY, transactionInfo.toApiV2RequestJson())
     }

@@ -122,7 +122,8 @@ class CheckoutFragment : Fragment() {
                 subAccountId = null || "<the Id of the sub-account you are taking payments for>",
                 googlePayConfiguration = RyftDropInGooglePayConfiguration(
                     merchantName = "<The name of your business>",
-                    merchantCountryCode = "<The ISO 3166-1 alpha-2 country code of your business>"
+                    merchantCountryCode = "<The ISO 3166-1 alpha-2 country code of your business>",
+                    billingAddressRequired = true //Optional flag, defaults to false
                 )
             )
         )

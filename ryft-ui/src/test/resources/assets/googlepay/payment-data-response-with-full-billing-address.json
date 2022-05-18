@@ -1,0 +1,27 @@
+{
+  "apiVersion": 2,
+  "apiVersionMinor": 0,
+  "paymentMethodData": {
+    "type": "CARD",
+    "description": "Visa •••• 1234",
+    "info": {
+      "cardNetwork": "VISA",
+      "cardDetails": "1234",
+      "billingAddress": {
+        "name": "John Doe",
+        "address1": "c/o Google LLC",
+        "address2": "1600 Amphitheatre Pkwy",
+        "address3": "Building 40",
+        "locality": "Mountain View",
+        "administrativeArea": "CA",
+        "countryCode": "US",
+        "postalCode": "94043",
+        "sortingCode": ""
+      }
+    },
+    "tokenizationData": {
+      "type": "PAYMENT_GATEWAY",
+      "token": "examplePaymentMethodToken"
+    }
+  }
+}
