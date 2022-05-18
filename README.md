@@ -123,7 +123,7 @@ class CheckoutFragment : Fragment() {
                 googlePayConfiguration = RyftDropInGooglePayConfiguration(
                     merchantName = "<The name of your business>",
                     merchantCountryCode = "<The ISO 3166-1 alpha-2 country code of your business>",
-                    billingAddressRequired = true //Optional flag, defaults to false
+                    billingAddressRequired = false //Optional flag, defaults to true
                 )
             )
         )
