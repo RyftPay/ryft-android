@@ -6,6 +6,5 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class RyftDropInGooglePayConfiguration(
     val merchantName: String,
-    val merchantCountryCode: String,
-    val billingAddressRequired: Boolean = true
+    val merchantCountryCode: String
 ) : Parcelable
