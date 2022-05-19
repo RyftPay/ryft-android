@@ -194,6 +194,7 @@ internal class RyftPaymentFragment :
             activity = requireActivity(),
             loadPaymentDataRequest = LoadPaymentDataRequest(
                 MerchantInfo.from(input.configuration.googlePayConfiguration.merchantName),
+                GOOGLE_PAY_BILLING_ADDRESS_REQUIRED,
                 TokenizationSpecification.ryft(input.publicApiKey),
                 TransactionInfo.from(
                     response,
@@ -225,7 +226,10 @@ internal class RyftPaymentFragment :
                 delegate.onGooglePayPaymentProcessing()
                 ryftPaymentService.attemptPayment(
                     clientSecret = input.configuration.clientSecret,
-                    paymentMethod = PaymentMethod.googlePay(result.paymentData.token),
+                    paymentMethod = PaymentMethod.googlePay(
+                        result.paymentData.token,
+                        result.paymentData.billingAddress
+                    ),
                     subAccountId = input.configuration.subAccountId,
                     listener = this
                 )
@@ -254,7 +258,9 @@ internal class RyftPaymentFragment :
     private fun checkGooglePayBeforeInitialisingDelegate(
         root: View
     ) {
-        googlePayService.isReadyToPay().addOnCompleteListener { completedTask ->
+        googlePayService.isReadyToPay(
+            GOOGLE_PAY_BILLING_ADDRESS_REQUIRED
+        ).addOnCompleteListener { completedTask ->
             run {
                 val showGooglePay = try {
                     completedTask.getResult(ApiException::class.java)
@@ -297,5 +303,6 @@ internal class RyftPaymentFragment :
     companion object {
         @VisibleForTesting(otherwise = PRIVATE)
         internal const val ARGUMENTS_BUNDLE_KEY = "Arguments"
+        private const val GOOGLE_PAY_BILLING_ADDRESS_REQUIRED = true
     }
 }

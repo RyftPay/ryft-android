@@ -19,9 +19,13 @@ internal class DefaultGooglePayService(
         minorApiVersion = 0
     )
 
-    override fun isReadyToPay(): Task<Boolean> = paymentsClient.isReadyToPay(
+    override fun isReadyToPay(
+        billingAddressRequired: Boolean
+    ): Task<Boolean> = paymentsClient.isReadyToPay(
         IsReadyToPayRequest.fromJson(
-            ReadyToPayRequest().toApiV2RequestJson(baseApiV2Request).toString()
+            ReadyToPayRequest(
+                billingAddressRequired = billingAddressRequired
+            ).toApiV2RequestJson(baseApiV2Request).toString()
         )
     )
 

@@ -5,6 +5,7 @@ import org.json.JSONObject
 internal abstract class PaymentMethod {
 
     internal abstract fun toApiV2RequestJson(
+        billingAddressRequired: Boolean,
         tokenizationSpecification: TokenizationSpecification?
     ): JSONObject
 

@@ -8,26 +8,29 @@ import java.lang.IllegalArgumentException
 data class AttemptPaymentRequest(
     @JsonProperty("clientSecret") val clientSecret: String,
     @JsonProperty("cardDetails") val cardDetails: CardDetailsRequest?,
-    @JsonProperty("walletDetails") val walletDetails: WalletDetailsRequest?
+    @JsonProperty("walletDetails") val walletDetails: WalletDetailsRequest?,
+    @JsonProperty("billingAddress") val billingAddress: BillingAddressRequest?
 ) {
     companion object {
         internal fun from(clientSecret: String, paymentMethod: PaymentMethod): AttemptPaymentRequest =
             when (paymentMethod.type) {
                 PaymentMethodType.Card -> AttemptPaymentRequest(
-                    clientSecret = clientSecret,
-                    cardDetails = CardDetailsRequest.from(
+                    clientSecret,
+                    CardDetailsRequest.from(
                         paymentMethod.cardDetails
                             ?: throw IllegalArgumentException("Invalid payment method - card details is null")
                     ),
-                    walletDetails = null
+                    walletDetails = null,
+                    BillingAddressRequest.from(paymentMethod.billingAddress)
                 )
                 PaymentMethodType.GooglePay -> AttemptPaymentRequest(
-                    clientSecret = clientSecret,
+                    clientSecret,
                     cardDetails = null,
-                    walletDetails = WalletDetailsRequest.from(
+                    WalletDetailsRequest.from(
                         paymentMethod.googlePayToken
                             ?: throw IllegalArgumentException("Invalid payment method - google pay token is null")
-                    )
+                    ),
+                    BillingAddressRequest.from(paymentMethod.billingAddress)
                 )
             }
     }
