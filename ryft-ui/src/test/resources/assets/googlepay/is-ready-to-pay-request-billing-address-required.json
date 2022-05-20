@@ -1,0 +1,18 @@
+{
+  "apiVersionMinor": 0,
+  "apiVersion": 2,
+  "allowedPaymentMethods": [
+    {
+      "type": "CARD",
+      "parameters": {
+        "allowedAuthMethods": ["PAN_ONLY", "CRYPTOGRAM_3DS"],
+        "billingAddressRequired": true,
+        "billingAddressParameters": {
+          "format": "FULL"
+        },
+        "allowedCardNetworks": ["VISA", "MASTERCARD"]
+      }
+    }
+  ],
+  "existingPaymentMethodRequired": true
+}

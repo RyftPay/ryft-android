@@ -8,7 +8,14 @@ Ryft for Android allows you to accept in-app payments securely and safely using 
 
 ## Requirements
 
-- Android minimum SDK version 21
+- Android `minSdkVersion` 21 or above
+- Android `compileSdkVersion` 28 or above (required for [Google Pay™](https://developer.ryftpay.com/google-pay))
+
+### Google Pay
+
+In order to accept Google Pay payments in production, you must complete all the steps in the Android Google Pay for Payments documentation for [deploying your application](https://developers.google.com/pay/api/android/guides/test-and-deploy/deploy-your-application)
+
+Note: the Google Pay environment is determined by your public API key.
 
 ## Installation
 
@@ -112,7 +119,11 @@ class CheckoutFragment : Fragment() {
         ryftDropIn.show(
             RyftDropInConfiguration(
                 clientSecret = "<the client secret of the payment-session>",
-                subAccountId = null || "<the Id of the sub-account you are taking payments for>"
+                subAccountId = null || "<the Id of the sub-account you are taking payments for>",
+                googlePayConfiguration = RyftDropInGooglePayConfiguration(
+                    merchantName = "<The name of your business>",
+                    merchantCountryCode = "<The ISO 3166-1 alpha-2 country code of your business>"
+                )
             )
         )
     }
@@ -120,6 +131,14 @@ class CheckoutFragment : Fragment() {
     // ...
 }
 ```
+
+#### Google Pay
+
+Google Pay will be available for users providing the following is true:
+- You have provided a RyftDropInGooglePayConfiguration object when displaying the drop-in
+- The user has Google Pay setup on their device
+
+Note: if you don't provide a RyftDropInGooglePayConfiguration object then Google Pay is disabled
 
 ### Implementing the RyftDropInResultListener
 
@@ -189,6 +208,10 @@ class CheckoutFragment : Fragment(), RyftDropInResultListener {
 Note that if a payment requires further action for the payment to be approved (e.g. 3ds), this is handled internally within the drop-in.
 
 No action is required from you in this use-case and you will either be notified that the payment was then approved, or that it failed (e.g. due to 3ds authentication)
+
+### Further documentation
+
+For more information, please find our docs [here](https://developer.ryftpay.com/docs/build/android-mobile)
 
 ## Sample app
 

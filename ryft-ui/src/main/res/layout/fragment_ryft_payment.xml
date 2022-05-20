@@ -4,15 +4,17 @@
     android:id="@+id/fragment_ryft_payment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/ryftBackground">
 
-    <include layout="@layout/partial_ryft_payment_form_header"/>
-
-    <View style="@style/RyftDivider"/>
+    <include
+        layout="@layout/partial_ryft_payment_form_card_only_header"
+        android:visibility="visible"/>
+    <include
+        layout="@layout/partial_ryft_payment_form_googlepay_header"
+        android:visibility="gone"/>
 
     <include layout="@layout/partial_ryft_payment_form_body"/>
-
-    <View style="@style/RyftDivider"/>
 
     <include layout="@layout/partial_ryft_payment_form_footer"/>
 

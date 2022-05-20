@@ -1,0 +1,27 @@
+{
+  "apiVersion": 2,
+  "apiVersionMinor": 0,
+  "paymentMethodData": {
+    "type": "CARD",
+    "description": "Visa •••• 1234",
+    "info": {
+      "cardNetwork": "VISA",
+      "cardDetails": "1234",
+      "billingAddress": {
+        "name": "",
+        "address1": "",
+        "address2": "",
+        "address3": "",
+        "locality": "",
+        "administrativeArea": "",
+        "countryCode": "GB",
+        "postalCode": "SW1A 2AA",
+        "sortingCode": ""
+      }
+    },
+    "tokenizationData": {
+      "type": "PAYMENT_GATEWAY",
+      "token": "examplePaymentMethodToken"
+    }
+  }
+}

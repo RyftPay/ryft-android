@@ -6,11 +6,14 @@
 
     <string name="ryft_pay">Pay now</string>
     <string name="ryft_taking_payment">Taking payment…</string>
+    <string name="ryft_or">or</string>
+    <string name="ryft_retry">Retry</string>
     <string name="ryft_cancel">Cancel</string>
     <string name="ryft_card_number">Card number</string>
     <string name="ryft_card_expiry_date">MM/YY</string>
     <string name="ryft_card_cvc">CVC</string>
-    <string name="ryft_payment_form_header_title">Credit / Debit Card</string>
+    <string name="ryft_payment_form_card_only_header_title">Credit / Debit Card</string>
+    <string name="ryft_google_pay_error_message">Error loading Google Pay</string>
 
     <string name="ryft_bad_track_data">Your CVC or card expiration is invalid</string>
     <string name="ryft_declined_do_not_honour">Your bank has declined this card</string>

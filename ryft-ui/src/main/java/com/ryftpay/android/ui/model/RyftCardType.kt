@@ -8,7 +8,9 @@ internal enum class RyftCardType(
     val cvcLength: Int,
     val cardNumberFormatGaps: IntArray,
     val binRanges: List<RyftCardBinRange>,
-    val iconDrawableId: Int
+    val iconDrawableId: Int,
+    val availableForGooglePay: Boolean,
+    val googlePayName: String?
 ) {
     Visa(
         displayName = "Visa",
@@ -16,7 +18,9 @@ internal enum class RyftCardType(
         cvcLength = 3,
         cardNumberFormatGaps = intArrayOf(4, 8, 12),
         binRanges = listOf(RyftCardBinRange(min = 4, max = 4)),
-        iconDrawableId = R.drawable.ic_ryft_visa
+        iconDrawableId = R.drawable.ic_ryft_visa,
+        availableForGooglePay = true,
+        googlePayName = "VISA"
     ),
     Mastercard(
         displayName = "Mastercard",
@@ -27,7 +31,9 @@ internal enum class RyftCardType(
             RyftCardBinRange(min = 2221, max = 2720),
             RyftCardBinRange(min = 51, max = 55)
         ),
-        iconDrawableId = R.drawable.ic_ryft_mastercard
+        iconDrawableId = R.drawable.ic_ryft_mastercard,
+        availableForGooglePay = true,
+        googlePayName = "MASTERCARD"
     ),
     Amex(
         displayName = "American Express",
@@ -38,7 +44,9 @@ internal enum class RyftCardType(
             RyftCardBinRange(min = 34, max = 34),
             RyftCardBinRange(min = 37, max = 37)
         ),
-        iconDrawableId = R.drawable.ic_ryft_amex
+        iconDrawableId = R.drawable.ic_ryft_amex,
+        availableForGooglePay = false,
+        googlePayName = "AMEX"
     ),
     Unknown(
         displayName = "Unknown",
@@ -46,7 +54,9 @@ internal enum class RyftCardType(
         cvcLength = 4,
         cardNumberFormatGaps = intArrayOf(),
         binRanges = listOf(),
-        iconDrawableId = R.drawable.ic_ryft_unknown_card
+        iconDrawableId = R.drawable.ic_ryft_unknown_card,
+        availableForGooglePay = false,
+        googlePayName = null
     );
 
     internal val maxFormattedCardLength = cardLengths.maxOf { it } + cardNumberFormatGaps.count()
@@ -60,5 +70,10 @@ internal enum class RyftCardType(
                 matchingCardTypes.first()
             } else Unknown
         }
+
+        internal fun getGooglePaySupportedTypeNames(): List<String> =
+            values()
+                .filter { it.availableForGooglePay }
+                .mapNotNull { it.googlePayName }
     }
 }

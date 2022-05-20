@@ -49,7 +49,7 @@ internal class RyftPaymentFragmentTest {
         launchFragment()
 
         onView(
-            withId(R.id.text_ryft_payment_form_header)
+            withId(R.id.text_ryft_payment_form_card_only_header)
         ).check(
             matches(
                 allOf(isDisplayed(), withText("Credit / Debit Card"))
@@ -155,7 +155,7 @@ internal class RyftPaymentFragmentTest {
         assertNoLayoutBreakages()
 
         onView(
-            withId(R.id.text_ryft_payment_form_header)
+            withId(R.id.text_ryft_payment_form_card_only_header)
         ).check(
             isCompletelyAbove(
                 withId(R.id.partial_ryft_payment_form_body)

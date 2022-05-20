@@ -1,0 +1,35 @@
+{
+  "apiVersionMinor": 0,
+  "apiVersion": 2,
+  "merchantInfo": {
+    "merchantName": "Merchant"
+  },
+  "allowedPaymentMethods": [
+    {
+      "type": "CARD",
+      "parameters": {
+        "allowedAuthMethods": ["PAN_ONLY", "CRYPTOGRAM_3DS"],
+        "billingAddressRequired": true,
+        "billingAddressParameters": {
+          "format": "FULL"
+        },
+        "allowedCardNetworks": ["VISA", "MASTERCARD"]
+      },
+      "tokenizationSpecification": {
+        "type": "PAYMENT_GATEWAY",
+        "parameters": {
+          "gatewayMerchantId": "pk_sandbox_123",
+          "gateway": "ryft"
+        }
+      }
+    }
+  ],
+  "transactionInfo": {
+    "totalPrice": "4.02",
+    "countryCode": "GB",
+    "checkoutOption": "COMPLETE_IMMEDIATE_PURCHASE",
+    "totalPriceStatus": "FINAL",
+    "currencyCode": "GBP",
+    "transactionId": "ps_123"
+  }
+}

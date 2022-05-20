@@ -15,5 +15,8 @@
     <color name="ryftInputFieldText">#EEEEEE</color>
     <color name="ryftTitleText">#FFFFFF</color>
     <color name="ryftDivider">#4E5156</color>
+    <color name="ryftDividerText">#949494</color>
+    <color name="ryftBackground">#303030</color>
+    <color name="ryftAlertDialogButtonText">#2581E3</color>
 
 </resources>

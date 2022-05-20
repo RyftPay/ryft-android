@@ -1,11 +1,23 @@
 package com.ryftpay.android.ui
 
+import com.ryftpay.android.core.model.api.RyftPublicApiKey
+import com.ryftpay.android.core.model.payment.PaymentSession
+import com.ryftpay.android.core.model.payment.PaymentSessionStatus
 import com.ryftpay.android.ui.model.RyftCardCvc
 import com.ryftpay.android.ui.model.RyftCardExpiryDate
 import com.ryftpay.android.ui.model.RyftCardNumber
 import com.ryftpay.android.ui.model.RyftCardType
+import com.ryftpay.android.ui.model.googlepay.MerchantInfo
+import com.ryftpay.android.ui.model.googlepay.TokenizationSpecification
+import com.ryftpay.android.ui.model.googlepay.TransactionInfo
+import java.util.Currency
 
 internal object TestData {
+
+    private const val PAYMENT_SESSION_ID = "ps_123"
+    private const val SANDBOX_PUBLIC_API_KEY_VALUE = "pk_sandbox_123"
+    private const val GBP_CURRENCY_CODE = "GBP"
+    private const val AMOUNT = 402
 
     private const val VALID_RAW_EXPIRY_DATE = "12/30"
     private const val INVALID_RAW_EXPIRY_DATE = "01/20"
@@ -16,6 +28,10 @@ internal object TestData {
     private const val INVALID_MASTERCARD_RAW_CVC = "4321"
     private const val VALID_AMEX_RAW_CVC = "5432"
     private const val INVALID_AMEX_RAW_CVC = "54321"
+
+    internal const val CLIENT_SECRET = "ps_123_secret_456"
+    internal const val MERCHANT_NAME = "Merchant"
+    internal const val GB_COUNTRY_CODE = "GB"
 
     internal val validVisaRawCardNumbers = arrayOf(
         "4007 0000 0002 7",
@@ -95,4 +111,27 @@ internal object TestData {
     internal val invalidMastercardCvc = RyftCardCvc.from(INVALID_MASTERCARD_RAW_CVC, RyftCardType.Mastercard)
     internal val validAmexCvc = RyftCardCvc.from(VALID_AMEX_RAW_CVC, RyftCardType.Amex)
     internal val invalidAmexCvc = RyftCardCvc.from(INVALID_AMEX_RAW_CVC, RyftCardType.Amex)
+
+    internal val sandboxPublicApiKey = RyftPublicApiKey(SANDBOX_PUBLIC_API_KEY_VALUE)
+    internal val merchantInfo = MerchantInfo(MERCHANT_NAME)
+    internal val ryftTokenizationSpecification = TokenizationSpecification.ryft(sandboxPublicApiKey)
+    internal val transactionInfo = TransactionInfo(
+        paymentSessionId = PAYMENT_SESSION_ID,
+        paymentAmount = AMOUNT,
+        currency = Currency.getInstance(GBP_CURRENCY_CODE),
+        countryCode = GB_COUNTRY_CODE,
+        paymentAmountStatus = TransactionInfo.PaymentAmountStatus.Final,
+        checkoutOption = TransactionInfo.CheckoutOption.CompleteImmediatePurchase
+    )
+    internal val paymentSession = PaymentSession(
+        id = PAYMENT_SESSION_ID,
+        amount = AMOUNT,
+        currency = Currency.getInstance(GBP_CURRENCY_CODE),
+        returnUrl = "https://my-url.com",
+        status = PaymentSessionStatus.PendingPayment,
+        lastError = null,
+        requiredAction = null,
+        createdTimestamp = 1642098636,
+        lastUpdatedTimestamp = 1642138419
+    )
 }
