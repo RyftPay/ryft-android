@@ -132,6 +132,14 @@ class CheckoutFragment : Fragment() {
 }
 ```
 
+#### Google Pay
+
+Google Pay will be available for users providing the following is true:
+- You have provided a RyftDropInGooglePayConfiguration object when displaying the drop-in
+- The user has Google Pay setup on their device
+
+Note: if you don't provide a RyftDropInGooglePayConfiguration object then Google Pay is disabled
+
 ### Implementing the RyftDropInResultListener
 
 Once the customer has submitted their payment, the drop-in will dismiss.

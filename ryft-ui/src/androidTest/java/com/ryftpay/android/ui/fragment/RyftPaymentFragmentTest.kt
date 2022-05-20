@@ -35,7 +35,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.ryftpay.android.core.model.api.RyftPublicApiKey
 import com.ryftpay.android.ui.component.RyftButton
 import com.ryftpay.android.ui.dropin.RyftDropInConfiguration
-import com.ryftpay.android.ui.dropin.RyftDropInGooglePayConfiguration
 import com.ryftpay.ui.R
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.not
@@ -617,11 +616,7 @@ internal class RyftPaymentFragmentTest {
     private fun createFragmentArgs(): Bundle {
         val configuration = RyftDropInConfiguration(
             clientSecret = "secret_123",
-            subAccountId = null,
-            googlePayConfiguration = RyftDropInGooglePayConfiguration(
-                merchantName = "Ryft",
-                merchantCountryCode = "GB"
-            )
+            subAccountId = null
         )
         val publicApiKey = RyftPublicApiKey("pk_sandbox_123")
         return bundleOf(
