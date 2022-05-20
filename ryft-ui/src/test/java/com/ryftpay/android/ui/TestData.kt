@@ -29,6 +29,7 @@ internal object TestData {
     private const val VALID_AMEX_RAW_CVC = "5432"
     private const val INVALID_AMEX_RAW_CVC = "54321"
 
+    internal const val CLIENT_SECRET = "ps_123_secret_456"
     internal const val MERCHANT_NAME = "Merchant"
     internal const val GB_COUNTRY_CODE = "GB"
 
