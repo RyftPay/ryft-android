@@ -1,0 +1,17 @@
+{
+  "apiVersion": 2,
+  "apiVersionMinor": 0,
+  "paymentMethodData": {
+    "type": "CARD",
+    "description": "Visa •••• 1234",
+    "info": {
+      "cardNetwork": "VISA",
+      "cardDetails": "1234"
+    },
+    "tokenizationData": {
+      "type": "PAYMENT_GATEWAY",
+      "token": "examplePaymentMethodToken"
+    }
+  },
+  "email": "test@example.com"
+}

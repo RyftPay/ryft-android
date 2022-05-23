@@ -6,6 +6,7 @@ import com.ryftpay.android.core.api.payment.AttemptPaymentRequest
 import com.ryftpay.android.core.api.payment.PaymentSessionResponse
 import com.ryftpay.android.core.client.RyftApiClient
 import com.ryftpay.android.core.model.error.RyftError
+import com.ryftpay.android.core.model.payment.CustomerDetails
 import com.ryftpay.android.core.model.payment.PaymentMethod
 import com.ryftpay.android.core.model.payment.PaymentSession
 import com.ryftpay.android.core.model.payment.PaymentSessionStatus
@@ -24,11 +25,16 @@ class DefaultRyftPaymentService(
     override fun attemptPayment(
         clientSecret: String,
         paymentMethod: PaymentMethod,
+        customerDetails: CustomerDetails?,
         subAccountId: String?,
         listener: RyftPaymentResultListener
     ) {
         listener.onAttemptingPayment()
-        val attemptPaymentRequest = AttemptPaymentRequest.from(clientSecret, paymentMethod)
+        val attemptPaymentRequest = AttemptPaymentRequest.from(
+            clientSecret,
+            paymentMethod,
+            customerDetails
+        )
         client.attemptPayment(
             subAccountId,
             attemptPaymentRequest

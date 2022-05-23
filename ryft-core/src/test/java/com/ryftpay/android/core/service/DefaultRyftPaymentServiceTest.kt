@@ -6,6 +6,7 @@ import com.ryftpay.android.core.TestData.LAST_PAYMENT_ERROR
 import com.ryftpay.android.core.TestData.PAYMENT_SESSION_ID
 import com.ryftpay.android.core.TestData.SUB_ACCOUNT_ID
 import com.ryftpay.android.core.TestData.cardDetails
+import com.ryftpay.android.core.TestData.customerDetails
 import com.ryftpay.android.core.TestData.paymentSessionResponse
 import com.ryftpay.android.core.TestData.requiredActionResponse
 import com.ryftpay.android.core.TestData.ryftErrorResponse
@@ -45,6 +46,7 @@ internal class DefaultRyftPaymentServiceTest {
         paymentService.attemptPayment(
             CLIENT_SECRET,
             paymentMethod,
+            customerDetails = null,
             subAccountId = null,
             listener = paymentResultListener
         )
@@ -55,17 +57,19 @@ internal class DefaultRyftPaymentServiceTest {
     }
 
     @Test
-    fun `attemptPayment calls client without sub account id when sub account id is null`() {
+    fun `attemptPayment calls client without sub account id and customer details when they are null`() {
         paymentService.attemptPayment(
             CLIENT_SECRET,
             paymentMethod,
+            customerDetails = null,
             subAccountId = null,
             listener = paymentResultListener
         )
 
         val expected = AttemptPaymentRequest.from(
             CLIENT_SECRET,
-            paymentMethod
+            paymentMethod,
+            customerDetails = null
         )
 
         verify {
@@ -83,18 +87,46 @@ internal class DefaultRyftPaymentServiceTest {
         paymentService.attemptPayment(
             CLIENT_SECRET,
             paymentMethod,
+            customerDetails = null,
             SUB_ACCOUNT_ID,
             listener = paymentResultListener
         )
 
         val expected = AttemptPaymentRequest.from(
             CLIENT_SECRET,
-            paymentMethod
+            paymentMethod,
+            customerDetails = null
         )
 
         verify {
             client.attemptPayment(
                 SUB_ACCOUNT_ID,
+                body = match {
+                    it == expected
+                }
+            )
+        }
+    }
+
+    @Test
+    fun `attemptPayment calls client with customer details when customer details is present`() {
+        paymentService.attemptPayment(
+            CLIENT_SECRET,
+            paymentMethod,
+            customerDetails,
+            subAccountId = null,
+            listener = paymentResultListener
+        )
+
+        val expected = AttemptPaymentRequest.from(
+            CLIENT_SECRET,
+            paymentMethod,
+            customerDetails
+        )
+
+        verify {
+            client.attemptPayment(
+                subAccountId = null,
                 body = match {
                     it == expected
                 }
@@ -110,6 +142,7 @@ internal class DefaultRyftPaymentServiceTest {
         paymentService.attemptPayment(
             CLIENT_SECRET,
             paymentMethod,
+            customerDetails = null,
             subAccountId = null,
             listener = paymentResultListener
         )
@@ -127,6 +160,7 @@ internal class DefaultRyftPaymentServiceTest {
         paymentService.attemptPayment(
             CLIENT_SECRET,
             paymentMethod,
+            customerDetails = null,
             subAccountId = null,
             listener = paymentResultListener
         )
@@ -147,6 +181,7 @@ internal class DefaultRyftPaymentServiceTest {
         paymentService.attemptPayment(
             CLIENT_SECRET,
             paymentMethod,
+            customerDetails = null,
             subAccountId = null,
             listener = paymentResultListener
         )
@@ -167,6 +202,7 @@ internal class DefaultRyftPaymentServiceTest {
         paymentService.attemptPayment(
             CLIENT_SECRET,
             paymentMethod,
+            customerDetails = null,
             subAccountId = null,
             listener = paymentResultListener
         )
@@ -189,6 +225,7 @@ internal class DefaultRyftPaymentServiceTest {
         paymentService.attemptPayment(
             CLIENT_SECRET,
             paymentMethod,
+            customerDetails = null,
             subAccountId = null,
             listener = paymentResultListener
         )
@@ -215,6 +252,7 @@ internal class DefaultRyftPaymentServiceTest {
         paymentService.attemptPayment(
             CLIENT_SECRET,
             paymentMethod,
+            customerDetails = null,
             subAccountId = null,
             listener = paymentResultListener
         )
@@ -241,6 +279,7 @@ internal class DefaultRyftPaymentServiceTest {
         paymentService.attemptPayment(
             CLIENT_SECRET,
             paymentMethod,
+            customerDetails = null,
             subAccountId = null,
             listener = paymentResultListener
         )

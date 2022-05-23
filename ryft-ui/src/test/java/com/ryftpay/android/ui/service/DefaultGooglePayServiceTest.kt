@@ -31,6 +31,11 @@ internal class DefaultGooglePayServiceTest {
         ?.readText()
         ?.replace(Regex("\\s+"), "")
 
+    private val paymentDataRequestJsonWithEmailRequired = DefaultGooglePayServiceTest::class.java
+        .getResource("/assets/googlepay/payment-data-request-email-required.json")
+        ?.readText()
+        ?.replace(Regex("\\s+"), "")
+
     private val client = mockk<PaymentsClient>(relaxed = true)
     private val service: GooglePayService = DefaultGooglePayService(client)
 
@@ -61,14 +66,15 @@ internal class DefaultGooglePayServiceTest {
     }
 
     @Test
-    fun `loadPaymentData uses expected request when billing address is not required`() {
+    fun `loadPaymentData uses expected request when billing address and email are not required`() {
         service.loadPaymentData(
             mockk(relaxed = true),
             LoadPaymentDataRequest(
                 merchantInfo,
                 billingAddressRequired = false,
                 ryftTokenizationSpecification,
-                transactionInfo
+                transactionInfo,
+                emailRequired = false
             )
         )
 
@@ -89,7 +95,8 @@ internal class DefaultGooglePayServiceTest {
                 merchantInfo,
                 billingAddressRequired = true,
                 ryftTokenizationSpecification,
-                transactionInfo
+                transactionInfo,
+                emailRequired = false
             )
         )
 
@@ -97,6 +104,28 @@ internal class DefaultGooglePayServiceTest {
             client.loadPaymentData(
                 match {
                     it.toJson() == paymentDataRequestJsonWithBillingAddressRequired
+                }
+            )
+        }
+    }
+
+    @Test
+    fun `loadPaymentData uses expected request when email is required`() {
+        service.loadPaymentData(
+            mockk(relaxed = true),
+            LoadPaymentDataRequest(
+                merchantInfo,
+                billingAddressRequired = false,
+                ryftTokenizationSpecification,
+                transactionInfo,
+                emailRequired = true
+            )
+        )
+
+        verify {
+            client.loadPaymentData(
+                match {
+                    it.toJson() == paymentDataRequestJsonWithEmailRequired
                 }
             )
         }

@@ -1,5 +1,6 @@
 package com.ryftpay.android.core.service
 
+import com.ryftpay.android.core.model.payment.CustomerDetails
 import com.ryftpay.android.core.model.payment.PaymentMethod
 import com.ryftpay.android.core.service.listener.RyftLoadPaymentListener
 import com.ryftpay.android.core.service.listener.RyftPaymentResultListener
@@ -8,6 +9,7 @@ interface RyftPaymentService {
     fun attemptPayment(
         clientSecret: String,
         paymentMethod: PaymentMethod,
+        customerDetails: CustomerDetails?,
         subAccountId: String?,
         listener: RyftPaymentResultListener
     )

@@ -7,6 +7,7 @@ import com.ryftpay.android.core.api.payment.RequiredActionResponse
 import com.ryftpay.android.core.model.api.RyftPublicApiKey
 import com.ryftpay.android.core.model.payment.Address
 import com.ryftpay.android.core.model.payment.CardDetails
+import com.ryftpay.android.core.model.payment.CustomerDetails
 import com.ryftpay.android.core.model.payment.PaymentSessionStatus
 import com.ryftpay.android.core.model.payment.RequiredActionType
 import java.util.UUID
@@ -20,6 +21,7 @@ internal object TestData {
     internal const val SUB_ACCOUNT_ID = "ac_123"
     internal const val LAST_PAYMENT_ERROR = "invalid_card_number"
     internal const val GOOGLE_PAY_TOKEN = "google_pay_token_123"
+    internal const val CUSTOMER_EMAIL = "test@example.com"
 
     internal val prodPublicApiKey = RyftPublicApiKey(PROD_PUBLIC_API_KEY_VALUE)
     internal val sandboxPublicApiKey = RyftPublicApiKey(SANDBOX_PUBLIC_API_KEY_VALUE)
@@ -40,6 +42,10 @@ internal object TestData {
         country = "US",
         postalCode = "94043",
         region = "CA"
+    )
+
+    internal val customerDetails = CustomerDetails(
+        email = CUSTOMER_EMAIL
     )
 
     internal val ryftErrorElementResponse = RyftErrorElementResponse(
@@ -64,6 +70,7 @@ internal object TestData {
         currency = "GBP",
         returnUrl = "https://my-url.com",
         status = PaymentSessionStatus.PendingPayment.toString(),
+        customerEmail = CUSTOMER_EMAIL,
         lastError = "invalid_card_number",
         requiredAction = requiredActionResponse,
         createdTimestamp = 1642098636,

@@ -7,11 +7,13 @@ import org.json.JSONObject
 
 internal data class PaymentDataResponse(
     val token: String,
+    val email: String?,
     val billingAddress: Address?
 ) {
     companion object {
         internal fun from(paymentData: PaymentData): PaymentDataResponse {
             val json = JSONObject(paymentData.toJson())
+            val email = json.optString("email").ifEmpty { null }
             val paymentMethodJson = json.getJSONObject("paymentMethodData")
             val cardInfoJson = paymentMethodJson.getJSONObject("info")
             val billingAddressJson = cardInfoJson.optJSONObject("billingAddress")
@@ -19,7 +21,11 @@ internal data class PaymentDataResponse(
                 .getJSONObject("tokenizationData")
                 .get("token")
                 .toString()
-            return PaymentDataResponse(token, addressFrom(billingAddressJson))
+            return PaymentDataResponse(
+                token,
+                email,
+                addressFrom(billingAddressJson)
+            )
         }
 
         private fun addressFrom(addressJson: JSONObject?): Address? {
@@ -32,9 +38,9 @@ internal data class PaymentDataResponse(
             return Address(
                 firstName = firstAndLastNames.first,
                 lastName = firstAndLastNames.second,
-                lineOne = addressJson.getString("address1").ifEmpty { null },
+                lineOne = addressJson.optString("address1").ifEmpty { null },
                 lineTwo = addressJson.optString("address2").ifEmpty { null },
-                city = addressJson.getString("locality").ifEmpty { null },
+                city = addressJson.optString("locality").ifEmpty { null },
                 country = addressJson.getString("countryCode"),
                 postalCode = addressJson.getString("postalCode"),
                 region = addressJson.optString("administrativeArea").ifEmpty { null }

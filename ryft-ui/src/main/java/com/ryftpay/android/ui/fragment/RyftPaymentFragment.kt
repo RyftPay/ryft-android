@@ -19,6 +19,7 @@ import com.ryftpay.android.core.client.RyftApiClientFactory
 import com.ryftpay.android.core.model.api.RyftPublicApiKey
 import com.ryftpay.android.core.model.error.RyftError
 import com.ryftpay.android.core.model.payment.CardDetails
+import com.ryftpay.android.core.model.payment.CustomerDetails
 import com.ryftpay.android.core.model.payment.PaymentMethod
 import com.ryftpay.android.core.model.payment.PaymentSession
 import com.ryftpay.android.core.model.payment.PaymentSessionError
@@ -122,6 +123,7 @@ internal class RyftPaymentFragment :
                     card.cvc.sanitisedCvc
                 )
             ),
+            customerDetails = null,
             subAccountId = input.configuration.subAccountId,
             listener = this
         )
@@ -197,7 +199,8 @@ internal class RyftPaymentFragment :
                 TransactionInfo.from(
                     response,
                     googlePayConfiguration.merchantCountryCode
-                )
+                ),
+                emailRequired = response.customerEmail == null
             )
         )
     }
@@ -248,23 +251,23 @@ internal class RyftPaymentFragment :
         }
     }
 
-    private fun handleGooglePayResult(result: GooglePayResult) {
-        when (result) {
-            is GooglePayResult.Ok -> {
-                delegate.onGooglePayPaymentProcessing()
-                ryftPaymentService.attemptPayment(
-                    clientSecret = input.configuration.clientSecret,
-                    paymentMethod = PaymentMethod.googlePay(
-                        result.paymentData.token,
-                        result.paymentData.billingAddress
-                    ),
-                    subAccountId = input.configuration.subAccountId,
-                    listener = this
-                )
-            }
-            else -> {
-                delegate.onGooglePayFailedOrCancelled()
-            }
+    private fun handleGooglePayResult(result: GooglePayResult) = when (result) {
+        is GooglePayResult.Ok -> {
+            delegate.onGooglePayPaymentProcessing()
+            val paymentData = result.paymentData
+            ryftPaymentService.attemptPayment(
+                clientSecret = input.configuration.clientSecret,
+                paymentMethod = PaymentMethod.googlePay(
+                    paymentData.token,
+                    paymentData.billingAddress
+                ),
+                customerDetails = CustomerDetails.from(paymentData.email),
+                subAccountId = input.configuration.subAccountId,
+                listener = this
+            )
+        }
+        else -> {
+            delegate.onGooglePayFailedOrCancelled()
         }
     }
 

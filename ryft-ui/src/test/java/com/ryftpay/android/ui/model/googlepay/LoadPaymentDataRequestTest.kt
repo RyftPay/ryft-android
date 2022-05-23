@@ -13,7 +13,8 @@ internal class LoadPaymentDataRequestTest {
         merchantInfo,
         billingAddressRequired = false,
         ryftTokenizationSpecification,
-        transactionInfo
+        transactionInfo,
+        emailRequired = false
     )
 
     private val baseApiV2Request = BaseApiRequest(
@@ -66,5 +67,21 @@ internal class LoadPaymentDataRequestTest {
     fun `toApiV2RequestJson returns json with transaction info`() {
         val requestJson = loadPaymentDataRequest.toApiV2RequestJson(baseApiV2Request)
         requestJson.get("transactionInfo").toString() shouldBeEqualTo transactionInfo.toApiV2RequestJson().toString()
+    }
+
+    @Test
+    fun `toApiV2RequestJson returns json without email required when it is not`() {
+        val requestJson = loadPaymentDataRequest.copy(
+            emailRequired = false
+        ).toApiV2RequestJson(baseApiV2Request)
+        requestJson.optBoolean("emailRequired") shouldBeEqualTo false
+    }
+
+    @Test
+    fun `toApiV2RequestJson returns json with email required when it is`() {
+        val requestJson = loadPaymentDataRequest.copy(
+            emailRequired = true
+        ).toApiV2RequestJson(baseApiV2Request)
+        requestJson.getBoolean("emailRequired") shouldBeEqualTo true
     }
 }
