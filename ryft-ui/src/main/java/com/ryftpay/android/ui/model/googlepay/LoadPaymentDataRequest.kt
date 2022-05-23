@@ -7,7 +7,8 @@ internal data class LoadPaymentDataRequest(
     val merchantInfo: MerchantInfo,
     val billingAddressRequired: Boolean,
     val tokenizationSpecification: TokenizationSpecification,
-    val transactionInfo: TransactionInfo
+    val transactionInfo: TransactionInfo,
+    val emailRequired: Boolean
 ) {
     internal fun toApiV2RequestJson(
         baseApiRequest: BaseApiRequest
@@ -26,5 +27,12 @@ internal data class LoadPaymentDataRequest(
                 )
         )
         put(TransactionInfo.KEY, transactionInfo.toApiV2RequestJson())
+        if (emailRequired) {
+            put(EMAIL_REQUIRED_KEY, true)
+        }
+    }
+
+    companion object {
+        private const val EMAIL_REQUIRED_KEY = "emailRequired"
     }
 }

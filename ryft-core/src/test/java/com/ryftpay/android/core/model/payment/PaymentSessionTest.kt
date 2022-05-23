@@ -1,5 +1,6 @@
 package com.ryftpay.android.core.model.payment
 
+import com.ryftpay.android.core.TestData.CUSTOMER_EMAIL
 import com.ryftpay.android.core.TestData.paymentSessionResponse
 import com.ryftpay.android.core.TestData.requiredActionResponse
 import org.amshove.kluent.shouldBeEqualTo
@@ -19,6 +20,20 @@ internal class PaymentSessionTest {
         paymentSession.lastError shouldBeEqualTo PaymentSessionError.from(paymentSessionResponse.lastError)
         paymentSession.createdTimestamp shouldBeEqualTo paymentSessionResponse.createdTimestamp
         paymentSession.lastUpdatedTimestamp shouldBeEqualTo paymentSessionResponse.lastUpdatedTimestamp
+    }
+
+    @Test
+    fun `from should not return customer email when it is null`() {
+        PaymentSession.from(
+            paymentSessionResponse.copy(customerEmail = null)
+        ).customerEmail shouldBeEqualTo null
+    }
+
+    @Test
+    fun `from should return customer email when it is present`() {
+        PaymentSession.from(
+            paymentSessionResponse.copy(customerEmail = CUSTOMER_EMAIL)
+        ).customerEmail shouldBeEqualTo CUSTOMER_EMAIL
     }
 
     @Test

@@ -19,14 +19,19 @@ class PaymentDataResponseTest {
         .getResource("/assets/googlepay/payment-data-response-with-partial-billing-address.json")
         ?.readText() ?: ""
 
+    private val paymentDataResponseWithEmail = PaymentDataResponseTest::class.java
+        .getResource("/assets/googlepay/payment-data-response-with-email.json")
+        ?.readText() ?: ""
+
     @Test
-    fun `from should return expected fields when no billing address is present`() {
+    fun `from should return expected fields when no billing address or email is present`() {
         val paymentDataResponse = PaymentDataResponse.from(
             PaymentData.fromJson(paymentDataResponse)
         )
         val expected = PaymentDataResponse(
             token = "examplePaymentMethodToken",
-            billingAddress = null
+            billingAddress = null,
+            email = null
         )
         paymentDataResponse shouldBeEqualTo expected
     }
@@ -47,7 +52,8 @@ class PaymentDataResponseTest {
                 country = "US",
                 postalCode = "94043",
                 region = "CA"
-            )
+            ),
+            email = null
         )
         paymentDataResponse shouldBeEqualTo expected
     }
@@ -68,7 +74,21 @@ class PaymentDataResponseTest {
                 country = "GB",
                 postalCode = "SW1A 2AA",
                 region = null
-            )
+            ),
+            email = null
+        )
+        paymentDataResponse shouldBeEqualTo expected
+    }
+
+    @Test
+    fun `from should return expected fields when email is present`() {
+        val paymentDataResponse = PaymentDataResponse.from(
+            PaymentData.fromJson(paymentDataResponseWithEmail)
+        )
+        val expected = PaymentDataResponse(
+            token = "examplePaymentMethodToken",
+            billingAddress = null,
+            email = "test@example.com"
         )
         paymentDataResponse shouldBeEqualTo expected
     }

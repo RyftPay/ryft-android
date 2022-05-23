@@ -129,6 +129,7 @@ internal object TestData {
         currency = Currency.getInstance(GBP_CURRENCY_CODE),
         returnUrl = "https://my-url.com",
         status = PaymentSessionStatus.PendingPayment,
+        customerEmail = null,
         lastError = null,
         requiredAction = null,
         createdTimestamp = 1642098636,
