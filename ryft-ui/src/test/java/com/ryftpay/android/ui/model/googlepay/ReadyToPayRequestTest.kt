@@ -14,15 +14,17 @@ internal class ReadyToPayRequestTest {
     @Test
     fun `toApiV2RequestJson returns json with api versions`() {
         val requestJson = ReadyToPayRequest(
+            existingPaymentMethodRequired = false,
             billingAddressRequired = false
         ).toApiV2RequestJson(baseApiV2Request)
-        requestJson.get("apiVersion") shouldBeEqualTo 2
-        requestJson.get("apiVersionMinor") shouldBeEqualTo 0
+        requestJson.getInt("apiVersion") shouldBeEqualTo 2
+        requestJson.getInt("apiVersionMinor") shouldBeEqualTo 0
     }
 
     @Test
     fun `toApiV2RequestJson returns json with a card payment method with no tokenization specification`() {
         val requestJson = ReadyToPayRequest(
+            existingPaymentMethodRequired = false,
             billingAddressRequired = false
         ).toApiV2RequestJson(baseApiV2Request)
         requestJson.get("allowedPaymentMethods").toString() shouldBeEqualTo JSONArray()
@@ -38,6 +40,7 @@ internal class ReadyToPayRequestTest {
     @Test
     fun `toApiV2RequestJson returns json with a card payment method with billing address required when it is`() {
         val requestJson = ReadyToPayRequest(
+            existingPaymentMethodRequired = false,
             billingAddressRequired = true
         ).toApiV2RequestJson(baseApiV2Request)
         requestJson.get("allowedPaymentMethods").toString() shouldBeEqualTo JSONArray()
@@ -51,28 +54,20 @@ internal class ReadyToPayRequestTest {
     }
 
     @Test
-    fun `toApiV2RequestJson returns expected json when existingPaymentMethodRequired is not provided`() {
-        val requestJson = ReadyToPayRequest(
-            billingAddressRequired = false
-        ).toApiV2RequestJson(baseApiV2Request)
-        requestJson.get("existingPaymentMethodRequired") shouldBeEqualTo true
-    }
-
-    @Test
-    fun `toApiV2RequestJson returns expected json when existingPaymentMethodRequired is true`() {
+    fun `toApiV2RequestJson returns json with existingPaymentMethodRequired when it is true`() {
         val requestJson = ReadyToPayRequest(
             billingAddressRequired = false,
             existingPaymentMethodRequired = true
         ).toApiV2RequestJson(baseApiV2Request)
-        requestJson.get("existingPaymentMethodRequired") shouldBeEqualTo true
+        requestJson.getBoolean("existingPaymentMethodRequired") shouldBeEqualTo true
     }
 
     @Test
-    fun `toApiV2RequestJson returns expected json when existingPaymentMethodRequired is false`() {
+    fun `toApiV2RequestJson returns json without existingPaymentMethodRequired when it is false`() {
         val requestJson = ReadyToPayRequest(
             billingAddressRequired = false,
             existingPaymentMethodRequired = false
         ).toApiV2RequestJson(baseApiV2Request)
-        requestJson.get("existingPaymentMethodRequired") shouldBeEqualTo false
+        requestJson.optBoolean("existingPaymentMethodRequired") shouldBeEqualTo false
     }
 }

@@ -16,6 +16,11 @@ internal class DefaultGooglePayServiceTest {
         ?.readText()
         ?.replace(Regex("\\s+"), "")
 
+    private val isReadyToPayRequestJsonWithExistingPaymentMethodRequired = DefaultGooglePayServiceTest::class.java
+        .getResource("/assets/googlepay/is-ready-to-pay-request-existing-payment-method-required.json")
+        ?.readText()
+        ?.replace(Regex("\\s+"), "")
+
     private val isReadyToPayRequestJsonWithBillingAddressRequired = DefaultGooglePayServiceTest::class.java
         .getResource("/assets/googlepay/is-ready-to-pay-request-billing-address-required.json")
         ?.readText()
@@ -40,8 +45,11 @@ internal class DefaultGooglePayServiceTest {
     private val service: GooglePayService = DefaultGooglePayService(client)
 
     @Test
-    fun `isReadyToPay uses expected request when billing address is not required`() {
-        service.isReadyToPay(billingAddressRequired = false)
+    fun `isReadyToPay uses expected request when billing address and existing payment method are not required`() {
+        service.isReadyToPay(
+            existingPaymentMethodRequired = false,
+            billingAddressRequired = false
+        )
 
         verify {
             client.isReadyToPay(
@@ -53,8 +61,27 @@ internal class DefaultGooglePayServiceTest {
     }
 
     @Test
+    fun `isReadyToPay uses expected request when existing payment method is required`() {
+        service.isReadyToPay(
+            existingPaymentMethodRequired = true,
+            billingAddressRequired = false
+        )
+
+        verify {
+            client.isReadyToPay(
+                match {
+                    it.toJson() == isReadyToPayRequestJsonWithExistingPaymentMethodRequired
+                }
+            )
+        }
+    }
+
+    @Test
     fun `isReadyToPay uses expected request when billing address is required`() {
-        service.isReadyToPay(billingAddressRequired = true)
+        service.isReadyToPay(
+            existingPaymentMethodRequired = false,
+            billingAddressRequired = true
+        )
 
         verify {
             client.isReadyToPay(

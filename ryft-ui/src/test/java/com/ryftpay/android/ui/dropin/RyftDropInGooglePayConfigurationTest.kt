@@ -8,6 +8,14 @@ import org.junit.Test
 internal class RyftDropInGooglePayConfigurationTest {
 
     @Test
+    internal fun `existingPaymentMethodRequired should be false`() {
+        RyftDropInGooglePayConfiguration(
+            merchantName = MERCHANT_NAME,
+            merchantCountryCode = GB_COUNTRY_CODE
+        ).existingPaymentMethodRequired shouldBeEqualTo false
+    }
+
+    @Test
     internal fun `billingAddressRequired should be true`() {
         RyftDropInGooglePayConfiguration(
             merchantName = MERCHANT_NAME,

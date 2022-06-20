@@ -274,6 +274,7 @@ internal class RyftPaymentFragment :
     private fun checkGooglePayIsAvailableBeforeInitialisingDelegate(root: View) {
         val googlePayConfiguration = input.configuration.googlePayConfiguration ?: return
         googlePayService!!.isReadyToPay(
+            googlePayConfiguration.existingPaymentMethodRequired,
             googlePayConfiguration.billingAddressRequired
         ).addOnCompleteListener { completedTask ->
             run {

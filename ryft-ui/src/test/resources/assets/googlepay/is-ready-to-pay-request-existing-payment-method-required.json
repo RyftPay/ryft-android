@@ -9,5 +9,6 @@
         "allowedCardNetworks": ["VISA", "MASTERCARD"]
       }
     }
-  ]
+  ],
+  "existingPaymentMethodRequired": true
 }
