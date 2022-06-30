@@ -13,11 +13,11 @@ import com.ryftpay.android.core.model.api.RyftPublicApiKey
 import com.ryftpay.android.ui.dropin.DefaultRyftDropIn
 import com.ryftpay.android.ui.dropin.RyftDropIn
 import com.ryftpay.android.ui.dropin.RyftDropInConfiguration
+import com.ryftpay.android.ui.dropin.RyftDropInGooglePayConfiguration
 import com.ryftpay.android.ui.dropin.RyftDropInResultListener
 import com.ryftpay.android.ui.dropin.RyftPaymentResult
 import com.ryftpay.sampleapp.R
 import kotlinx.parcelize.Parcelize
-import java.lang.IllegalArgumentException
 
 class DemoFragment : Fragment(), RyftDropInResultListener {
 
@@ -90,8 +90,16 @@ class DemoFragment : Fragment(), RyftDropInResultListener {
         // Show drop in with configuration
         ryftDropIn.show(
             RyftDropInConfiguration(
-                clientSecretInput.text.toString(),
-                if (subAccountIdInput.text.any()) subAccountIdInput.text.toString() else null
+                clientSecret = clientSecretInput.text.toString(),
+                subAccountId = if (subAccountIdInput.text.any()) {
+                    subAccountIdInput.text.toString()
+                } else {
+                    null
+                },
+                googlePayConfiguration = RyftDropInGooglePayConfiguration(
+                    merchantName = DEMO_MERCHANT_NAME,
+                    merchantCountryCode = DEMO_MERCHANT_COUNTRY_CODE
+                )
             )
         )
     }
@@ -143,6 +151,10 @@ class DemoFragment : Fragment(), RyftDropInResultListener {
     }
 
     companion object {
+        // Sample app constants
+        private const val DEMO_MERCHANT_NAME = "Ryft"
+        private const val DEMO_MERCHANT_COUNTRY_CODE = "GB"
+
         private const val ARGUMENTS_BUNDLE_KEY = "Arguments"
 
         fun newInstance(publicApiKey: String): DemoFragment {
