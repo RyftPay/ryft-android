@@ -24,26 +24,21 @@ internal class RyftCheckBox @JvmOverloads constructor(
     ) {
         checkBox = findViewById(R.id.chk_ryft_internal)
         checkBox.setOnCheckedChangeListener { _, checked ->
-            handleChecked(checked, listener)
+            checkBox.background = AppCompatResources.getDrawable(
+                context,
+                if (checked) {
+                    R.drawable.layer_ryft_check_box_selected
+                } else {
+                    R.drawable.bg_ryft_check_box
+                }
+            )
+            listener.onCheckBoxChanged(checked)
         }
 
         label = findViewById(R.id.text_ryft_check_box)
         label.text = text
         label.setOnSingleClickListener {
             checkBox.toggle()
-            val checked = checkBox.isChecked
-            handleChecked(checked, listener)
         }
-    }
-
-    private fun handleChecked(
-        checked: Boolean,
-        listener: RyftCheckBoxListener
-    ) {
-        checkBox.background = AppCompatResources.getDrawable(
-            context,
-            if (checked) R.drawable.layer_ryft_check_box_selected else R.drawable.bg_ryft_check_box
-        )
-        listener.onCheckBoxChanged(checked)
     }
 }
