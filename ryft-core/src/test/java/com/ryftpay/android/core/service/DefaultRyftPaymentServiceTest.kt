@@ -7,6 +7,7 @@ import com.ryftpay.android.core.TestData.PAYMENT_SESSION_ID
 import com.ryftpay.android.core.TestData.SUB_ACCOUNT_ID
 import com.ryftpay.android.core.TestData.cardDetails
 import com.ryftpay.android.core.TestData.customerDetails
+import com.ryftpay.android.core.TestData.paymentMethodOptions
 import com.ryftpay.android.core.TestData.paymentSessionResponse
 import com.ryftpay.android.core.TestData.requiredActionResponse
 import com.ryftpay.android.core.TestData.ryftErrorResponse
@@ -39,7 +40,7 @@ internal class DefaultRyftPaymentServiceTest {
     private val paymentResultListener = mockk<RyftPaymentResultListener>(relaxed = true)
     private val loadPaymentListener = mockk<RyftLoadPaymentListener>(relaxed = true)
     private val paymentService = DefaultRyftPaymentService(client)
-    private val paymentMethod = PaymentMethod.card(cardDetails)
+    private val paymentMethod = PaymentMethod.card(cardDetails, paymentMethodOptions)
 
     @Test
     fun `attemptPayment calls listener on attempting payment`() {

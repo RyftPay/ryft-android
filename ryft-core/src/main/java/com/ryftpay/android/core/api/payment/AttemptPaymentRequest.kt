@@ -11,7 +11,8 @@ data class AttemptPaymentRequest(
     @JsonProperty("cardDetails") val cardDetails: CardDetailsRequest?,
     @JsonProperty("walletDetails") val walletDetails: WalletDetailsRequest?,
     @JsonProperty("billingAddress") val billingAddress: BillingAddressRequest?,
-    @JsonProperty("customerDetails") val customerDetails: CustomerDetailsRequest?
+    @JsonProperty("customerDetails") val customerDetails: CustomerDetailsRequest?,
+    @JsonProperty("paymentMethodOptions") val paymentMethodOptions: PaymentMethodOptionsRequest?
 ) {
     companion object {
         internal fun from(
@@ -28,7 +29,8 @@ data class AttemptPaymentRequest(
                     ),
                     walletDetails = null,
                     BillingAddressRequest.from(paymentMethod.billingAddress),
-                    CustomerDetailsRequest.from(customerDetails)
+                    CustomerDetailsRequest.from(customerDetails),
+                    PaymentMethodOptionsRequest.from(paymentMethod.options)
                 )
                 PaymentMethodType.GooglePay -> AttemptPaymentRequest(
                     clientSecret,
@@ -38,7 +40,8 @@ data class AttemptPaymentRequest(
                             ?: throw IllegalArgumentException("Invalid payment method - google pay token is null")
                     ),
                     BillingAddressRequest.from(paymentMethod.billingAddress),
-                    CustomerDetailsRequest.from(customerDetails)
+                    CustomerDetailsRequest.from(customerDetails),
+                    paymentMethodOptions = null
                 )
             }
     }

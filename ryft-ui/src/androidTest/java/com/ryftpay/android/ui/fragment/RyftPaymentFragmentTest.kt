@@ -20,12 +20,14 @@ import androidx.test.espresso.assertion.ViewAssertions.selectedDescendantsMatch
 import androidx.test.espresso.matcher.LayoutMatchers.hasEllipsizedText
 import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
+import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isClickable
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.isFocusable
 import androidx.test.espresso.matcher.ViewMatchers.isFocused
+import androidx.test.espresso.matcher.ViewMatchers.isNotChecked
 import androidx.test.espresso.matcher.ViewMatchers.isNotFocused
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withHint
@@ -82,6 +84,17 @@ internal class RyftPaymentFragmentTest {
 
         onView(
             allOf(
+                withId(R.id.text_ryft_check_box),
+                isDescendantOfA(withId(R.id.check_box_ryft_save_card))
+            )
+        ).check(
+            matches(
+                allOf(isDisplayed(), withText("Save card for future payments"))
+            )
+        )
+
+        onView(
+            allOf(
                 withId(R.id.text_ryft_button),
                 isDescendantOfA(withId(R.id.button_ryft_pay))
             )
@@ -120,6 +133,22 @@ internal class RyftPaymentFragmentTest {
         ).check(
             matches(
                 allOf(isEnabled(), isClickable())
+            )
+        )
+
+        onView(
+            withId(R.id.chk_ryft_internal)
+        ).check(
+            matches(
+                allOf(isEnabled(), isClickable(), isNotChecked())
+            )
+        )
+
+        onView(
+            withId(R.id.text_ryft_check_box)
+        ).check(
+            matches(
+                isClickable()
             )
         )
 
@@ -168,12 +197,11 @@ internal class RyftPaymentFragmentTest {
             isCompletelyAbove(
                 withId(R.id.input_field_ryft_card_expiry_date)
             )
-        )
-            .check(
-                isCompletelyAbove(
-                    withId(R.id.input_field_ryft_card_cvc)
-                )
+        ).check(
+            isCompletelyAbove(
+                withId(R.id.input_field_ryft_card_cvc)
             )
+        )
 
         onView(
             withId(R.id.input_field_ryft_card_expiry_date)
@@ -181,6 +209,14 @@ internal class RyftPaymentFragmentTest {
             isCompletelyLeftOf(
                 withId(R.id.input_field_ryft_card_cvc)
             )
+        ).check(
+            isCompletelyAbove(
+                withId(R.id.check_box_ryft_save_card)
+            )
+        )
+
+        onView(
+            withId(R.id.check_box_ryft_save_card)
         ).check(
             isCompletelyAbove(
                 withId(R.id.partial_ryft_payment_form_footer)
@@ -492,6 +528,42 @@ internal class RyftPaymentFragmentTest {
         ).check(
             matches(
                 allOf(isDisplayed(), withText("Taking payment…"))
+            )
+        )
+    }
+
+    @Test
+    internal fun shouldSetCheckBox_AfterCheckBoxIsClicked() {
+        launchFragment()
+
+        onView(withId(R.id.chk_ryft_internal)).perform(click())
+
+        onView(
+            allOf(
+                withId(R.id.chk_ryft_internal),
+                isDescendantOfA(withId(R.id.check_box_ryft_save_card))
+            )
+        ).check(
+            matches(
+                allOf(isChecked())
+            )
+        )
+    }
+
+    @Test
+    internal fun shouldSetCheckBox_AfterCheckBoxTextIsClicked() {
+        launchFragment()
+
+        onView(withId(R.id.text_ryft_check_box)).perform(click())
+
+        onView(
+            allOf(
+                withId(R.id.chk_ryft_internal),
+                isDescendantOfA(withId(R.id.check_box_ryft_save_card))
+            )
+        ).check(
+            matches(
+                allOf(isChecked())
             )
         )
     }

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/ryft_check_box_background"
+        android:drawable="@drawable/bg_ryft_check_box_selected"/>
+    <item
+        android:id="@+id/ryft_check_box_mark"
+        android:drawable="@drawable/ic_ryft_check_mark"
+        android:top="4dp"
+        android:bottom="4dp"
+        android:left="4dp"
+        android:right="4dp"
+        android:gravity="center"/>
+</layer-list>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.ryftpay.android.ui.component.RyftCheckBox
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ryft_check_box"
+    style="@style/RyftCheckBox">
+
+    <CheckBox
+        android:id="@+id/chk_ryft_internal"
+        style="@style/RyftInternalCheckBox" />
+
+    <TextView
+        android:id="@+id/text_ryft_check_box"
+        tools:text="@string/ryft_example_checkbox_text"
+        style="@style/RyftCheckBoxText" />
+
+</com.ryftpay.android.ui.component.RyftCheckBox>

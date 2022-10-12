@@ -8,6 +8,7 @@ import com.ryftpay.android.core.model.api.RyftPublicApiKey
 import com.ryftpay.android.core.model.payment.Address
 import com.ryftpay.android.core.model.payment.CardDetails
 import com.ryftpay.android.core.model.payment.CustomerDetails
+import com.ryftpay.android.core.model.payment.PaymentMethodOptions
 import com.ryftpay.android.core.model.payment.PaymentSessionStatus
 import com.ryftpay.android.core.model.payment.RequiredActionType
 import java.util.UUID
@@ -31,6 +32,10 @@ internal object TestData {
         expiryMonth = "10",
         expiryYear = "2030",
         cvc = "100"
+    )
+
+    internal val paymentMethodOptions = PaymentMethodOptions(
+        store = false
     )
 
     internal val address = Address(

@@ -43,6 +43,23 @@
         <item name="android:background">@drawable/bg_ryft_button_secondary</item>
     </style>
 
+    <style name="RyftCheckBox">
+        <item name="android:orientation">horizontal</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="RyftInternalCheckBox">
+        <item name="android:layout_width">16dp</item>
+        <item name="android:layout_height">16dp</item>
+        <item name="android:background">@drawable/bg_ryft_check_box</item>
+        <item name="android:button">@null</item>
+        <item name="android:enabled">true</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
     <style name="RyftButtonText">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
@@ -59,6 +76,17 @@
     <style name="RyftSecondaryButtonText" parent="RyftButtonText">
         <item name="android:textColor">@color/ryftSecondaryButtonText</item>
         <item name="android:textColorHint">@color/ryftSecondaryButtonText</item>
+    </style>
+
+    <style name="RyftCheckBoxText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_marginStart">12dp</item>
+        <item name="android:fontFamily">@font/ryft_nunito</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/ryftCheckBoxText</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:clickable">true</item>
     </style>
 
     <style name="RyftInputField">
