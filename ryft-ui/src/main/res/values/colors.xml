@@ -13,6 +13,11 @@
     <color name="ryftInputFieldSelectedBorder">#2581E3</color>
     <color name="ryftInputFieldHintText">#959497</color>
     <color name="ryftInputFieldText">#5A5A5A</color>
+    <color name="ryftCheckBoxBackground">#FFFFFF</color>
+    <color name="ryftCheckBoxBorder">#D4D4D4</color>
+    <color name="ryftCheckBoxSelectedBackground">#2581E3</color>
+    <color name="ryftCheckBoxSelectedBorder">#1E6CC0</color>
+    <color name="ryftCheckBoxText">#808080</color>
     <color name="ryftTitleText">#323232</color>
     <color name="ryftDivider">#1A000000</color>
     <color name="ryftDividerText">#939393</color>

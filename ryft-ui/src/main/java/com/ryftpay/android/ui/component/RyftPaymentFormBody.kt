@@ -3,16 +3,19 @@ package com.ryftpay.android.ui.component
 import android.content.Context
 import android.text.InputFilter
 import android.util.AttributeSet
+import android.view.View
 import android.widget.LinearLayout
 import com.ryftpay.android.ui.extension.addOrReplaceFilter
 import com.ryftpay.android.ui.listener.RyftCardCvcInputListener
 import com.ryftpay.android.ui.listener.RyftCardExpiryDateInputListener
 import com.ryftpay.android.ui.listener.RyftCardNumberInputListener
+import com.ryftpay.android.ui.listener.RyftCheckBoxListener
 import com.ryftpay.android.ui.listener.RyftPaymentFormBodyListener
 import com.ryftpay.android.ui.model.RyftCard
 import com.ryftpay.android.ui.model.RyftCardCvc
 import com.ryftpay.android.ui.model.RyftCardExpiryDate
 import com.ryftpay.android.ui.model.RyftCardNumber
+import com.ryftpay.android.ui.model.RyftCardOptions
 import com.ryftpay.android.ui.model.RyftCardType
 import com.ryftpay.android.ui.model.ValidationState
 import com.ryftpay.ui.R
@@ -23,16 +26,22 @@ internal class RyftPaymentFormBody @JvmOverloads constructor(
 ) : LinearLayout(context, attrs),
     RyftCardNumberInputListener,
     RyftCardExpiryDateInputListener,
-    RyftCardCvcInputListener {
+    RyftCardCvcInputListener,
+    RyftCheckBoxListener {
 
     internal var currentCard = RyftCard.Incomplete
+    internal var currentCardOptions = RyftCardOptions.Default
 
     private lateinit var cardNumberField: RyftCardNumberInputField
     private lateinit var cardExpiryDateField: RyftCardExpiryDateInputField
     private lateinit var cardCvcField: RyftCardCvcInputField
+    private lateinit var saveCardCheckBox: RyftCheckBox
     private lateinit var listener: RyftPaymentFormBodyListener
 
-    internal fun initialise(listener: RyftPaymentFormBodyListener) {
+    internal fun initialise(
+        showSaveCardCheckBox: Boolean,
+        listener: RyftPaymentFormBodyListener
+    ) {
         this.listener = listener
         cardNumberField = findViewById(R.id.input_field_ryft_card_number)
         cardNumberField.initialise(
@@ -47,6 +56,12 @@ internal class RyftPaymentFormBody @JvmOverloads constructor(
         cardCvcField.initialise(
             listener = this
         )
+        saveCardCheckBox = findViewById(R.id.check_box_ryft_save_card)
+        saveCardCheckBox.initialise(
+            text = context.getString(R.string.ryft_save_card),
+            listener = this
+        )
+        saveCardCheckBox.visibility = if (showSaveCardCheckBox) View.VISIBLE else View.GONE
 
         cardNumberField.requestFocus()
         toggleInput(enabled = true)
@@ -89,6 +104,9 @@ internal class RyftPaymentFormBody @JvmOverloads constructor(
         }
     }
 
+    override fun onCheckBoxChanged(checked: Boolean) =
+        onCardOptionsChanged(currentCardOptions.withSaveForFuture(saveForFuture = checked))
+
     private fun onCardChanged(newCard: RyftCard) {
         if (newCard.type != currentCard.type) {
             onCardTypeChanged(newCard.type)
@@ -100,6 +118,10 @@ internal class RyftPaymentFormBody @JvmOverloads constructor(
             listener.onAwaitingCardDetails()
         }
         currentCard = newCard
+    }
+
+    private fun onCardOptionsChanged(options: RyftCardOptions) {
+        currentCardOptions = options
     }
 
     private fun onCardTypeChanged(cardType: RyftCardType) {

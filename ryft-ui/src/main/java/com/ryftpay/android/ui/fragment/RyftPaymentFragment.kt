@@ -21,6 +21,7 @@ import com.ryftpay.android.core.model.error.RyftError
 import com.ryftpay.android.core.model.payment.CardDetails
 import com.ryftpay.android.core.model.payment.CustomerDetails
 import com.ryftpay.android.core.model.payment.PaymentMethod
+import com.ryftpay.android.core.model.payment.PaymentMethodOptions
 import com.ryftpay.android.core.model.payment.PaymentSession
 import com.ryftpay.android.core.model.payment.PaymentSessionError
 import com.ryftpay.android.core.service.DefaultRyftPaymentService
@@ -36,6 +37,7 @@ import com.ryftpay.android.ui.dropin.RyftPaymentResult
 import com.ryftpay.android.ui.extension.showAlertWithRetry
 import com.ryftpay.android.ui.listener.RyftPaymentFormListener
 import com.ryftpay.android.ui.model.RyftCard
+import com.ryftpay.android.ui.model.RyftCardOptions
 import com.ryftpay.android.ui.model.googlepay.GooglePayResult
 import com.ryftpay.android.ui.model.googlepay.LoadPaymentDataRequest
 import com.ryftpay.android.ui.model.googlepay.MerchantInfo
@@ -105,7 +107,7 @@ internal class RyftPaymentFragment :
         dismiss()
     }
 
-    override fun onPayByCard(card: RyftCard) {
+    override fun onPayByCard(card: RyftCard, cardOptions: RyftCardOptions) {
         if (input.testMode) {
             Handler(Looper.getMainLooper()).postDelayed({
                 dismiss()
@@ -121,6 +123,9 @@ internal class RyftPaymentFragment :
                     card.expiryDate.twoDigitMonth,
                     card.expiryDate.fourDigitYear,
                     card.cvc.sanitisedCvc
+                ),
+                PaymentMethodOptions.card(
+                    store = cardOptions.saveForFuture
                 )
             ),
             customerDetails = null,

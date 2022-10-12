@@ -5,6 +5,7 @@ import com.ryftpay.android.core.TestData.GOOGLE_PAY_TOKEN
 import com.ryftpay.android.core.TestData.address
 import com.ryftpay.android.core.TestData.cardDetails
 import com.ryftpay.android.core.TestData.customerDetails
+import com.ryftpay.android.core.TestData.paymentMethodOptions
 import com.ryftpay.android.core.model.payment.PaymentMethod
 import com.ryftpay.android.core.model.payment.PaymentMethodType
 import org.amshove.kluent.shouldBeEqualTo
@@ -17,7 +18,7 @@ internal class AttemptPaymentRequestTest {
     fun `from should return expected client secret`() {
         AttemptPaymentRequest.from(
             CLIENT_SECRET,
-            PaymentMethod.card(cardDetails),
+            PaymentMethod.card(cardDetails, paymentMethodOptions),
             customerDetails = null
         ).clientSecret shouldBeEqualTo CLIENT_SECRET
     }
@@ -26,7 +27,7 @@ internal class AttemptPaymentRequestTest {
     fun `from should add card details when payment method is card`() {
         AttemptPaymentRequest.from(
             CLIENT_SECRET,
-            PaymentMethod.card(cardDetails),
+            PaymentMethod.card(cardDetails, paymentMethodOptions),
             customerDetails = null
         ).cardDetails shouldBeEqualTo CardDetailsRequest.from(cardDetails)
     }
@@ -35,7 +36,7 @@ internal class AttemptPaymentRequestTest {
     fun `from should not add wallet details when payment method is card`() {
         AttemptPaymentRequest.from(
             CLIENT_SECRET,
-            PaymentMethod.card(cardDetails),
+            PaymentMethod.card(cardDetails, paymentMethodOptions),
             customerDetails = null
         ).walletDetails shouldBeEqualTo null
     }
@@ -48,7 +49,8 @@ internal class AttemptPaymentRequestTest {
                 PaymentMethodType.Card,
                 cardDetails = null,
                 googlePayToken = null,
-                billingAddress = null
+                billingAddress = null,
+                options = null
             ),
             customerDetails = null
         )
@@ -58,7 +60,7 @@ internal class AttemptPaymentRequestTest {
     fun `from should not add billing address when card payment method has none`() {
         AttemptPaymentRequest.from(
             CLIENT_SECRET,
-            PaymentMethod.card(cardDetails),
+            PaymentMethod.card(cardDetails, paymentMethodOptions),
             customerDetails = null
         ).billingAddress shouldBeEqualTo null
     }
@@ -71,7 +73,8 @@ internal class AttemptPaymentRequestTest {
                 type = PaymentMethodType.Card,
                 cardDetails,
                 googlePayToken = null,
-                billingAddress = address
+                billingAddress = address,
+                options = null
             ),
             customerDetails = null
         ).billingAddress shouldBeEqualTo BillingAddressRequest.from(address)
@@ -81,7 +84,7 @@ internal class AttemptPaymentRequestTest {
     fun `from should not add customer details when they are null`() {
         AttemptPaymentRequest.from(
             CLIENT_SECRET,
-            PaymentMethod.card(cardDetails),
+            PaymentMethod.card(cardDetails, paymentMethodOptions),
             customerDetails = null
         ).customerDetails shouldBeEqualTo null
     }
@@ -90,9 +93,18 @@ internal class AttemptPaymentRequestTest {
     fun `from should add customer details when they are provided`() {
         AttemptPaymentRequest.from(
             CLIENT_SECRET,
-            PaymentMethod.card(cardDetails),
+            PaymentMethod.card(cardDetails, paymentMethodOptions),
             customerDetails
         ).customerDetails shouldBeEqualTo CustomerDetailsRequest.from(customerDetails)
+    }
+
+    @Test
+    fun `from should add payment method options when payment method is card`() {
+        AttemptPaymentRequest.from(
+            CLIENT_SECRET,
+            PaymentMethod.card(cardDetails, paymentMethodOptions),
+            customerDetails = null
+        ).paymentMethodOptions shouldBeEqualTo PaymentMethodOptionsRequest.from(paymentMethodOptions)
     }
 
     @Test
@@ -121,7 +133,8 @@ internal class AttemptPaymentRequestTest {
                 PaymentMethodType.GooglePay,
                 cardDetails = null,
                 googlePayToken = null,
-                billingAddress = null
+                billingAddress = null,
+                options = null
             ),
             customerDetails = null
         )
@@ -143,5 +156,14 @@ internal class AttemptPaymentRequestTest {
             PaymentMethod.googlePay(GOOGLE_PAY_TOKEN, billingAddress = address),
             customerDetails = null
         ).billingAddress shouldBeEqualTo BillingAddressRequest.from(address)
+    }
+
+    @Test
+    fun `from should not add payment method options when payment method is google pay `() {
+        AttemptPaymentRequest.from(
+            CLIENT_SECRET,
+            PaymentMethod.googlePay(GOOGLE_PAY_TOKEN, billingAddress = address),
+            customerDetails = null
+        ).paymentMethodOptions shouldBeEqualTo null
     }
 }

@@ -29,7 +29,7 @@ internal class DefaultRyftPaymentDelegate(
         googlePayHeader = root.findViewById(R.id.partial_ryft_payment_form_googlepay_header)
         googlePayHeader.initialise(listener = this)
         body = root.findViewById(R.id.partial_ryft_payment_form_body)
-        body.initialise(listener = this)
+        body.initialise(showSaveCardCheckBox = true, listener = this)
         footer = root.findViewById(R.id.partial_ryft_payment_form_footer)
         footer.initialise(listener = this)
         setHeaderVisibility(showGooglePay)
@@ -70,7 +70,7 @@ internal class DefaultRyftPaymentDelegate(
             enabled = false,
             footerState = RyftPaymentFormFooter.State.TakingPayment
         )
-        listener.onPayByCard(body.currentCard)
+        listener.onPayByCard(body.currentCard, body.currentCardOptions)
     }
 
     override fun onCancelClicked() {
