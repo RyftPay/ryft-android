@@ -4,7 +4,7 @@
     android:id="@+id/partial_ryft_payment_form_body"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="136dp">
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:id="@+id/row_ryft_card_number"
@@ -52,7 +52,7 @@
         android:id="@+id/row_ryft_save_card"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="16dp"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="24dp"
         android:layout_marginRight="24dp"
         android:layout_marginBottom="16dp"
@@ -62,7 +62,15 @@
             android:id="@+id/check_box_ryft_save_card"
             android:layout_width="match_parent"
             android:layout_height="16dp"
-            layout="@layout/chk_ryft" />
+            layout="@layout/chk_ryft"/>
+
+        <TextView
+            android:id="@+id/text_ryft_save_card_disclaimer"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:visibility="gone"
+            android:text="@string/ryft_save_card_form_disclaimer"
+            style="@style/RyftDisclaimerText"/>
 
     </LinearLayout>
 

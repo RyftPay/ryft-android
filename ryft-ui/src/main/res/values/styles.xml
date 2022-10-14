@@ -89,6 +89,12 @@
         <item name="android:clickable">true</item>
     </style>
 
+    <style name="RyftDisclaimerText">
+        <item name="android:fontFamily">@font/ryft_nunito</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/ryftCheckBoxText</item>
+    </style>
+
     <style name="RyftInputField">
         <item name="android:layout_height">40dp</item>
         <item name="android:paddingStart">16dp</item>

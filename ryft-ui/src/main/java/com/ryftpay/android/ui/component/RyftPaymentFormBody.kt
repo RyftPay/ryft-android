@@ -5,6 +5,8 @@ import android.text.InputFilter
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.TextView
+import com.ryftpay.android.ui.dropin.RyftDropInUsage
 import com.ryftpay.android.ui.extension.addOrReplaceFilter
 import com.ryftpay.android.ui.listener.RyftCardCvcInputListener
 import com.ryftpay.android.ui.listener.RyftCardExpiryDateInputListener
@@ -36,10 +38,11 @@ internal class RyftPaymentFormBody @JvmOverloads constructor(
     private lateinit var cardExpiryDateField: RyftCardExpiryDateInputField
     private lateinit var cardCvcField: RyftCardCvcInputField
     private lateinit var saveCardCheckBox: RyftCheckBox
+    private lateinit var saveCardDisclaimer: TextView
     private lateinit var listener: RyftPaymentFormBodyListener
 
     internal fun initialise(
-        showSaveCardCheckBox: Boolean,
+        usage: RyftDropInUsage,
         listener: RyftPaymentFormBodyListener
     ) {
         this.listener = listener
@@ -58,10 +61,12 @@ internal class RyftPaymentFormBody @JvmOverloads constructor(
         )
         saveCardCheckBox = findViewById(R.id.check_box_ryft_save_card)
         saveCardCheckBox.initialise(
-            text = context.getString(R.string.ryft_save_card),
+            text = context.getString(R.string.ryft_save_card_check_box),
             listener = this
         )
-        saveCardCheckBox.visibility = if (showSaveCardCheckBox) View.VISIBLE else View.GONE
+        saveCardCheckBox.visibility = if (usage == RyftDropInUsage.Payment) View.VISIBLE else View.GONE
+        saveCardDisclaimer = findViewById(R.id.text_ryft_save_card_disclaimer)
+        saveCardDisclaimer.visibility = if (usage == RyftDropInUsage.SetupCard) View.VISIBLE else View.GONE
 
         cardNumberField.requestFocus()
         toggleInput(enabled = true)
