@@ -2,6 +2,7 @@
     <string name="app_name">Ryft Sample App</string>
     <string name="button_launch_demo">Launch Demo</string>
     <string name="button_payment">Take Payment</string>
+    <string name="button_setup_card">Setup Card</string>
     <string name="title_launch_demo">Launcher</string>
     <string name="title_demo">Demo</string>
     <string name="hint_public_api_key">Enter your sandbox public API key</string>

@@ -39,5 +39,5 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1'
 
     // Ryft dependency
-    implementation 'com.github.RyftPay:ryft-android:1.1.0'
+    implementation 'com.github.RyftPay:ryft-android:1.2.0'
 }

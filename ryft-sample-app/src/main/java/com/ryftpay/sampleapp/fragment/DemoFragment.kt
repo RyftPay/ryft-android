@@ -6,15 +6,20 @@ import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Spinner
 import androidx.fragment.app.Fragment
 import com.ryftpay.android.core.model.api.RyftPublicApiKey
 import com.ryftpay.android.ui.dropin.DefaultRyftDropIn
 import com.ryftpay.android.ui.dropin.RyftDropIn
 import com.ryftpay.android.ui.dropin.RyftDropInConfiguration
+import com.ryftpay.android.ui.dropin.RyftDropInDisplayConfiguration
 import com.ryftpay.android.ui.dropin.RyftDropInGooglePayConfiguration
 import com.ryftpay.android.ui.dropin.RyftDropInResultListener
+import com.ryftpay.android.ui.dropin.RyftDropInUsage
 import com.ryftpay.android.ui.dropin.RyftPaymentResult
 import com.ryftpay.sampleapp.R
 import kotlinx.parcelize.Parcelize
@@ -24,6 +29,7 @@ class DemoFragment : Fragment(), RyftDropInResultListener {
     // Sample app variables
     private lateinit var clientSecretInput: EditText
     private lateinit var subAccountIdInput: EditText
+    private lateinit var usageInput: Spinner
     private lateinit var paymentButton: Button
 
     // Declare RyftDropIn
@@ -55,6 +61,24 @@ class DemoFragment : Fragment(), RyftDropInResultListener {
         // Instantiate sample app variables
         clientSecretInput = view.findViewById(R.id.input_client_secret)
         subAccountIdInput = view.findViewById(R.id.input_sub_account_id)
+        usageInput = view.findViewById(R.id.input_usage)
+        val usages = RyftDropInUsage.values().map { it.name }
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, usages)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        usageInput.adapter = adapter
+        usageInput.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val selectedItem = parent?.getItemAtPosition(position).toString()
+                selectedItem.let {
+                    val selectedUsage = RyftDropInUsage.valueOf(it)
+                    paymentButton.text = when (selectedUsage) {
+                        RyftDropInUsage.Payment -> requireContext().getString(R.string.button_payment)
+                        RyftDropInUsage.SetupCard -> requireContext().getString(R.string.button_setup_card)
+                    }
+                }
+            }
+        }
         paymentButton = view.findViewById(R.id.button_payment)
 
         // Load Ryft payment sheet when payment is clicked
@@ -64,11 +88,15 @@ class DemoFragment : Fragment(), RyftDropInResultListener {
     }
 
     // Handle RyftPaymentResult
-    override fun onPaymentResult(result: RyftPaymentResult) =
-        when (result) {
+    override fun onPaymentResult(result: RyftPaymentResult) {
+        val selectedUsage = RyftDropInUsage.valueOf(usageInput.selectedItem.toString())
+        return when (result) {
             is RyftPaymentResult.Approved -> {
                 displayInformativeAlert(
-                    title = "Payment successful",
+                    title = when (selectedUsage) {
+                        RyftDropInUsage.Payment -> "Payment successful"
+                        RyftDropInUsage.SetupCard -> "Card saved successfully"
+                    },
                     message = "Hooray!"
                 )
                 clientSecretInput.text.clear()
@@ -79,12 +107,19 @@ class DemoFragment : Fragment(), RyftDropInResultListener {
                 )
             }
             is RyftPaymentResult.Cancelled -> {
-                displayInformativeAlert(
-                    title = "Payment cancelled",
-                    message = "You cancelled the payment"
-                )
+                when (selectedUsage) {
+                    RyftDropInUsage.Payment -> displayInformativeAlert(
+                        title = "Payment cancelled",
+                        message = "You cancelled the payment"
+                    )
+                    RyftDropInUsage.SetupCard -> displayInformativeAlert(
+                        title = "Card setup cancelled",
+                        message = "You cancelled the card setup"
+                    )
+                }
             }
         }
+    }
 
     private fun showDropIn() {
         // Show drop in with configuration
@@ -96,6 +131,10 @@ class DemoFragment : Fragment(), RyftDropInResultListener {
                 } else {
                     null
                 },
+                display = RyftDropInDisplayConfiguration(
+                    payButtonTitle = "Pay Demo",
+                    usage = RyftDropInUsage.valueOf(usageInput.selectedItem.toString())
+                ),
                 googlePayConfiguration = RyftDropInGooglePayConfiguration(
                     merchantName = DEMO_MERCHANT_NAME,
                     merchantCountryCode = DEMO_MERCHANT_COUNTRY_CODE
