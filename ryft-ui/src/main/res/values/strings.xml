@@ -6,15 +6,18 @@
     <string name="ryft_example_checkbox_text">Save card for future payments</string>
 
     <string name="ryft_pay">Pay now</string>
-    <string name="ryft_taking_payment">Taking payment…</string>
+    <string name="ryft_processing">Processing…</string>
+    <string name="ryft_save_card">Save card</string>
     <string name="ryft_or">or</string>
     <string name="ryft_retry">Retry</string>
     <string name="ryft_cancel">Cancel</string>
     <string name="ryft_card_number">Card number</string>
     <string name="ryft_card_expiry_date">MM/YY</string>
     <string name="ryft_card_cvc">CVC</string>
-    <string name="ryft_save_card">Save card for future payments</string>
+    <string name="ryft_save_card_check_box">Save card for future payments</string>
     <string name="ryft_payment_form_card_only_header_title">Credit / Debit Card</string>
+    <string name="ryft_save_card_form_title">Authorise Card</string>
+    <string name="ryft_save_card_form_disclaimer">By authorising your card, you consent to your details being stored securely for future payments</string>
     <string name="ryft_google_pay_error_message">Error loading Google Pay</string>
 
     <string name="ryft_bad_track_data">Your CVC or card expiration is invalid</string>
