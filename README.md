@@ -40,7 +40,7 @@ Add the ryft-android dependency to your module's `build.gradle`:
 ```groovy
 dependencies {
     // ...
-    implementation 'com.github.RyftPay:ryft-android:1.1.0'
+    implementation 'com.github.RyftPay:ryft-android:1.2.0'
     // ...
 }
 ```
