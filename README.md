@@ -209,6 +209,44 @@ Note that if a payment requires further action for the payment to be approved (e
 
 No action is required from you in this use-case and you will either be notified that the payment was then approved, or that it failed (e.g. due to 3ds authentication)
 
+### Using the drop-in for setting up cards for future use
+
+A common use-case for some businesses is setting up and storing cards without charging the customer.
+This is also known as zero-value authorization or account verification.
+
+<img src="images/drop-in-setup-card.png" width=30% height=30%>
+
+The drop-in currently has 2 usages:
+- `Payment` (your customer is actively checking out and completing a purchase)
+- `SetupCard` (your customer wants to save their card for future use without incurring any charges)
+
+By default we will use `Payment`, however to customise the view simply pass the `usage` within the `display` configuration when initialising the drop-in:
+
+```kotlin
+RyftDropInConfiguration(
+    clientSecret = "<the client secret of the payment-session>",
+    subAccountId = null, // account verifications must be done via the standard account holder.
+    display = RyftDropInDisplayConfiguration(
+        usage = RyftDropInUsage.SetupCard
+    )
+    // Google Pay will not be shown so there is no need to provide the config
+)
+```
+
+### Customising the drop-in
+
+You can customise the title of the pay button by providing `payButtonTitle` within the `display` configuration when initialising the drop-in:
+
+```kotlin
+RyftDropInConfiguration(
+    clientSecret = "<the client secret of the payment-session>",
+    subAccountId = null || "<the Id of the sub-account you are taking payments for>",
+    display = RyftDropInDisplayConfiguration(
+        payButtonTitle = "Pay now"
+    )
+)
+```
+
 ### Further documentation
 
 For more information, please find our docs [here](https://developer.ryftpay.com/docs/build/android-mobile)
