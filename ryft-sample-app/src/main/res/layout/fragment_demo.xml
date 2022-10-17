@@ -47,6 +47,11 @@
                 android:textSize="14sp"
                 android:hint="@string/hint_sub_account_id"/>
 
+            <Spinner
+                android:id="@+id/input_usage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
         </LinearLayout>
 
         <RelativeLayout
