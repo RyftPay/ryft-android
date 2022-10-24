@@ -1,5 +1,6 @@
 package com.ryftpay.android.ui.extension
 
+import com.checkout.threeds.Environment
 import com.google.android.gms.wallet.WalletConstants
 import com.ryftpay.android.core.model.api.RyftEnvironment
 import junitparams.JUnitParamsRunner
@@ -20,8 +21,22 @@ internal class RyftEnvironmentExtensionTest {
         ryftEnvironment.toGooglePayEnvironment() shouldBeEqualTo expected
     }
 
+    @Test
+    @Parameters(method = "ryftEnvironmentsToCheckoutComEnvironments")
+    internal fun `toCheckoutComEnvironment should return expected environment`(
+        ryftEnvironment: RyftEnvironment,
+        expected: Environment
+    ) {
+        ryftEnvironment.toCheckoutComEnvironment() shouldBeEqualTo expected
+    }
+
     private fun ryftEnvironmentsToGooglePayEnvironments(): Array<Any> = arrayOf(
         arrayOf(RyftEnvironment.Prod, WalletConstants.ENVIRONMENT_PRODUCTION),
         arrayOf(RyftEnvironment.Sandbox, WalletConstants.ENVIRONMENT_TEST)
+    )
+
+    private fun ryftEnvironmentsToCheckoutComEnvironments(): Array<Any> = arrayOf(
+        arrayOf(RyftEnvironment.Prod, Environment.PRODUCTION),
+        arrayOf(RyftEnvironment.Sandbox, Environment.SANDBOX)
     )
 }

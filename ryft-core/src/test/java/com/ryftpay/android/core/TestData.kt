@@ -2,6 +2,7 @@ package com.ryftpay.android.core
 
 import com.ryftpay.android.core.api.error.RyftErrorElementResponse
 import com.ryftpay.android.core.api.error.RyftErrorResponse
+import com.ryftpay.android.core.api.payment.IdentifyActionResponse
 import com.ryftpay.android.core.api.payment.PaymentSessionResponse
 import com.ryftpay.android.core.api.payment.RequiredActionResponse
 import com.ryftpay.android.core.model.api.RyftPublicApiKey
@@ -23,6 +24,7 @@ internal object TestData {
     internal const val LAST_PAYMENT_ERROR = "invalid_card_number"
     internal const val GOOGLE_PAY_TOKEN = "google_pay_token_123"
     internal const val CUSTOMER_EMAIL = "test@example.com"
+    internal const val PAYMENT_METHOD_ID = "pmt_123"
 
     internal val prodPublicApiKey = RyftPublicApiKey(PROD_PUBLIC_API_KEY_VALUE)
     internal val sandboxPublicApiKey = RyftPublicApiKey(SANDBOX_PUBLIC_API_KEY_VALUE)
@@ -64,9 +66,23 @@ internal object TestData {
         errors = listOf(ryftErrorElementResponse)
     )
 
-    internal val requiredActionResponse = RequiredActionResponse(
+    internal val redirectRequiredActionResponse = RequiredActionResponse(
         type = RequiredActionType.Redirect.toString(),
-        url = "https://redirect.to.me/"
+        url = "https://redirect.to.me/",
+        identify = null
+    )
+
+    internal val identifyActionResponse = IdentifyActionResponse(
+        sessionId = "session_123",
+        sessionSecret = "secret_123",
+        scheme = "visa",
+        paymentMethodId = PAYMENT_METHOD_ID
+    )
+
+    internal val identifyRequiredActionResponse = RequiredActionResponse(
+        type = RequiredActionType.Identify.toString(),
+        url = null,
+        identify = identifyActionResponse
     )
 
     internal val paymentSessionResponse = PaymentSessionResponse(
@@ -77,7 +93,7 @@ internal object TestData {
         status = PaymentSessionStatus.PendingPayment.toString(),
         customerEmail = CUSTOMER_EMAIL,
         lastError = "invalid_card_number",
-        requiredAction = requiredActionResponse,
+        requiredAction = redirectRequiredActionResponse,
         createdTimestamp = 1642098636,
         lastUpdatedTimestamp = 1642138419
     )

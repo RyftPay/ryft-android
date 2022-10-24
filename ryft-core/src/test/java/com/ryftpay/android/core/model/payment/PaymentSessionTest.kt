@@ -2,7 +2,7 @@ package com.ryftpay.android.core.model.payment
 
 import com.ryftpay.android.core.TestData.CUSTOMER_EMAIL
 import com.ryftpay.android.core.TestData.paymentSessionResponse
-import com.ryftpay.android.core.TestData.requiredActionResponse
+import com.ryftpay.android.core.TestData.redirectRequiredActionResponse
 import org.amshove.kluent.shouldBeEqualTo
 import org.junit.Test
 import java.util.Currency
@@ -60,7 +60,7 @@ internal class PaymentSessionTest {
     @Test
     fun `from should return required action when it is present`() {
         PaymentSession.from(
-            paymentSessionResponse.copy(requiredAction = requiredActionResponse)
-        ).requiredAction shouldBeEqualTo RequiredAction.from(requiredActionResponse)
+            paymentSessionResponse.copy(requiredAction = redirectRequiredActionResponse)
+        ).requiredAction shouldBeEqualTo RequiredAction.from(redirectRequiredActionResponse)
     }
 }

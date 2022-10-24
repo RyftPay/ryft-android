@@ -20,6 +20,7 @@ import com.ryftpay.android.core.model.api.RyftPublicApiKey
 import com.ryftpay.android.core.model.error.RyftError
 import com.ryftpay.android.core.model.payment.CardDetails
 import com.ryftpay.android.core.model.payment.CustomerDetails
+import com.ryftpay.android.core.model.payment.IdentifyAction
 import com.ryftpay.android.core.model.payment.PaymentMethod
 import com.ryftpay.android.core.model.payment.PaymentMethodOptions
 import com.ryftpay.android.core.model.payment.PaymentSession
@@ -28,6 +29,7 @@ import com.ryftpay.android.core.service.DefaultRyftPaymentService
 import com.ryftpay.android.core.service.RyftPaymentService
 import com.ryftpay.android.core.service.listener.RyftLoadPaymentListener
 import com.ryftpay.android.core.service.listener.RyftPaymentResultListener
+import com.ryftpay.android.ui.client.Checkout3dsServiceFactory
 import com.ryftpay.android.ui.client.PaymentsClientFactory
 import com.ryftpay.android.ui.delegate.DefaultRyftPaymentDelegate
 import com.ryftpay.android.ui.delegate.RyftPaymentDelegate
@@ -46,8 +48,12 @@ import com.ryftpay.android.ui.model.googlepay.LoadPaymentDataRequest
 import com.ryftpay.android.ui.model.googlepay.MerchantInfo
 import com.ryftpay.android.ui.model.googlepay.TokenizationSpecification
 import com.ryftpay.android.ui.model.googlepay.TransactionInfo
+import com.ryftpay.android.ui.model.threeds.ThreeDsIdentificationResult
+import com.ryftpay.android.ui.model.threeds.ThreeDsIdentificationResultListener
+import com.ryftpay.android.ui.service.DefaultCheckoutThreeDsService
 import com.ryftpay.android.ui.service.DefaultGooglePayService
 import com.ryftpay.android.ui.service.GooglePayService
+import com.ryftpay.android.ui.service.ThreeDsService
 import com.ryftpay.android.ui.util.RyftPublicApiKeyParceler
 import com.ryftpay.android.ui.viewmodel.GooglePayResultViewModel
 import com.ryftpay.android.ui.viewmodel.RyftPaymentResultViewModel
@@ -60,11 +66,13 @@ internal class RyftPaymentFragment :
     BottomSheetDialogFragment(),
     RyftPaymentFormListener,
     RyftPaymentResultListener,
-    RyftLoadPaymentListener {
+    RyftLoadPaymentListener,
+    ThreeDsIdentificationResultListener {
 
     private lateinit var delegate: RyftPaymentDelegate
     private lateinit var ryftPaymentService: RyftPaymentService
     private lateinit var paymentResultViewModel: RyftPaymentResultViewModel
+    private lateinit var threeDsService: ThreeDsService
     private lateinit var publicApiKey: RyftPublicApiKey
     private lateinit var clientSecret: String
     private lateinit var displayConfiguration: RyftDropInDisplayConfiguration
@@ -182,6 +190,23 @@ internal class RyftPaymentFragment :
         )
     )
 
+    override fun onPaymentRequiresIdentification(
+        returnUrl: String,
+        identifyAction: IdentifyAction
+    ) {
+        threeDsService = DefaultCheckoutThreeDsService(
+            Checkout3dsServiceFactory.create(
+                requireContext(),
+                publicApiKey.getEnvironment(),
+                returnUrl
+            )
+        )
+        threeDsService.handleIdentification(
+            identifyAction,
+            listener = this
+        )
+    }
+
     override fun onPaymentHasError(lastError: PaymentSessionError) {
         paymentResultViewModel.updateResult(
             RyftPaymentResult.Failed(RyftPaymentError.from(lastError, requireContext()))
@@ -224,6 +249,21 @@ internal class RyftPaymentFragment :
                 ),
                 emailRequired = response.customerEmail == null
             )
+        )
+    }
+
+    override fun onThreeDsIdentificationResult(
+        result: ThreeDsIdentificationResult,
+        paymentMethodId: String
+    ) {
+        ryftPaymentService.attemptPayment(
+            clientSecret = clientSecret,
+            paymentMethod = PaymentMethod.id(
+                id = paymentMethodId
+            ),
+            customerDetails = null,
+            subAccountId = subAccountId,
+            listener = this
         )
     }
 

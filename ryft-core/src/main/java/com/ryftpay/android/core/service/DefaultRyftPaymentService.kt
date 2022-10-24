@@ -100,11 +100,23 @@ class DefaultRyftPaymentService(
                     }
                     if (paymentSession.status == PaymentSessionStatus.PendingAction &&
                         paymentSession.requiredAction != null &&
-                        paymentSession.requiredAction.type == RequiredActionType.Redirect
+                        paymentSession.requiredAction.type == RequiredActionType.Redirect &&
+                        paymentSession.requiredAction.url != null
                     ) {
                         listener.onPaymentRequiresRedirect(
                             paymentSession.returnUrl,
                             paymentSession.requiredAction.url
+                        )
+                        return
+                    }
+                    if (paymentSession.status == PaymentSessionStatus.PendingAction &&
+                        paymentSession.requiredAction != null &&
+                        paymentSession.requiredAction.type == RequiredActionType.Identify &&
+                        paymentSession.requiredAction.identify != null
+                    ) {
+                        listener.onPaymentRequiresIdentification(
+                            paymentSession.returnUrl,
+                            paymentSession.requiredAction.identify
                         )
                         return
                     }

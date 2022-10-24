@@ -17,6 +17,7 @@ internal class RequiredActionTypeTest {
 
     private fun inputStringsToExpectedTypes(): Array<Any> = arrayOf(
         arrayOf("Redirect", RequiredActionType.Redirect),
+        arrayOf("Identify", RequiredActionType.Identify),
         arrayOf("Unknown", RequiredActionType.Unknown),
         arrayOf("Processing", RequiredActionType.Unknown),
         arrayOf("Garbage", RequiredActionType.Unknown)
