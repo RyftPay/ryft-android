@@ -228,8 +228,14 @@ internal class RyftPaymentFragment :
         error: RyftError?,
         throwable: Throwable?
     ) {
+        val stringResourceId = when (error?.httpStatusCode) {
+            "400" -> R.string.ryft_invalid_client_secret_developer_error_message
+            "403" -> R.string.ryft_invalid_api_key_developer_error_message
+            "404" -> R.string.ryft_payment_not_found_developer_error_message
+            else -> R.string.ryft_google_pay_error_message
+        }
         showAlertWithRetry(
-            message = getString(R.string.ryft_google_pay_error_message),
+            message = getString(stringResourceId),
             retryCallback = { onPayByGooglePay() },
             cancelCallback = { delegate.onGooglePayFailedOrCancelled() }
         )
