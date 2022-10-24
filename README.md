@@ -117,14 +117,23 @@ class CheckoutFragment : Fragment() {
     // Example function to call the drop in
     private fun showDropIn() {
         ryftDropIn.show(
-            RyftDropInConfiguration(
+            // Example config for sub account payments
+            RyftDropInConfiguration.subAccountPayment(
                 clientSecret = "<the client secret of the payment-session>",
-                subAccountId = null || "<the Id of the sub-account you are taking payments for>",
+                subAccountId = "<the Id of the sub-account you are taking payments for>",
                 googlePayConfiguration = RyftDropInGooglePayConfiguration(
                     merchantName = "<The name of your business>",
                     merchantCountryCode = "<The ISO 3166-1 alpha-2 country code of your business>"
                 )
             )
+            // Example config for standard account payments
+            // RyftDropInConfiguration.standardAccountPayment(
+            //     clientSecret = "<the client secret of the payment-session>",
+            //     googlePayConfiguration = RyftDropInGooglePayConfiguration(
+            //         merchantName = "<The name of your business>",
+            //         merchantCountryCode = "<The ISO 3166-1 alpha-2 country code of your business>"
+            //     )
+            // )
         )
     }
     
@@ -223,9 +232,9 @@ The drop-in currently has 2 usages:
 By default we will use `Payment`, however to customise the view simply pass the `usage` within the `display` configuration when initialising the drop-in:
 
 ```kotlin
-RyftDropInConfiguration(
+// Account verifications must be done via the standard account holder
+RyftDropInConfiguration.standardAccountPayment(
     clientSecret = "<the client secret of the payment-session>",
-    subAccountId = null, // account verifications must be done via the standard account holder.
     display = RyftDropInDisplayConfiguration(
         usage = RyftDropInUsage.SetupCard
     )
@@ -238,9 +247,18 @@ RyftDropInConfiguration(
 You can customise the title of the pay button by providing `payButtonTitle` within the `display` configuration when initialising the drop-in:
 
 ```kotlin
-RyftDropInConfiguration(
+// Example for sub account payments
+RyftDropInConfiguration.subAccountPayment(
     clientSecret = "<the client secret of the payment-session>",
-    subAccountId = null || "<the Id of the sub-account you are taking payments for>",
+    subAccountId = "<the Id of the sub-account you are taking payments for>",
+    display = RyftDropInDisplayConfiguration(
+        payButtonTitle = "Pay now"
+    )
+)
+
+// Example for standard account payments
+RyftDropInConfiguration.standardAccountPayment(
+    clientSecret = "<the client secret of the payment-session>",
     display = RyftDropInDisplayConfiguration(
         payButtonTitle = "Pay now"
     )
