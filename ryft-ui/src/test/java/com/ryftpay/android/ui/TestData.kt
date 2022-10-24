@@ -1,6 +1,7 @@
 package com.ryftpay.android.ui
 
 import com.ryftpay.android.core.model.api.RyftPublicApiKey
+import com.ryftpay.android.core.model.payment.IdentifyAction
 import com.ryftpay.android.core.model.payment.PaymentSession
 import com.ryftpay.android.core.model.payment.PaymentSessionStatus
 import com.ryftpay.android.ui.model.RyftCardCvc
@@ -134,5 +135,11 @@ internal object TestData {
         requiredAction = null,
         createdTimestamp = 1642098636,
         lastUpdatedTimestamp = 1642138419
+    )
+    internal val identifyAction = IdentifyAction(
+        sessionId = "session_123",
+        sessionSecret = "secret_123",
+        scheme = "visa",
+        paymentMethodId = "pmt_123"
     )
 }

@@ -23,5 +23,6 @@
     <color name="ryftDividerText">#939393</color>
     <color name="ryftBackground">#FAFAFA</color>
     <color name="ryftAlertDialogButtonText">#2581E3</color>
+    <color name="ryftThreeDsFormFooter">#FFFFFF</color>
 
 </resources>

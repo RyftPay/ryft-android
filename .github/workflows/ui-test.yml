@@ -55,6 +55,9 @@ jobs:
 
     - name: Run UI tests
       uses: reactivecircus/android-emulator-runner@v2
+      env:
+        GH_PACKAGES_USERNAME_3DS: ${{ secrets.GH_PACKAGES_USERNAME_3DS }}
+        GH_PACKAGES_PASS_3DS: ${{ secrets.GH_PACKAGES_PASS_3DS }}
       with:
         api-level: ${{ matrix.api-level }}
         force-avd-creation: false

@@ -7,14 +7,16 @@ import com.ryftpay.android.core.TestData.PAYMENT_SESSION_ID
 import com.ryftpay.android.core.TestData.SUB_ACCOUNT_ID
 import com.ryftpay.android.core.TestData.cardDetails
 import com.ryftpay.android.core.TestData.customerDetails
+import com.ryftpay.android.core.TestData.identifyRequiredActionResponse
 import com.ryftpay.android.core.TestData.paymentMethodOptions
 import com.ryftpay.android.core.TestData.paymentSessionResponse
-import com.ryftpay.android.core.TestData.requiredActionResponse
+import com.ryftpay.android.core.TestData.redirectRequiredActionResponse
 import com.ryftpay.android.core.TestData.ryftErrorResponse
 import com.ryftpay.android.core.api.payment.AttemptPaymentRequest
 import com.ryftpay.android.core.api.payment.PaymentSessionResponse
 import com.ryftpay.android.core.client.RyftApiClient
 import com.ryftpay.android.core.model.error.RyftError
+import com.ryftpay.android.core.model.payment.IdentifyAction
 import com.ryftpay.android.core.model.payment.PaymentMethod
 import com.ryftpay.android.core.model.payment.PaymentSession
 import com.ryftpay.android.core.model.payment.PaymentSessionError
@@ -245,7 +247,7 @@ internal class DefaultRyftPaymentServiceTest {
     fun `attemptPayment calls listener on payment requires redirect when api returns successful response with payment session requiring redirect`() {
         val paymentRequiringRedirect = paymentSessionResponse.copy(
             status = PaymentSessionStatus.PendingAction.toString(),
-            requiredAction = requiredActionResponse
+            requiredAction = redirectRequiredActionResponse
         )
         val response = Response.success(paymentRequiringRedirect)
         givenAttemptPaymentReturns(response)
@@ -261,7 +263,35 @@ internal class DefaultRyftPaymentServiceTest {
         verify {
             paymentResultListener.onPaymentRequiresRedirect(
                 paymentRequiringRedirect.returnUrl,
-                requiredActionResponse.url
+                redirectRequiredActionResponse.url!!
+            )
+        }
+        verify(exactly = 0) {
+            paymentResultListener.onErrorObtainingPaymentResult(any(), any())
+        }
+    }
+
+    @Test
+    fun `attemptPayment calls listener on payment requires identification when api returns successful response with payment session requiring identification`() {
+        val paymentRequiringIdentification = paymentSessionResponse.copy(
+            status = PaymentSessionStatus.PendingAction.toString(),
+            requiredAction = identifyRequiredActionResponse
+        )
+        val response = Response.success(paymentRequiringIdentification)
+        givenAttemptPaymentReturns(response)
+
+        paymentService.attemptPayment(
+            CLIENT_SECRET,
+            paymentMethod,
+            customerDetails = null,
+            subAccountId = null,
+            listener = paymentResultListener
+        )
+
+        verify {
+            paymentResultListener.onPaymentRequiresIdentification(
+                paymentRequiringIdentification.returnUrl,
+                IdentifyAction.from(identifyRequiredActionResponse.identify!!)
             )
         }
         verify(exactly = 0) {
@@ -440,7 +470,7 @@ internal class DefaultRyftPaymentServiceTest {
     fun `getLatestPaymentResult calls listener on payment requires redirect when api returns successful response with payment session requiring redirect`() {
         val paymentRequiringRedirect = paymentSessionResponse.copy(
             status = PaymentSessionStatus.PendingAction.toString(),
-            requiredAction = requiredActionResponse
+            requiredAction = redirectRequiredActionResponse
         )
         val response = Response.success(paymentRequiringRedirect)
         givenLoadPaymentSessionReturns(response)
@@ -455,7 +485,34 @@ internal class DefaultRyftPaymentServiceTest {
         verify {
             paymentResultListener.onPaymentRequiresRedirect(
                 paymentRequiringRedirect.returnUrl,
-                requiredActionResponse.url
+                redirectRequiredActionResponse.url!!
+            )
+        }
+        verify(exactly = 0) {
+            paymentResultListener.onErrorObtainingPaymentResult(any(), any())
+        }
+    }
+
+    @Test
+    fun `getLatestPaymentResult calls listener on payment requires identification when api returns successful response with payment session requiring identification`() {
+        val paymentRequiringIdentification = paymentSessionResponse.copy(
+            status = PaymentSessionStatus.PendingAction.toString(),
+            requiredAction = identifyRequiredActionResponse
+        )
+        val response = Response.success(paymentRequiringIdentification)
+        givenLoadPaymentSessionReturns(response)
+
+        paymentService.getLatestPaymentResult(
+            PAYMENT_SESSION_ID,
+            CLIENT_SECRET,
+            subAccountId = null,
+            listener = paymentResultListener
+        )
+
+        verify {
+            paymentResultListener.onPaymentRequiresIdentification(
+                paymentRequiringIdentification.returnUrl,
+                IdentifyAction.from(identifyRequiredActionResponse.identify!!)
             )
         }
         verify(exactly = 0) {
@@ -619,7 +676,7 @@ internal class DefaultRyftPaymentServiceTest {
         ),
         paymentSessionResponse.copy(
             status = PaymentSessionStatus.PendingPayment.toString(),
-            requiredAction = requiredActionResponse,
+            requiredAction = redirectRequiredActionResponse,
             lastError = null
         ),
         paymentSessionResponse.copy(
@@ -634,7 +691,7 @@ internal class DefaultRyftPaymentServiceTest {
         ),
         paymentSessionResponse.copy(
             status = PaymentSessionStatus.Unknown.toString(),
-            requiredAction = requiredActionResponse,
+            requiredAction = redirectRequiredActionResponse,
             lastError = null
         )
     )
