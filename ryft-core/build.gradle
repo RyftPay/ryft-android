@@ -26,4 +26,4 @@ ext {
     artifactDescrption = "The Core module of the Ryft Android SDK"
 }
 
-apply from: "${rootDir}/publish.gradle"
+apply from: "${rootDir}/publish-module.gradle"
