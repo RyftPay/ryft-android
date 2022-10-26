@@ -1,4 +1,5 @@
 apply plugin: "maven-publish"
+apply plugin: 'signing'
 
 task sourcesJar(type: Jar) {
     archiveClassifier.set('sources')
@@ -10,6 +11,14 @@ task sourcesJar(type: Jar) {
         // For Kotlin libraries
         from sourceSets.main.java.srcDirs
         from sourceSets.main.kotlin.srcDirs
+    }
+}
+
+task javadocJar(type: Jar) {
+    archiveClassifier.set('javadoc')
+    if (project.plugins.findPlugin("java-library")) {
+        // For Kotlin libraries
+        from javadoc
     }
 }
 
@@ -28,6 +37,10 @@ afterEvaluate { project ->
                 }
 
                 artifact sourcesJar
+                if (project.plugins.findPlugin("java-library")) {
+                    // For Kotlin libraries
+                    artifact javadocJar
+                }
 
                 pom {
                     name = project.artifactName
@@ -48,6 +61,12 @@ afterEvaluate { project ->
                             name = "Ryft"
                         }
                     }
+
+                    scm {
+                        connection = 'scm:git:github.com/RyftPay/ryft-android.git'
+                        developerConnection = 'scm:git:ssh://github.com/RyftPay/ryft-android.git'
+                        url = 'https://github.com/RyftPay/ryft-android/tree/master'
+                    }
                 }
             }
         }
@@ -55,7 +74,17 @@ afterEvaluate { project ->
 
     artifacts {
         archives sourcesJar
+        archives javadocJar
     }
+}
+
+signing {
+    useInMemoryPgpKeys(
+        rootProject.ext["signingKeyId"],
+        rootProject.ext["signingKey"],
+        rootProject.ext["signingPassword"],
+    )
+    sign publishing.publications
 }
 
 task cleanBuildPublishLocal(type: GradleBuild) {

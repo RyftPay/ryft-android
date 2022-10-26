@@ -1,6 +1,8 @@
 # Ryft Android
 
-[![build-and-test](https://github.com/RyftPay/ryft-android/actions/workflows/build-and-test.yml/badge.svg?branch=master)](https://github.com/RyftPay/ryft-android/actions/workflows/build-and-test.yml) [![](https://jitpack.io/v/RyftPay/ryft-android.svg)](https://jitpack.io/#RyftPay/ryft-android) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![build-and-test](https://github.com/RyftPay/ryft-android/actions/workflows/build-and-test.yml/badge.svg?branch=master)](https://github.com/RyftPay/ryft-android/actions/workflows/build-and-test.yml)
+[![GitHub release](https://img.shields.io/github/release/RyftPay/ryft-android.svg?maxAge=60)](https://github.com/RyftPay/ryft-android/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 Ryft for Android allows you to accept in-app payments securely and safely using our customisable UI elements.
 
@@ -19,17 +21,17 @@ Note: the Google Pay environment is determined by your public API key.
 
 ## Installation
 
-Ryft Android is available via jitpack
+Ryft Android is available via Maven Central
 
-### Jitpack
+### Maven Central
 
-Add the jitpack repository to your project's `build.gradle`:
+Add the Maven Central repository to your project's `build.gradle`:
 
 ```groovy
 allprojects {
     repositories {
         // ...
-        maven { url 'https://jitpack.io' }
+        mavenCentral()
         // ...
     }
 }
@@ -40,7 +42,7 @@ Add the ryft-android dependency to your module's `build.gradle`:
 ```groovy
 dependencies {
     // ...
-    implementation 'com.github.RyftPay:ryft-android:1.3.0'
+    implementation 'com.ryftpay:ryft-android:1.3.0'
     // ...
 }
 ```
