@@ -10,6 +10,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.navigation.fragment.findNavController
 import com.ryftpay.android.ui.delegate.DefaultRyftThreeDSecureDelegate
 import com.ryftpay.android.ui.delegate.RyftThreeDSecureDelegate
+import com.ryftpay.android.ui.extension.getParcelableArgs
 import com.ryftpay.android.ui.listener.RyftThreeDSecureListener
 import com.ryftpay.ui.R
 import kotlinx.parcelize.Parcelize
@@ -24,8 +25,10 @@ internal class RyftThreeDSecureFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        input = arguments?.getParcelable(ARGUMENTS_BUNDLE_KEY)
-            ?: throw IllegalArgumentException("No arguments provided to fragment")
+        input = arguments?.getParcelableArgs(
+            ARGUMENTS_BUNDLE_KEY,
+            Arguments::class.java
+        ) ?: throw IllegalArgumentException("No arguments provided to fragment")
     }
 
     override fun onCreateView(

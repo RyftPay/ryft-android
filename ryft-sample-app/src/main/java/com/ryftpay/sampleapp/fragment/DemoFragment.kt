@@ -22,6 +22,7 @@ import com.ryftpay.android.ui.dropin.RyftDropInResultListener
 import com.ryftpay.android.ui.dropin.RyftDropInUsage
 import com.ryftpay.android.ui.dropin.RyftPaymentResult
 import com.ryftpay.sampleapp.R
+import com.ryftpay.sampleapp.extension.getParcelableArgs
 import kotlinx.parcelize.Parcelize
 
 class DemoFragment : Fragment(), RyftDropInResultListener {
@@ -37,7 +38,7 @@ class DemoFragment : Fragment(), RyftDropInResultListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val input: Arguments = arguments?.getParcelable(ARGUMENTS_BUNDLE_KEY)
+        val input: Arguments = arguments?.getParcelableArgs(ARGUMENTS_BUNDLE_KEY, Arguments::class.java)
             ?: throw IllegalArgumentException("No arguments provided to fragment")
         // Instantiate DefaultRyftDropIn in onCreate()
         ryftDropIn = DefaultRyftDropIn(

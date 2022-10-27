@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.activity.result.contract.ActivityResultContract
 import com.ryftpay.android.ui.activity.RyftDropInActivity
+import com.ryftpay.android.ui.extension.getParcelableArgs
 
 internal class RyftDropInResultContract : ActivityResultContract<Intent, RyftPaymentResult>() {
     override fun createIntent(context: Context, input: Intent): Intent = input
@@ -12,8 +13,10 @@ internal class RyftDropInResultContract : ActivityResultContract<Intent, RyftPay
     override fun parseResult(resultCode: Int, intent: Intent?): RyftPaymentResult =
         when (resultCode) {
             Activity.RESULT_OK -> {
-                intent?.extras?.getParcelable(RyftDropInActivity.PAYMENT_RESULT_INTENT_EXTRA)
-                    ?: RyftPaymentResult.Failed(RyftPaymentError.Unexpected)
+                intent?.extras?.getParcelableArgs(
+                    RyftDropInActivity.PAYMENT_RESULT_INTENT_EXTRA,
+                    RyftPaymentResult::class.java
+                ) ?: RyftPaymentResult.Failed(RyftPaymentError.Unexpected)
             }
             Activity.RESULT_CANCELED -> RyftPaymentResult.Cancelled
             else -> RyftPaymentResult.Failed(RyftPaymentError.Unexpected)

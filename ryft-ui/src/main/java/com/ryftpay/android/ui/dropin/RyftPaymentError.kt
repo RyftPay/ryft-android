@@ -1,5 +1,6 @@
 package com.ryftpay.android.ui.dropin
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Parcelable
 import com.ryftpay.android.core.model.payment.PaymentSessionError
@@ -23,6 +24,8 @@ class RyftPaymentError(
             displayError = UNEXPECTED_ERROR_MESSAGE
         )
 
+        // We need to access string resources based on a dynamic string
+        @SuppressLint("DiscouragedApi")
         internal fun from(
             paymentSessionError: PaymentSessionError,
             context: Context

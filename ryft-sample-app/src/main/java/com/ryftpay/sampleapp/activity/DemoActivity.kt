@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Parcelable
 import androidx.appcompat.app.AppCompatActivity
 import com.ryftpay.sampleapp.R
+import com.ryftpay.sampleapp.extension.getParcelableArgs
 import com.ryftpay.sampleapp.fragment.DemoFragment
 import kotlinx.parcelize.Parcelize
 import java.lang.IllegalArgumentException
@@ -15,7 +16,7 @@ class DemoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_demo)
-        val input = intent.getParcelableExtra<Arguments>(ARGUMENTS_INTENT_EXTRA)
+        val input = intent.getParcelableArgs(ARGUMENTS_INTENT_EXTRA, Arguments::class.java)
             ?: throw IllegalArgumentException("No arguments provided to activity")
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
