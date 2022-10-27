@@ -6,6 +6,9 @@ plugins {
 java {
     sourceCompatibility = rootProject.ext.java_version
     targetCompatibility = rootProject.ext.java_version
+
+    withJavadocJar()
+    withSourcesJar()
 }
 
 dependencies {

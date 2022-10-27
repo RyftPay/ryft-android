@@ -1,10 +1,10 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <style name="Theme.Ryft" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <item name="colorPrimary">@color/blue</item>
         <item name="colorOnPrimary">@color/white</item>
         <item name="colorSecondary">@color/very_dark_grey</item>
         <item name="colorOnSecondary">@color/light_grey</item>
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimary</item>
+        <item name="android:statusBarColor" >?attr/colorPrimary</item>
         <item name="android:fontFamily">@font/ryft_nunito</item>
     </style>
 </resources>

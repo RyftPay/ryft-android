@@ -13,6 +13,7 @@ import com.google.android.gms.wallet.PaymentData
 import com.ryftpay.android.core.model.api.RyftPublicApiKey
 import com.ryftpay.android.ui.dropin.RyftDropInConfiguration
 import com.ryftpay.android.ui.dropin.RyftPaymentResult
+import com.ryftpay.android.ui.extension.getParcelableArgs
 import com.ryftpay.android.ui.fragment.RyftPaymentFragment
 import com.ryftpay.android.ui.model.googlepay.GooglePayResult
 import com.ryftpay.android.ui.model.googlepay.PaymentDataResponse
@@ -36,7 +37,7 @@ internal class RyftDropInActivity : AppCompatActivity() {
         supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         setupPaymentResultViewModel()
         setupGooglePayResultViewModel()
-        val input = intent.getParcelableExtra<Arguments>(ARGUMENTS_INTENT_EXTRA)
+        val input = intent.getParcelableArgs(ARGUMENTS_INTENT_EXTRA, Arguments::class.java)
             ?: throw IllegalArgumentException("No arguments provided to activity")
         if (savedInstanceState == null) {
             val navHostFragment = NavHostFragment.create(
@@ -53,9 +54,11 @@ internal class RyftDropInActivity : AppCompatActivity() {
         }
     }
 
+    @Deprecated("See comment below")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         // Google advises the use of AutoResolveHelper.resolveTask() (see DefaultGooglePayService.kt)
         // which forces the use of this deprecated method
+        @Suppress("DEPRECATION")
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             GooglePayService.LOAD_PAYMENT_DATA_REQUEST_CODE ->

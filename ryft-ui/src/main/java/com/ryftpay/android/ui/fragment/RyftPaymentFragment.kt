@@ -39,6 +39,7 @@ import com.ryftpay.android.ui.dropin.RyftDropInGooglePayConfiguration
 import com.ryftpay.android.ui.dropin.RyftDropInUsage
 import com.ryftpay.android.ui.dropin.RyftPaymentError
 import com.ryftpay.android.ui.dropin.RyftPaymentResult
+import com.ryftpay.android.ui.extension.getParcelableArgs
 import com.ryftpay.android.ui.extension.showAlertWithRetry
 import com.ryftpay.android.ui.listener.RyftPaymentFormListener
 import com.ryftpay.android.ui.model.RyftCard
@@ -84,8 +85,10 @@ internal class RyftPaymentFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val input: Arguments = arguments?.getParcelable(ARGUMENTS_BUNDLE_KEY)
-            ?: throw IllegalArgumentException("No arguments provided to fragment")
+        val input: Arguments = arguments?.getParcelableArgs(
+            ARGUMENTS_BUNDLE_KEY,
+            Arguments::class.java
+        ) ?: throw IllegalArgumentException("No arguments provided to fragment")
         publicApiKey = input.publicApiKey
         clientSecret = input.configuration.clientSecret
         subAccountId = input.configuration.subAccountId
