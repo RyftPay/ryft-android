@@ -48,7 +48,7 @@ internal class RyftDropInActivity : AppCompatActivity() {
                 )
             )
             supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_ryft_nav_host, navHostFragment)
+                .replace(R.id.fragment_ryft_nav_host_dropin, navHostFragment)
                 .setPrimaryNavigationFragment(navHostFragment)
                 .commit()
         }

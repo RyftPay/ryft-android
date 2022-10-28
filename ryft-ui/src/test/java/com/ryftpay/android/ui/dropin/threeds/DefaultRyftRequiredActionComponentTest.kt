@@ -1,4 +1,4 @@
-package com.ryftpay.android.ui.dropin
+package com.ryftpay.android.ui.dropin.threeds
 
 import android.content.Intent
 import androidx.activity.ComponentActivity
@@ -9,16 +9,16 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.junit.Test
 
-internal class DefaultRyftDropInTest {
+internal class DefaultRyftRequiredActionComponentTest {
 
     private val fragment = mockk<Fragment>(relaxed = true)
     private val activity = mockk<ComponentActivity>(relaxed = true)
-    private val listener = mockk<RyftDropInResultListener>(relaxed = true)
+    private val listener = mockk<RyftRequiredActionResultListener>(relaxed = true)
     private val publicApiKey = RyftPublicApiKey("pk_sandbox_123")
 
     @Test
-    internal fun `DefaultRyftDropIn should register fragment for activity on construction`() {
-        DefaultRyftDropIn(
+    internal fun `DefaultRyftRequiredActionComponent should register fragment for activity on construction`() {
+        DefaultRyftRequiredActionComponent(
             fragment,
             listener,
             publicApiKey
@@ -26,8 +26,8 @@ internal class DefaultRyftDropInTest {
 
         verify {
             fragment.registerForActivityResult(
-                match<ActivityResultContract<Intent, RyftPaymentResult>> {
-                    it is RyftDropInResultContract
+                match<ActivityResultContract<Intent, RyftRequiredActionResult>> {
+                    it is RyftRequiredActionResultContract
                 },
                 any()
             )
@@ -35,8 +35,8 @@ internal class DefaultRyftDropInTest {
     }
 
     @Test
-    internal fun `DefaultRyftDropIn should register activity for activity on construction`() {
-        DefaultRyftDropIn(
+    internal fun `DefaultRyftRequiredActionComponent should register activity for activity on construction`() {
+        DefaultRyftRequiredActionComponent(
             activity,
             listener,
             publicApiKey
@@ -44,8 +44,8 @@ internal class DefaultRyftDropInTest {
 
         verify {
             activity.registerForActivityResult(
-                match<ActivityResultContract<Intent, RyftPaymentResult>> {
-                    it is RyftDropInResultContract
+                match<ActivityResultContract<Intent, RyftRequiredActionResult>> {
+                    it is RyftRequiredActionResultContract
                 },
                 any()
             )

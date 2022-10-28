@@ -22,6 +22,7 @@
     <string name="ryft_payment_not_found_developer_error_message">Developer error - payment not found</string>
     <string name="ryft_invalid_client_secret_developer_error_message">Developer error - invalid client secret</string>
     <string name="ryft_invalid_api_key_developer_error_message">Developer error - invalid api key</string>
+    <string name="ryft_unsupported_required_action_developer_error_message">Developer error - unsupported required action: %1$s</string>
 
     <string name="ryft_bad_track_data">Your CVC or card expiration is invalid</string>
     <string name="ryft_declined_do_not_honour">Your bank has declined this card</string>
