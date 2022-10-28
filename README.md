@@ -262,11 +262,11 @@ Similarly to the drop-in, initialise the component within the fragment or activi
 class CheckoutFragment : Fragment() {
 
     // ...
-    // Declare RyftDropIn
+    // Declare RyftRequiredActionComponent
     private lateinit var ryftRequiredActionComponent: RyftRequiredActionComponent
     // ...
 
-    // Instantiate DefaultRyftDropIn in onCreate()
+    // Instantiate DefaultRyftRequiredActionComponent in onCreate()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // ...
