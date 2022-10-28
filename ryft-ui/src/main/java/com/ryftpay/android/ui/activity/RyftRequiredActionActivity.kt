@@ -156,7 +156,7 @@ internal class RyftRequiredActionActivity :
     ) : Parcelable
 
     companion object {
-        internal const val REQUIRED_ACTION_RESULT_INTENT_EXTRA = "com.ryftpay.android.ui.dropin.RyftRequiredActionResult"
+        internal const val REQUIRED_ACTION_RESULT_INTENT_EXTRA = "com.ryftpay.android.ui.dropin.threeds.RyftRequiredActionResult"
         private const val ARGUMENTS_INTENT_EXTRA = "com.ryftpay.android.ui.activity.RyftRequiredActionActivity.Arguments"
 
         internal fun createIntent(
