@@ -244,6 +244,138 @@ RyftDropInConfiguration.standardAccountPayment(
 )
 ```
 
+### Handling Required Actions
+
+Some payments will need additional steps after the initial payment attempt in order to be successfully authorized/settled (for example 3DS).
+Our drop-in payment controller will handle these steps automatically for you, however you may wish or need to handle any required actions outside of checkout or by yourself if using your own UI.
+
+A common use-case would be a MIT payment in which the bank still mandates that 3DS be performed to authorize the payment.
+In this case you will need to bring your customer back online in your app/website and have them complete the necessary step.
+
+You can use our `RyftRequiredActionComponent` by itself (without the drop-in) if you wish to facilitate this.
+
+#### Initialise the component
+
+Similarly to the drop-in, initialise the component within the fragment or activity which handles your checkout process, within the `onCreate()` function:
+
+```kotlin
+class CheckoutFragment : Fragment() {
+
+    // ...
+    // Declare RyftRequiredActionComponent
+    private lateinit var ryftRequiredActionComponent: RyftRequiredActionComponent
+    // ...
+
+    // Instantiate DefaultRyftRequiredActionComponent in onCreate()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        // ...
+        ryftRequiredActionComponent = DefaultRyftRequiredActionComponent(
+            // The calling fragment (activity is also supported)
+            fragment = this,
+            // The class you want to listen for the result (see "Implementing the RyftRequiredActionResultListener" below)
+            listener = this,
+            RyftPublicApiKey("<your public API key>")
+        )
+        // ...
+    }
+    
+    // ...
+}
+```
+
+#### Handle the required action
+
+In order to handle the required action, you simply have to call the method `handle()` whilst passing in your configuration and the required action:
+
+```kotlin
+class CheckoutFragment : Fragment() {
+
+    // ...
+    
+    // Example function to handle the required action
+    // Fetch 'requiredAction' from your backend
+    private fun handleRequiredAction(requiredAction: RequiredAction) {
+        ryftRequiredActionComponent.handle(
+            // Example config for sub account payments
+            RyftRequiredActionComponent.Configuration.subAccountPayment(
+                clientSecret = "<the client secret of the payment-session>",
+                subAccountId = "<the Id of the sub-account you are taking payments for>"
+            ),
+            // Example config for standard account payments
+            // RyftRequiredActionComponent.Configuration.standardAccountPayment(
+            //     clientSecret = "<the client secret of the payment-session>"
+            // ),
+            requiredAction
+        )
+    }
+    
+    // ...
+}
+```
+
+#### Implementing the RyftRequiredActionResultListener
+
+Once you've called `handle`, the component will trigger any necessary actions against the Ryft API to complete it.
+
+To handle the result, you have to specify a listener on construction that will implement the `RyftRequiredActionResultListener` interface:
+
+```kotlin
+interface RyftRequiredActionResultListener {
+    fun onRequiredActionResult(result: RyftRequiredActionResult)
+}
+```
+
+**Example:**
+
+```kotlin
+class CheckoutFragment : Fragment(), RyftDropInResultListener {
+
+    // ...
+    
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        // ...
+        ryftRequiredActionComponent = DefaultRyftRequiredActionComponent(
+            fragment = this,
+            listener = this, // This fragment will listen for the dropin result
+            RyftPublicApiKey("<your public API key>")
+        )
+        // ...
+    }
+    
+    // ...
+
+    override fun onRequiredActionResult(result: RyftRequiredActionResult) = when (result) {
+        // The required action was handled successfully - inspect the status to determine the next step
+        // `result.paymentSession` returns the updated payment session
+        is RyftRequiredActionResult.Success -> {
+            val status = result.paymentSession.status
+            // ...
+        }
+        // There was an error whilst handling the required action - show an alert to the customer
+        // `result.error.displayError` provides a human friendly message you can display
+        is RyftRequiredActionResult.Error -> {
+            AlertDialog.Builder(requireContext())
+                .setTitle("Error taking payment")
+                .setMessage(result.error.displayError)
+                .setPositiveButton("Try again") { _, _ ->
+                    // Fetch the latest 'requiredAction' from your backend
+                    handleRequiredAction(requiredAction)
+                }
+                .setNegativeButton("Cancel") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .create()
+                .show()
+        }
+    }
+    
+    // ...
+}
+```
+
+
 ### Customising the drop-in
 
 You can customise the title of the pay button by providing `payButtonTitle` within the `display` configuration when initialising the drop-in:

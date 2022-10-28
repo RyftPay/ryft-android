@@ -10,7 +10,7 @@ import java.io.IOException
 
 @Parcelize
 class RyftPaymentError(
-    val paymentSessionError: PaymentSessionError?,
+    val paymentSessionError: PaymentSessionError? = null,
     val displayError: String
 ) : Parcelable {
 
@@ -20,7 +20,6 @@ class RyftPaymentError(
         private const val UNEXPECTED_ERROR_MESSAGE = "An unexpected error occurred"
 
         val Unexpected = RyftPaymentError(
-            paymentSessionError = null,
             displayError = UNEXPECTED_ERROR_MESSAGE
         )
 
@@ -50,8 +49,7 @@ class RyftPaymentError(
                 context.getString(R.string.ryft_unknown_error)
             }
             return RyftPaymentError(
-                paymentSessionError = null,
-                displayError
+                displayError = displayError
             )
         }
     }

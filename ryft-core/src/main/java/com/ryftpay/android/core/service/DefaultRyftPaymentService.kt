@@ -13,6 +13,7 @@ import com.ryftpay.android.core.model.payment.PaymentSessionStatus
 import com.ryftpay.android.core.model.payment.RequiredActionType
 import com.ryftpay.android.core.service.listener.RyftLoadPaymentListener
 import com.ryftpay.android.core.service.listener.RyftPaymentResultListener
+import com.ryftpay.android.core.service.listener.RyftRawPaymentResultListener
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -92,6 +93,10 @@ class DefaultRyftPaymentService(
                 }
                 response.body()?.let {
                     val paymentSession = PaymentSession.from(it)
+                    if (listener is RyftRawPaymentResultListener) {
+                        listener.onRawPaymentResult(paymentSession)
+                        return
+                    }
                     if (paymentSession.status == PaymentSessionStatus.Approved ||
                         paymentSession.status == PaymentSessionStatus.Captured
                     ) {

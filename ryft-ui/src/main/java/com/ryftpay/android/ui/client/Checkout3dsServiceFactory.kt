@@ -15,7 +15,7 @@ internal object Checkout3dsServiceFactory {
     fun create(
         context: Context,
         ryftEnvironment: RyftEnvironment,
-        returnUrl: String
+        returnUrl: String?
     ): Checkout3DSService = Checkout3DSService(
         context,
         ryftEnvironment.toCheckoutComEnvironment(),
@@ -32,6 +32,6 @@ internal object Checkout3dsServiceFactory {
                 )
             )
         ),
-        appUrl = Uri.parse(returnUrl)
+        appUrl = if (returnUrl != null) Uri.parse(returnUrl) else null
     )
 }

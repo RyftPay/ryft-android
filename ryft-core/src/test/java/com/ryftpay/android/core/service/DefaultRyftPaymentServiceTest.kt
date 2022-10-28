@@ -23,6 +23,7 @@ import com.ryftpay.android.core.model.payment.PaymentSessionError
 import com.ryftpay.android.core.model.payment.PaymentSessionStatus
 import com.ryftpay.android.core.service.listener.RyftLoadPaymentListener
 import com.ryftpay.android.core.service.listener.RyftPaymentResultListener
+import com.ryftpay.android.core.service.listener.RyftRawPaymentResultListener
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -40,6 +41,7 @@ internal class DefaultRyftPaymentServiceTest {
 
     private val client = mockk<RyftApiClient>(relaxed = true)
     private val paymentResultListener = mockk<RyftPaymentResultListener>(relaxed = true)
+    private val rawPaymentResultListener = mockk<RyftRawPaymentResultListener>(relaxed = true)
     private val loadPaymentListener = mockk<RyftLoadPaymentListener>(relaxed = true)
     private val paymentService = DefaultRyftPaymentService(client)
     private val paymentMethod = PaymentMethod.card(cardDetails, paymentMethodOptions)
@@ -540,6 +542,417 @@ internal class DefaultRyftPaymentServiceTest {
         }
         verify(exactly = 0) {
             paymentResultListener.onErrorObtainingPaymentResult(any(), any())
+        }
+    }
+
+    @Test
+    fun `attemptPayment calls raw listener on attempting payment`() {
+        paymentService.attemptPayment(
+            CLIENT_SECRET,
+            paymentMethod,
+            customerDetails = null,
+            subAccountId = null,
+            listener = rawPaymentResultListener
+        )
+
+        verify {
+            rawPaymentResultListener.onAttemptingPayment()
+        }
+    }
+
+    @Test
+    fun `attemptPayment calls raw listener on error when api throws an exception`() {
+        val exception = Exception("bang")
+        givenAttemptPaymentThrows(exception)
+
+        paymentService.attemptPayment(
+            CLIENT_SECRET,
+            paymentMethod,
+            customerDetails = null,
+            subAccountId = null,
+            listener = rawPaymentResultListener
+        )
+
+        verify {
+            rawPaymentResultListener.onErrorObtainingPaymentResult(error = null, exception)
+        }
+    }
+
+    @Test
+    fun `attemptPayment calls raw listener on error with unknown error when api returns unexpected error response`() {
+        val response = Response.error<PaymentSessionResponse>(500, ResponseBody.create(null, "injiojf-3"))
+        givenAttemptPaymentReturns(response)
+
+        paymentService.attemptPayment(
+            CLIENT_SECRET,
+            paymentMethod,
+            customerDetails = null,
+            subAccountId = null,
+            listener = rawPaymentResultListener
+        )
+
+        verify {
+            rawPaymentResultListener.onErrorObtainingPaymentResult(RyftError.Unknown, throwable = null)
+        }
+    }
+
+    @Test
+    fun `attemptPayment calls raw listener on error with expected error when api returns ryft error response`() {
+        val response = Response.error<PaymentSessionResponse>(
+            500,
+            ResponseBody.create(null, ObjectMapper().writeValueAsString(ryftErrorResponse))
+        )
+        givenAttemptPaymentReturns(response)
+
+        paymentService.attemptPayment(
+            CLIENT_SECRET,
+            paymentMethod,
+            customerDetails = null,
+            subAccountId = null,
+            listener = rawPaymentResultListener
+        )
+
+        verify {
+            rawPaymentResultListener.onErrorObtainingPaymentResult(RyftError.from(ryftErrorResponse), throwable = null)
+        }
+    }
+
+    @Test
+    @Parameters(method = "unexpectedPaymentSessions")
+    fun `attemptPayment calls raw listener on raw payment result when api returns successful response with unexpected payment session`(
+        unexpectedPayment: PaymentSessionResponse
+    ) {
+        val response = Response.success(unexpectedPayment)
+        givenAttemptPaymentReturns(response)
+
+        paymentService.attemptPayment(
+            CLIENT_SECRET,
+            paymentMethod,
+            customerDetails = null,
+            subAccountId = null,
+            listener = rawPaymentResultListener
+        )
+
+        verify {
+            rawPaymentResultListener.onRawPaymentResult(
+                PaymentSession.from(unexpectedPayment)
+            )
+        }
+        verify(exactly = 0) {
+            rawPaymentResultListener.onErrorObtainingPaymentResult(any(), any())
+        }
+    }
+
+    @Test
+    fun `attemptPayment calls raw listener on raw payment result when api returns response with payment session containing last error`() {
+        val paymentWithUserError = paymentSessionResponse.copy(
+            status = PaymentSessionStatus.PendingPayment.toString(),
+            lastError = LAST_PAYMENT_ERROR,
+            requiredAction = null
+        )
+        val response = Response.success(paymentWithUserError)
+        givenAttemptPaymentReturns(response)
+
+        paymentService.attemptPayment(
+            CLIENT_SECRET,
+            paymentMethod,
+            customerDetails = null,
+            subAccountId = null,
+            listener = rawPaymentResultListener
+        )
+
+        verify {
+            rawPaymentResultListener.onRawPaymentResult(
+                PaymentSession.from(paymentWithUserError)
+            )
+        }
+        verify(exactly = 0) {
+            rawPaymentResultListener.onErrorObtainingPaymentResult(any(), any())
+            rawPaymentResultListener.onPaymentHasError(any())
+        }
+    }
+
+    @Test
+    fun `attemptPayment calls raw listener on raw payment result when api returns successful response with payment session requiring redirect`() {
+        val paymentRequiringRedirect = paymentSessionResponse.copy(
+            status = PaymentSessionStatus.PendingAction.toString(),
+            requiredAction = redirectRequiredActionResponse
+        )
+        val response = Response.success(paymentRequiringRedirect)
+        givenAttemptPaymentReturns(response)
+
+        paymentService.attemptPayment(
+            CLIENT_SECRET,
+            paymentMethod,
+            customerDetails = null,
+            subAccountId = null,
+            listener = rawPaymentResultListener
+        )
+
+        verify {
+            rawPaymentResultListener.onRawPaymentResult(
+                PaymentSession.from(paymentRequiringRedirect)
+            )
+        }
+        verify(exactly = 0) {
+            rawPaymentResultListener.onErrorObtainingPaymentResult(any(), any())
+            rawPaymentResultListener.onPaymentRequiresRedirect(any(), any())
+        }
+    }
+
+    @Test
+    fun `attemptPayment calls raw listener on raw payment result when api returns successful response with payment session requiring identification`() {
+        val paymentRequiringIdentification = paymentSessionResponse.copy(
+            status = PaymentSessionStatus.PendingAction.toString(),
+            requiredAction = identifyRequiredActionResponse
+        )
+        val response = Response.success(paymentRequiringIdentification)
+        givenAttemptPaymentReturns(response)
+
+        paymentService.attemptPayment(
+            CLIENT_SECRET,
+            paymentMethod,
+            customerDetails = null,
+            subAccountId = null,
+            listener = rawPaymentResultListener
+        )
+
+        verify {
+            rawPaymentResultListener.onRawPaymentResult(
+                PaymentSession.from(paymentRequiringIdentification)
+            )
+        }
+        verify(exactly = 0) {
+            rawPaymentResultListener.onErrorObtainingPaymentResult(any(), any())
+            rawPaymentResultListener.onPaymentRequiresIdentification(any(), any())
+        }
+    }
+
+    @Test
+    @Parameters(method = "approvedPaymentSessions")
+    fun `attemptPayment calls raw listener on raw payment result when api returns successful response with approved payment session`(
+        approvedPayment: PaymentSessionResponse
+    ) {
+        val response = Response.success(approvedPayment)
+        givenAttemptPaymentReturns(response)
+
+        paymentService.attemptPayment(
+            CLIENT_SECRET,
+            paymentMethod,
+            customerDetails = null,
+            subAccountId = null,
+            listener = rawPaymentResultListener
+        )
+
+        verify {
+            rawPaymentResultListener.onRawPaymentResult(
+                PaymentSession.from(approvedPayment)
+            )
+        }
+        verify(exactly = 0) {
+            rawPaymentResultListener.onErrorObtainingPaymentResult(any(), any())
+            rawPaymentResultListener.onPaymentApproved(any())
+        }
+    }
+
+    @Test
+    fun `getLatestPaymentResult calls raw listener on loading payment session`() {
+        paymentService.getLatestPaymentResult(
+            PAYMENT_SESSION_ID,
+            CLIENT_SECRET,
+            subAccountId = null,
+            listener = rawPaymentResultListener
+        )
+
+        verify {
+            rawPaymentResultListener.onLoadingPaymentResult()
+        }
+    }
+
+    @Test
+    fun `getLatestPaymentResult calls raw listener on error when api throws an exception`() {
+        val exception = Exception("bang")
+        givenLoadPaymentSessionThrows(exception)
+
+        paymentService.getLatestPaymentResult(
+            PAYMENT_SESSION_ID,
+            CLIENT_SECRET,
+            subAccountId = null,
+            listener = rawPaymentResultListener
+        )
+
+        verify {
+            rawPaymentResultListener.onErrorObtainingPaymentResult(error = null, exception)
+        }
+    }
+
+    @Test
+    fun `getLatestPaymentResult calls raw listener on error with unknown error when api returns unexpected error response`() {
+        val response = Response.error<PaymentSessionResponse>(500, ResponseBody.create(null, "injiojf-3"))
+        givenLoadPaymentSessionReturns(response)
+
+        paymentService.getLatestPaymentResult(
+            PAYMENT_SESSION_ID,
+            CLIENT_SECRET,
+            subAccountId = null,
+            listener = rawPaymentResultListener
+        )
+
+        verify {
+            rawPaymentResultListener.onErrorObtainingPaymentResult(RyftError.Unknown, throwable = null)
+        }
+    }
+
+    @Test
+    fun `getLatestPaymentResult calls raw listener on error with expected error when api returns ryft error response`() {
+        val response = Response.error<PaymentSessionResponse>(
+            500,
+            ResponseBody.create(null, ObjectMapper().writeValueAsString(ryftErrorResponse))
+        )
+        givenLoadPaymentSessionReturns(response)
+
+        paymentService.getLatestPaymentResult(
+            PAYMENT_SESSION_ID,
+            CLIENT_SECRET,
+            subAccountId = null,
+            listener = rawPaymentResultListener
+        )
+
+        verify {
+            rawPaymentResultListener.onErrorObtainingPaymentResult(RyftError.from(ryftErrorResponse), throwable = null)
+        }
+    }
+
+    @Test
+    @Parameters(method = "unexpectedPaymentSessions")
+    fun `getLatestPaymentResult calls raw listener on raw payment result when api returns successful response with unexpected payment session`(
+        unexpectedPayment: PaymentSessionResponse
+    ) {
+        val response = Response.success(unexpectedPayment)
+        givenLoadPaymentSessionReturns(response)
+
+        paymentService.getLatestPaymentResult(
+            PAYMENT_SESSION_ID,
+            CLIENT_SECRET,
+            subAccountId = null,
+            listener = rawPaymentResultListener
+        )
+
+        verify {
+            rawPaymentResultListener.onRawPaymentResult(
+                PaymentSession.from(unexpectedPayment)
+            )
+        }
+        verify(exactly = 0) {
+            rawPaymentResultListener.onErrorObtainingPaymentResult(any(), any())
+        }
+    }
+
+    @Test
+    fun `getLatestPaymentResult calls raw listener on raw payment result when api returns response with payment session containing last error`() {
+        val paymentWithUserError = paymentSessionResponse.copy(
+            status = PaymentSessionStatus.PendingPayment.toString(),
+            lastError = LAST_PAYMENT_ERROR,
+            requiredAction = null
+        )
+        val response = Response.success(paymentWithUserError)
+        givenLoadPaymentSessionReturns(response)
+
+        paymentService.getLatestPaymentResult(
+            PAYMENT_SESSION_ID,
+            CLIENT_SECRET,
+            subAccountId = null,
+            listener = rawPaymentResultListener
+        )
+
+        verify {
+            rawPaymentResultListener.onRawPaymentResult(
+                PaymentSession.from(paymentWithUserError)
+            )
+        }
+        verify(exactly = 0) {
+            rawPaymentResultListener.onErrorObtainingPaymentResult(any(), any())
+            rawPaymentResultListener.onPaymentHasError(any())
+        }
+    }
+
+    @Test
+    fun `getLatestPaymentResult calls raw listener on raw payment result when api returns successful response with payment session requiring redirect`() {
+        val paymentRequiringRedirect = paymentSessionResponse.copy(
+            status = PaymentSessionStatus.PendingAction.toString(),
+            requiredAction = redirectRequiredActionResponse
+        )
+        val response = Response.success(paymentRequiringRedirect)
+        givenLoadPaymentSessionReturns(response)
+
+        paymentService.getLatestPaymentResult(
+            PAYMENT_SESSION_ID,
+            CLIENT_SECRET,
+            subAccountId = null,
+            listener = rawPaymentResultListener
+        )
+
+        verify {
+            rawPaymentResultListener.onRawPaymentResult(
+                PaymentSession.from(paymentRequiringRedirect)
+            )
+        }
+        verify(exactly = 0) {
+            rawPaymentResultListener.onErrorObtainingPaymentResult(any(), any())
+            rawPaymentResultListener.onPaymentRequiresRedirect(any(), any())
+        }
+    }
+
+    @Test
+    fun `getLatestPaymentResult calls raw listener on raw payment result when api returns successful response with payment session requiring identification`() {
+        val paymentRequiringIdentification = paymentSessionResponse.copy(
+            status = PaymentSessionStatus.PendingAction.toString(),
+            requiredAction = identifyRequiredActionResponse
+        )
+        val response = Response.success(paymentRequiringIdentification)
+        givenLoadPaymentSessionReturns(response)
+
+        paymentService.getLatestPaymentResult(
+            PAYMENT_SESSION_ID,
+            CLIENT_SECRET,
+            subAccountId = null,
+            listener = rawPaymentResultListener
+        )
+
+        verify {
+            rawPaymentResultListener.onRawPaymentResult(
+                PaymentSession.from(paymentRequiringIdentification)
+            )
+        }
+        verify(exactly = 0) {
+            rawPaymentResultListener.onErrorObtainingPaymentResult(any(), any())
+            rawPaymentResultListener.onPaymentRequiresIdentification(any(), any())
+        }
+    }
+
+    @Test
+    @Parameters(method = "approvedPaymentSessions")
+    fun `getLatestPaymentResult calls raw listener on raw payment result when api returns successful response with approved payment session`(
+        approvedPayment: PaymentSessionResponse
+    ) {
+        val response = Response.success(approvedPayment)
+        givenLoadPaymentSessionReturns(response)
+
+        paymentService.getLatestPaymentResult(
+            PAYMENT_SESSION_ID,
+            CLIENT_SECRET,
+            subAccountId = null,
+            listener = rawPaymentResultListener
+        )
+
+        verify {
+            rawPaymentResultListener.onRawPaymentResult(
+                PaymentSession.from(approvedPayment)
+            )
+        }
+        verify(exactly = 0) {
+            rawPaymentResultListener.onErrorObtainingPaymentResult(any(), any())
+            rawPaymentResultListener.onPaymentApproved(any())
         }
     }
 
