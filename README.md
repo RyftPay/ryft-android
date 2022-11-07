@@ -50,7 +50,7 @@ Add the ryft-android dependency to your module's `build.gradle`:
 ```groovy
 dependencies {
     // ...
-    implementation 'com.ryftpay:ryft-android:1.3.0'
+    implementation 'com.ryftpay:ryft-android:1.4.0'
     // ...
 }
 ```
@@ -151,7 +151,7 @@ class CheckoutFragment : Fragment() {
 }
 ```
 
-#### Google Pay
+#### Optional: Google Pay
 
 Google Pay will be available for users providing the following is true:
 - You have provided a RyftDropInGooglePayConfiguration object when displaying the drop-in
@@ -228,7 +228,7 @@ Note that if a payment requires further action for the payment to be approved (e
 
 No action is required from you in this use-case and you will either be notified that the payment was then approved, or that it failed (e.g. due to 3ds authentication)
 
-### Using the drop-in for setting up cards for future use
+### Optional: Using the drop-in for setting up cards for future use
 
 A common use-case for some businesses is setting up and storing cards without charging the customer.
 This is also known as zero-value authorization or account verification.
@@ -252,7 +252,7 @@ RyftDropInConfiguration.standardAccountPayment(
 )
 ```
 
-### Handling Required Actions
+### Optional: Handling Required Actions
 
 Some payments will need additional steps after the initial payment attempt in order to be successfully authorized/settled (for example 3DS).
 Our drop-in payment controller will handle these steps automatically for you, however you may wish or need to handle any required actions outside of checkout or by yourself if using your own UI.
@@ -384,7 +384,7 @@ class CheckoutFragment : Fragment(), RyftDropInResultListener {
 ```
 
 
-### Customising the drop-in
+### Optional: Customising the drop-in
 
 You can customise the title of the pay button by providing `payButtonTitle` within the `display` configuration when initialising the drop-in:
 
