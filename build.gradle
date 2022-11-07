@@ -39,8 +39,8 @@ allprojects {
         maven {
             url 'https://maven.pkg.github.com/checkout/checkout-3ds-sdk-android'
             credentials {
-                username = project.findProperty("ghPackagesUsername3ds") ?: System.getenv('GH_PACKAGES_USERNAME_3DS')
-                password = project.findProperty("ghPackagesPass3ds") ?: System.getenv('GH_PACKAGES_PASS_3DS')
+                username = project.findProperty("ghUsername") ?: System.getenv('GH_USERNAME')
+                password = project.findProperty("ghPackagesToken") ?: System.getenv('GH_PACKAGES_TOKEN')
             }
         }
     }
