@@ -25,13 +25,21 @@ Ryft Android is available via Maven Central
 
 ### Maven Central
 
-Add the Maven Central repository to your project's `build.gradle`:
+Add the Maven Central repository and our 3ds dependency repository to your project's `build.gradle`:
 
 ```groovy
 allprojects {
     repositories {
         // ...
         mavenCentral()
+        // 3ds dependency - required
+        maven {
+            url 'https://maven.pkg.github.com/checkout/checkout-3ds-sdk-android'
+            credentials {
+                username = '<your github username>'
+                password = '<your github personal access token (classic)>'
+            }
+        }
         // ...
     }
 }
