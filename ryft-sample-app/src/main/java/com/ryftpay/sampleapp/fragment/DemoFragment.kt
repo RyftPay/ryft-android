@@ -6,13 +6,13 @@ import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Spinner
 import androidx.fragment.app.Fragment
 import com.ryftpay.android.core.model.api.RyftPublicApiKey
+import com.ryftpay.android.core.model.payment.IdentifyAction
+import com.ryftpay.android.core.model.payment.RequiredAction
+import com.ryftpay.android.core.model.payment.RequiredActionType
 import com.ryftpay.android.ui.dropin.DefaultRyftDropIn
 import com.ryftpay.android.ui.dropin.RyftDropIn
 import com.ryftpay.android.ui.dropin.RyftDropInConfiguration
@@ -21,20 +21,31 @@ import com.ryftpay.android.ui.dropin.RyftDropInGooglePayConfiguration
 import com.ryftpay.android.ui.dropin.RyftDropInResultListener
 import com.ryftpay.android.ui.dropin.RyftDropInUsage
 import com.ryftpay.android.ui.dropin.RyftPaymentResult
+import com.ryftpay.android.ui.dropin.threeds.DefaultRyftRequiredActionComponent
+import com.ryftpay.android.ui.dropin.threeds.RyftRequiredActionComponent
+import com.ryftpay.android.ui.dropin.threeds.RyftRequiredActionResult
+import com.ryftpay.android.ui.dropin.threeds.RyftRequiredActionResultListener
 import com.ryftpay.sampleapp.R
 import com.ryftpay.sampleapp.extension.getParcelableArgs
 import kotlinx.parcelize.Parcelize
+import org.json.JSONObject
 
-class DemoFragment : Fragment(), RyftDropInResultListener {
+class DemoFragment : Fragment(), RyftDropInResultListener, RyftRequiredActionResultListener {
 
     // Sample app variables
     private lateinit var clientSecretInput: EditText
     private lateinit var subAccountIdInput: EditText
-    private lateinit var usageInput: Spinner
+    private lateinit var requiredActionJsonInput: EditText
+    private var selectedUsage: RyftDropInUsage = RyftDropInUsage.Payment
     private lateinit var paymentButton: Button
+    private lateinit var setupCardButton: Button
+    private lateinit var handleRequiredActionButton: Button
 
     // Declare RyftDropIn
     private lateinit var ryftDropIn: RyftDropIn
+
+    // Declare RyftRequiredActionComponent
+    private lateinit var ryftRequiredActionComponent: RyftRequiredActionComponent
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +53,12 @@ class DemoFragment : Fragment(), RyftDropInResultListener {
             ?: throw IllegalArgumentException("No arguments provided to fragment")
         // Instantiate DefaultRyftDropIn in onCreate()
         ryftDropIn = DefaultRyftDropIn(
+            fragment = this,
+            listener = this,
+            RyftPublicApiKey(input.publicApiKey)
+        )
+        // Instantiate DefaultRyftRequiredActionComponent in onCreate()
+        ryftRequiredActionComponent = DefaultRyftRequiredActionComponent(
             fragment = this,
             listener = this,
             RyftPublicApiKey(input.publicApiKey)
@@ -62,62 +79,75 @@ class DemoFragment : Fragment(), RyftDropInResultListener {
         // Instantiate sample app variables
         clientSecretInput = view.findViewById(R.id.input_client_secret)
         subAccountIdInput = view.findViewById(R.id.input_sub_account_id)
-        usageInput = view.findViewById(R.id.input_usage)
-        val usages = RyftDropInUsage.values().map { it.name }
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, usages)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        usageInput.adapter = adapter
-        usageInput.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                val selectedItem = parent?.getItemAtPosition(position).toString()
-                selectedItem.let {
-                    val selectedUsage = RyftDropInUsage.valueOf(it)
-                    paymentButton.text = when (selectedUsage) {
-                        RyftDropInUsage.Payment -> requireContext().getString(R.string.button_payment)
-                        RyftDropInUsage.SetupCard -> requireContext().getString(R.string.button_setup_card)
-                    }
-                }
-            }
-        }
+        requiredActionJsonInput = view.findViewById(R.id.input_required_action_json)
         paymentButton = view.findViewById(R.id.button_payment)
+        setupCardButton = view.findViewById(R.id.button_setup_card)
+        handleRequiredActionButton = view.findViewById(R.id.button_handle_required_action)
 
         // Load Ryft payment sheet when payment is clicked
         paymentButton.setOnClickListener {
+            selectedUsage = RyftDropInUsage.Payment
             showDropIn()
+        }
+
+        // Load Ryft payment sheet when setup card is clicked
+        setupCardButton.setOnClickListener {
+            selectedUsage = RyftDropInUsage.SetupCard
+            showDropIn()
+        }
+
+        handleRequiredActionButton.setOnClickListener {
+            handleRequiredAction()
         }
     }
 
     // Handle RyftPaymentResult
-    override fun onPaymentResult(result: RyftPaymentResult) {
-        val selectedUsage = RyftDropInUsage.valueOf(usageInput.selectedItem.toString())
-        return when (result) {
-            is RyftPaymentResult.Approved -> {
-                displayInformativeAlert(
-                    title = when (selectedUsage) {
-                        RyftDropInUsage.Payment -> "Payment successful"
-                        RyftDropInUsage.SetupCard -> "Card saved successfully"
-                    },
-                    message = "Hooray!"
-                )
-                clientSecretInput.text.clear()
+    override fun onPaymentResult(result: RyftPaymentResult) = when (result) {
+        is RyftPaymentResult.Approved -> {
+            displayInformativeAlert(
+                title = when (selectedUsage) {
+                    RyftDropInUsage.Payment -> "Payment successful"
+                    RyftDropInUsage.SetupCard -> "Card saved successfully"
+                },
+                message = "Hooray!"
+            )
+            clientSecretInput.text.clear()
+        }
+        is RyftPaymentResult.Failed -> {
+            displayErrorAlert(
+                errorMessage = result.error.displayError
+            ) {
+                showDropIn()
             }
-            is RyftPaymentResult.Failed -> {
-                displayErrorAlert(
-                    errorMessage = result.error.displayError
+        }
+        is RyftPaymentResult.Cancelled -> {
+            when (selectedUsage) {
+                RyftDropInUsage.Payment -> displayInformativeAlert(
+                    title = "Payment cancelled",
+                    message = "You cancelled the payment"
+                )
+                RyftDropInUsage.SetupCard -> displayInformativeAlert(
+                    title = "Card setup cancelled",
+                    message = "You cancelled the card setup"
                 )
             }
-            is RyftPaymentResult.Cancelled -> {
-                when (selectedUsage) {
-                    RyftDropInUsage.Payment -> displayInformativeAlert(
-                        title = "Payment cancelled",
-                        message = "You cancelled the payment"
-                    )
-                    RyftDropInUsage.SetupCard -> displayInformativeAlert(
-                        title = "Card setup cancelled",
-                        message = "You cancelled the card setup"
-                    )
-                }
+        }
+    }
+
+    override fun onRequiredActionResult(result: RyftRequiredActionResult) = when (result) {
+        is RyftRequiredActionResult.Success -> {
+            displayInformativeAlert(
+                title = "Required Action successful",
+                message = "Hooray! Status: ${result.paymentSession.status}"
+            )
+            clientSecretInput.text.clear()
+            requiredActionJsonInput.text.clear()
+        }
+        is RyftRequiredActionResult.Error -> {
+            displayErrorAlert(
+                errorMessage = result.error.displayError
+            ) {
+                handleRequiredAction()
             }
         }
     }
@@ -127,20 +157,34 @@ class DemoFragment : Fragment(), RyftDropInResultListener {
         ryftDropIn.show(
             RyftDropInConfiguration(
                 clientSecret = clientSecretInput.text.toString(),
-                subAccountId = if (subAccountIdInput.text.any()) {
-                    subAccountIdInput.text.toString()
-                } else {
-                    null
-                },
+                subAccountId = parseSubAccountId(),
                 display = RyftDropInDisplayConfiguration(
                     payButtonTitle = "Pay Demo",
-                    usage = RyftDropInUsage.valueOf(usageInput.selectedItem.toString())
+                    usage = selectedUsage
                 ),
                 googlePayConfiguration = RyftDropInGooglePayConfiguration(
                     merchantName = DEMO_MERCHANT_NAME,
                     merchantCountryCode = DEMO_MERCHANT_COUNTRY_CODE
                 )
             )
+        )
+    }
+
+    private fun handleRequiredAction() {
+        val subAccountId = parseSubAccountId()
+        val configuration = if (subAccountId != null) {
+            RyftRequiredActionComponent.Configuration.subAccountPayment(
+                clientSecret = clientSecretInput.text.toString(),
+                subAccountId = subAccountId
+            )
+        } else {
+            RyftRequiredActionComponent.Configuration.standardAccountPayment(
+                clientSecret = clientSecretInput.text.toString()
+            )
+        }
+        ryftRequiredActionComponent.handle(
+            configuration,
+            parseRequiredActionJson()
         )
     }
 
@@ -159,19 +203,46 @@ class DemoFragment : Fragment(), RyftDropInResultListener {
     }
 
     private fun displayErrorAlert(
-        errorMessage: String
+        errorMessage: String,
+        function: () -> Unit
     ) {
         AlertDialog.Builder(requireContext())
             .setTitle("Error taking payment")
             .setMessage(errorMessage)
             .setPositiveButton("Try again") { _, _ ->
-                showDropIn()
+                function()
             }
             .setNegativeButton("Cancel") { dialog, _ ->
                 dialog.dismiss()
             }
             .create()
             .show()
+    }
+
+    private fun parseSubAccountId(): String? = if (subAccountIdInput.text.any()) {
+        subAccountIdInput.text.toString()
+    } else {
+        null
+    }
+
+    private fun parseRequiredActionJson(): RequiredAction {
+        val requiredActionJson = JSONObject(requiredActionJsonInput.text.toString())
+        val identifyJson = requiredActionJson.optJSONObject("identify")
+        val identify = if (identifyJson != null) {
+            IdentifyAction(
+                sessionId = identifyJson.getString("sessionId"),
+                sessionSecret = identifyJson.getString("sessionSecret"),
+                scheme = identifyJson.getString("scheme"),
+                paymentMethodId = identifyJson.getString("paymentMethodId")
+            )
+        } else {
+            null
+        }
+        return RequiredAction(
+            type = RequiredActionType.valueOf(requiredActionJson.getString("type")),
+            url = requiredActionJson.optString("url").ifBlank { null },
+            identify = identify
+        )
     }
 
     @Parcelize

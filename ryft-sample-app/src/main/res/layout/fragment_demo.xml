@@ -47,16 +47,21 @@
                 android:textSize="14sp"
                 android:hint="@string/hint_sub_account_id"/>
 
-            <Spinner
-                android:id="@+id/input_usage"
+            <EditText
+                android:id="@+id/input_required_action_json"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:importantForAutofill="no"
+                android:textSize="14sp"
+                android:hint="@string/hint_required_action_json"/>
 
         </LinearLayout>
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:padding="10dp">
 
             <Button
@@ -67,7 +72,23 @@
                 android:padding="20dp"
                 android:text="@string/button_payment"/>
 
-        </RelativeLayout>
+            <Button
+                android:id="@+id/button_setup_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:padding="20dp"
+                android:text="@string/button_setup_card"/>
+
+            <Button
+                android:id="@+id/button_handle_required_action"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:padding="20dp"
+                android:text="@string/button_handle_required_action"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 

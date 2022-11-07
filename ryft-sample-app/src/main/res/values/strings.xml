@@ -3,9 +3,11 @@
     <string name="button_launch_demo">Launch Demo</string>
     <string name="button_payment">Take Payment</string>
     <string name="button_setup_card">Setup Card</string>
+    <string name="button_handle_required_action">Handle Required Action</string>
     <string name="title_launch_demo">Launcher</string>
     <string name="title_demo">Demo</string>
     <string name="hint_public_api_key">Enter your sandbox public API key</string>
     <string name="hint_client_secret">Enter the client secret of a pending payment session</string>
     <string name="hint_sub_account_id">(Optional) Enter a sub account id</string>
+    <string name="hint_required_action_json">(For handling required action) Enter \'requiredAction\' json</string>
 </resources>
