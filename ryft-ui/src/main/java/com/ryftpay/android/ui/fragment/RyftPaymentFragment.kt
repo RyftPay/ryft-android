@@ -178,7 +178,7 @@ internal class RyftPaymentFragment :
     }
 
     override fun onPaymentApproved(response: PaymentSession) {
-        paymentResultViewModel.updateResult(RyftPaymentResult.Approved)
+        paymentResultViewModel.updateResult(RyftPaymentResult.Approved(response))
         safeDismiss()
     }
 

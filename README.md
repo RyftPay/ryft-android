@@ -196,8 +196,9 @@ class CheckoutFragment : Fragment(), RyftDropInResultListener {
     override fun onPaymentResult(result: RyftPaymentResult) =
         when (result) {
             // Payment approved - send the customer to your receipt/success page
+            // `result.paymentSession` returns the updated payment session
             is RyftPaymentResult.Approved -> {
-                navigateToOrderSuccessFragment()
+                navigateToOrderSuccessFragment(result.paymentSession)
             }
             // Payment failed - show an alert to the customer
             // `result.error.displayError` provides a human friendly message you can display
