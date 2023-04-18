@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="ryft_example_primary_button_hint">Pagar ahora</string>
+    <string name="ryft_example_secondary_button_hint">Cancelar</string>
+    <string name="ryft_example_checkbox_text">Guardar tarjeta para futuros pagos</string>
+
+    <string name="ryft_pay">Pagar ahora</string>
+    <string name="ryft_processing">Procesando…</string>
+    <string name="ryft_save_card">Guardar tarjeta</string>
+    <string name="ryft_or">o</string>
+    <string name="ryft_retry">Rever</string>
+    <string name="ryft_cancel">Cancelar</string>
+    <string name="ryft_card_number">Número de tarjeta</string>
+    <string name="ryft_card_expiry_date">MM/AA</string>
+    <string name="ryft_card_cvc">CVC</string>
+    <string name="ryft_save_card_check_box">Guardar tarjeta para futuros pagos</string>
+    <string name="ryft_payment_form_card_only_header_title">Tarjeta de crédito / débito</string>
+    <string name="ryft_save_card_form_title">Autorizar Tarjeta</string>
+    <string name="ryft_save_card_form_disclaimer">Al autorizar su tarjeta, acepta que sus datos se almacenen de forma segura para pagos futuros</string>
+    <string name="ryft_google_pay_error_message">Hubo un problema inesperado al mostrar Google Pay</string>
+    <string name="ryft_payment_not_found_developer_error_message">Developer error - payment not found</string>
+    <string name="ryft_invalid_client_secret_developer_error_message">Developer error - invalid client secret</string>
+    <string name="ryft_invalid_api_key_developer_error_message">Developer error - invalid api key</string>
+    <string name="ryft_unsupported_required_action_developer_error_message">Developer error - unsupported required action: %1$s</string>
+
+    <string name="ryft_bad_track_data">Su CVC o caducidad de tarjeta no es válido</string>
+    <string name="ryft_cvv2_failure">Su CVC era incorrecto, verifique e intente nuevamente</string>
+    <string name="ryft_declined_do_not_honour">Su banco ha rechazado esta tarjeta</string>
+    <string name="ryft_expired_card">La fecha de caducidad de la tarjeta no es válida</string>
+    <string name="ryft_gateway_reject">Su banco ha rechazado este pago</string>
+    <string name="ryft_insufficient_funds">Su método de pago no tiene fondos suficientes</string>
+    <string name="ryft_invalid_card_number">El número de la tarjeta no es válido</string>
+    <string name="ryft_restricted_card">Su tarjeta ha sido restringida</string>
+    <string name="ryft_security_violation">violación de seguridad</string>
+    <string name="ryft_3ds_authentication_failure">No pudo autorizar correctamente su método de pago</string>
+    <string name="ryft_unknown_error">Un error desconocido ocurrió</string>
+    <string name="ryft_network_error">Ocurrió un error de red, verifique su conexión a Internet</string>
+
+</resources>
