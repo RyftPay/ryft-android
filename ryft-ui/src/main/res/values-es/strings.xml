@@ -12,6 +12,7 @@
     <string name="ryft_retry">Rever</string>
     <string name="ryft_cancel">Cancelar</string>
     <string name="ryft_card_number">Número de tarjeta</string>
+    <string name="ryft_card_name">Nombre en le tarjeta</string>
     <string name="ryft_card_expiry_date">MM/AA</string>
     <string name="ryft_card_cvc">CVC</string>
     <string name="ryft_save_card_check_box">Guardar tarjeta para futuros pagos</string>

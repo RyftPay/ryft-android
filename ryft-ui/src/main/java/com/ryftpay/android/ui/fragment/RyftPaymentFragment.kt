@@ -35,6 +35,7 @@ import com.ryftpay.android.ui.delegate.DefaultRyftPaymentDelegate
 import com.ryftpay.android.ui.delegate.RyftPaymentDelegate
 import com.ryftpay.android.ui.dropin.RyftDropInConfiguration
 import com.ryftpay.android.ui.dropin.RyftDropInDisplayConfiguration
+import com.ryftpay.android.ui.dropin.RyftDropInFieldCollectionConfiguration
 import com.ryftpay.android.ui.dropin.RyftDropInGooglePayConfiguration
 import com.ryftpay.android.ui.dropin.RyftDropInUsage
 import com.ryftpay.android.ui.dropin.RyftPaymentError
@@ -77,6 +78,7 @@ internal class RyftPaymentFragment :
     private lateinit var publicApiKey: RyftPublicApiKey
     private lateinit var clientSecret: String
     private lateinit var displayConfiguration: RyftDropInDisplayConfiguration
+    private lateinit var fieldCollectionConfiguration: RyftDropInFieldCollectionConfiguration
     private var testMode: Boolean = false
     private var subAccountId: String? = null
     private var googlePayConfiguration: RyftDropInGooglePayConfiguration? = null
@@ -95,6 +97,7 @@ internal class RyftPaymentFragment :
         googlePayConfiguration = input.configuration.googlePayConfiguration
         testMode = input.testMode
         displayConfiguration = input.configuration.display
+        fieldCollectionConfiguration = input.configuration.fieldCollection
     }
 
     override fun onCreateView(
@@ -149,7 +152,8 @@ internal class RyftPaymentFragment :
                     card.number.sanitisedNumber,
                     card.expiryDate.twoDigitMonth,
                     card.expiryDate.fourDigitYear,
-                    card.cvc.sanitisedCvc
+                    card.cvc.sanitisedCvc,
+                    card.name?.sanitisedName
                 ),
                 PaymentMethodOptions.card(
                     store = displayConfiguration.usage == RyftDropInUsage.SetupCard ||
@@ -368,7 +372,8 @@ internal class RyftPaymentFragment :
             root,
             displayConfiguration.usage,
             displayConfiguration.payButtonTitle,
-            googlePayAvailable
+            googlePayAvailable,
+            fieldCollectionConfiguration.nameOnCard
         )
     }
 

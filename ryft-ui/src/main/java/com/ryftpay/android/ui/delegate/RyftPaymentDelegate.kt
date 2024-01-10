@@ -8,7 +8,8 @@ internal interface RyftPaymentDelegate {
         root: View,
         usage: RyftDropInUsage,
         payButtonTitleOverride: String?,
-        googlePayAvailable: Boolean
+        googlePayAvailable: Boolean,
+        collectNameOnCard: Boolean
     )
     fun onGooglePayPaymentProcessing()
     fun onGooglePayFailedOrCancelled()

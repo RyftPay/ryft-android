@@ -4,5 +4,6 @@ data class CardDetails(
     val number: String,
     val expiryMonth: String,
     val expiryYear: String,
-    val cvc: String
+    val cvc: String,
+    val name: String?
 )

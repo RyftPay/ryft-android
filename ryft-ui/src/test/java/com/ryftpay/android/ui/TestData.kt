@@ -6,6 +6,7 @@ import com.ryftpay.android.core.model.payment.PaymentSession
 import com.ryftpay.android.core.model.payment.PaymentSessionStatus
 import com.ryftpay.android.ui.model.RyftCardCvc
 import com.ryftpay.android.ui.model.RyftCardExpiryDate
+import com.ryftpay.android.ui.model.RyftCardName
 import com.ryftpay.android.ui.model.RyftCardNumber
 import com.ryftpay.android.ui.model.RyftCardType
 import com.ryftpay.android.ui.model.googlepay.MerchantInfo
@@ -22,6 +23,9 @@ internal object TestData {
 
     private const val VALID_RAW_EXPIRY_DATE = "12/30"
     private const val INVALID_RAW_EXPIRY_DATE = "01/20"
+
+    private const val VALID_RAW_NAME_ON_CARD = "Tim Test"
+    private const val INVALID_RAW_NAME_ON_CARD = "Tim"
 
     private const val VALID_VISA_RAW_CVC = "123"
     private const val INVALID_VISA_RAW_CVC = "1234"
@@ -105,6 +109,9 @@ internal object TestData {
 
     internal val validExpiryDate = RyftCardExpiryDate.from(VALID_RAW_EXPIRY_DATE)
     internal val invalidExpiryDate = RyftCardExpiryDate.from(INVALID_RAW_EXPIRY_DATE)
+
+    internal val validNameOnCard = RyftCardName.from(VALID_RAW_NAME_ON_CARD)
+    internal val invalidNameOnCard = RyftCardName.from(INVALID_RAW_NAME_ON_CARD)
 
     internal val validVisaCvc = RyftCardCvc.from(VALID_VISA_RAW_CVC, RyftCardType.Visa)
     internal val invalidVisaCvc = RyftCardCvc.from(INVALID_VISA_RAW_CVC, RyftCardType.Visa)

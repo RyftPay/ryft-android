@@ -28,14 +28,15 @@ internal class DefaultRyftPaymentDelegate(
         root: View,
         usage: RyftDropInUsage,
         payButtonTitleOverride: String?,
-        googlePayAvailable: Boolean
+        googlePayAvailable: Boolean,
+        collectNameOnCard: Boolean
     ) {
         cardOnlyHeader = root.findViewById(R.id.partial_ryft_payment_form_card_only_header)
         cardOnlyHeader.initialise(usage)
         googlePayHeader = root.findViewById(R.id.partial_ryft_payment_form_googlepay_header)
         googlePayHeader.initialise(listener = this)
         body = root.findViewById(R.id.partial_ryft_payment_form_body)
-        body.initialise(usage, listener = this)
+        body.initialise(usage, collectNameOnCard, listener = this)
         footer = root.findViewById(R.id.partial_ryft_payment_form_footer)
         footer.initialise(usage, payButtonTitleOverride, listener = this)
         setHeaderVisibility(usage, googlePayAvailable)
