@@ -15,7 +15,7 @@ import com.ryftpay.ui.R
 internal class RyftCardNameInputField @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null
-) : RyftInputField(context, attrs, R.style.RyftCardNumberInputField) {
+) : RyftInputField(context, attrs, R.style.RyftCardNameInputField) {
 
     internal fun initialise(
         listener: RyftCardNameInputListener
