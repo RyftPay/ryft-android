@@ -118,6 +118,14 @@
         <item name="android:maxLines">1</item>
     </style>
 
+    <style name="RyftCardNameInputField" parent="RyftInputField">
+        <item name="android:inputType">text</item>
+        <item name="android:hint">@string/ryft_card_name</item>
+        <item name="android:maxLength">120</item>
+        <item name="android:drawableEnd">@drawable/ic_ryft_card_name</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
     <style name="RyftCardExpiryDateInputField" parent="RyftInputField">
         <item name="android:inputType">number</item>
         <item name="android:digits">0123456789</item>

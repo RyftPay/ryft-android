@@ -33,7 +33,8 @@ internal object TestData {
         number = "4242424242424242",
         expiryMonth = "10",
         expiryYear = "2030",
-        cvc = "100"
+        cvc = "100",
+        name = null
     )
 
     internal val paymentMethodOptions = PaymentMethodOptions(

@@ -9,6 +9,7 @@ import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.pressImeActionButton
 import androidx.test.espresso.action.ViewActions.pressKey
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.action.ViewActions.typeTextIntoFocusedView
@@ -38,6 +39,7 @@ import com.ryftpay.android.core.model.api.RyftPublicApiKey
 import com.ryftpay.android.ui.component.RyftButton
 import com.ryftpay.android.ui.dropin.RyftDropInConfiguration
 import com.ryftpay.android.ui.dropin.RyftDropInDisplayConfiguration
+import com.ryftpay.android.ui.dropin.RyftDropInFieldCollectionConfiguration
 import com.ryftpay.android.ui.dropin.RyftDropInUsage
 import com.ryftpay.ui.R
 import org.hamcrest.Matchers.allOf
@@ -49,14 +51,110 @@ import org.junit.runner.RunWith
 internal class RyftPaymentFragmentTest {
 
     @Test
-    internal fun shouldShowExpectedData_OnLaunch_WhenDropInUsedForPayments() {
-        launchFragment(RyftDropInUsage.Payment)
+    internal fun shouldShowExpectedData_OnLaunch_WhenDropInUsedForPayments_NoNameOnCard() {
+        launchFragment(RyftDropInUsage.Payment, collectNameOnCard = false)
 
         onView(
             withId(R.id.text_ryft_payment_form_card_only_header)
         ).check(
             matches(
                 allOf(isDisplayed(), withText("Credit / Debit Card"))
+            )
+        )
+
+        onView(
+            withId(R.id.input_field_ryft_card_name)
+        ).check(
+            matches(
+                not(isDisplayed())
+            )
+        )
+
+        onView(
+            withId(R.id.input_field_ryft_card_number)
+        ).check(
+            matches(
+                allOf(isDisplayed(), withHint("Card number"))
+            )
+        )
+
+        onView(
+            withId(R.id.input_field_ryft_card_expiry_date)
+        ).check(
+            matches(
+                allOf(isDisplayed(), withHint("MM/YY"))
+            )
+        )
+
+        onView(
+            withId(R.id.input_field_ryft_card_cvc)
+        ).check(
+            matches(
+                allOf(isDisplayed(), withHint("CVC"))
+            )
+        )
+
+        onView(
+            allOf(
+                withId(R.id.text_ryft_check_box),
+                isDescendantOfA(withId(R.id.check_box_ryft_save_card))
+            )
+        ).check(
+            matches(
+                allOf(isDisplayed(), withText("Save card for future payments"))
+            )
+        )
+
+        onView(
+            allOf(
+                withId(R.id.text_ryft_save_card_disclaimer)
+            )
+        ).check(
+            matches(
+                not(isDisplayed())
+            )
+        )
+
+        onView(
+            allOf(
+                withId(R.id.text_ryft_button),
+                isDescendantOfA(withId(R.id.button_ryft_pay))
+            )
+        ).check(
+            matches(
+                allOf(isDisplayed(), withText("Pay now"))
+            )
+        )
+
+        onView(
+            allOf(
+                withId(R.id.text_ryft_button),
+                isDescendantOfA(withId(R.id.button_ryft_cancel))
+            )
+        ).check(
+            matches(
+                allOf(isDisplayed(), withText("Cancel"))
+            )
+        )
+    }
+
+    @Test
+    internal fun shouldShowExpectedData_OnLaunch_WhenDropInUsedForPayments_WithNameOnCard() {
+        launchFragment(RyftDropInUsage.Payment, collectNameOnCard = true)
+
+        onView(
+            withId(R.id.text_ryft_payment_form_card_only_header)
+        ).check(
+            matches(
+                allOf(isDisplayed(), withText("Credit / Debit Card"))
+            )
+        )
+
+        onView(
+            withId(R.id.input_field_ryft_card_name)
+        ).check(
+            matches(
+                allOf(isDisplayed(), withHint("Name on card"))
             )
         )
 
@@ -190,8 +288,8 @@ internal class RyftPaymentFragmentTest {
     }
 
     @Test
-    internal fun shouldHaveExpectedLayout_OnLaunch_WhenDropInUsedForPayments() {
-        launchFragment(RyftDropInUsage.Payment)
+    internal fun shouldHaveExpectedLayout_OnLaunch_WhenDropInUsedForPayments_NoNameOnCard() {
+        launchFragment(RyftDropInUsage.Payment, collectNameOnCard = false)
 
         assertNoLayoutBreakages()
 
@@ -251,8 +349,148 @@ internal class RyftPaymentFragmentTest {
     }
 
     @Test
-    internal fun shouldFocusOnFieldsAsExpected_OnLaunchAndAfterTypingText_WhenDropInUsedForPayments() {
-        launchFragment(RyftDropInUsage.Payment)
+    internal fun shouldHaveExpectedLayout_OnLaunch_WhenDropInUsedForPayments_WithNameOnCard() {
+        launchFragment(RyftDropInUsage.Payment, collectNameOnCard = true)
+
+        assertNoLayoutBreakages()
+
+        onView(
+            withId(R.id.text_ryft_payment_form_card_only_header)
+        ).check(
+            isCompletelyAbove(
+                withId(R.id.partial_ryft_payment_form_body)
+            )
+        )
+
+        onView(
+            withId(R.id.input_field_ryft_card_name)
+        ).check(
+            isCompletelyAbove(
+                withId(R.id.input_field_ryft_card_number)
+            )
+        ).check(
+            isCompletelyAbove(
+                withId(R.id.input_field_ryft_card_expiry_date)
+            )
+        ).check(
+            isCompletelyAbove(
+                withId(R.id.input_field_ryft_card_cvc)
+            )
+        )
+
+        onView(
+            withId(R.id.input_field_ryft_card_number)
+        ).check(
+            isCompletelyAbove(
+                withId(R.id.input_field_ryft_card_expiry_date)
+            )
+        ).check(
+            isCompletelyAbove(
+                withId(R.id.input_field_ryft_card_cvc)
+            )
+        )
+
+        onView(
+            withId(R.id.input_field_ryft_card_expiry_date)
+        ).check(
+            isCompletelyLeftOf(
+                withId(R.id.input_field_ryft_card_cvc)
+            )
+        ).check(
+            isCompletelyAbove(
+                withId(R.id.check_box_ryft_save_card)
+            )
+        )
+
+        onView(
+            withId(R.id.check_box_ryft_save_card)
+        ).check(
+            isCompletelyAbove(
+                withId(R.id.partial_ryft_payment_form_footer)
+            )
+        )
+
+        onView(
+            withId(R.id.button_ryft_pay)
+        ).check(
+            matches(isDisplayed())
+        ).check(
+            isCompletelyLeftOf(withId(R.id.button_ryft_cancel))
+        )
+
+        onView(
+            withId(R.id.button_ryft_cancel)
+        ).check(
+            matches(isDisplayed())
+        )
+    }
+
+    @Test
+    internal fun shouldFocusOnFieldsAsExpected_OnLaunchAndAfterTypingText_WhenDropInUsedForPayments_NoNameOnCard() {
+        launchFragment(RyftDropInUsage.Payment, collectNameOnCard = false)
+
+        onView(
+            withId(R.id.input_field_ryft_card_number)
+        ).check(
+            matches(
+                isFocused()
+            )
+        ).perform(
+            typeTextIntoFocusedView("4242424242424242")
+        ).check(
+            matches(
+                isNotFocused()
+            )
+        )
+
+        onView(
+            withId(R.id.input_field_ryft_card_expiry_date)
+        ).check(
+            matches(
+                isFocused()
+            )
+        ).perform(
+            typeTextIntoFocusedView("1225"),
+        ).check(
+            matches(
+                isNotFocused()
+            )
+        )
+
+        onView(
+            withId(R.id.input_field_ryft_card_cvc)
+        ).check(
+            matches(
+                isFocused()
+            )
+        ).perform(
+            typeTextIntoFocusedView("123"),
+        ).check(
+            matches(
+                isNotFocused()
+            )
+        )
+    }
+
+    @Test
+    internal fun shouldFocusOnFieldsAsExpected_OnLaunchAndAfterTypingText_WhenDropInUsedForPayments_WithNameOnCard() {
+        launchFragment(RyftDropInUsage.Payment, collectNameOnCard = true)
+
+        onView(
+            withId(R.id.input_field_ryft_card_name)
+        ).check(
+            matches(
+                isFocused()
+            )
+        ).perform(
+            typeTextIntoFocusedView("Example Name")
+        ).check(
+            matches(
+                isFocused()
+            )
+        ).perform(
+            pressImeActionButton()
+        )
 
         onView(
             withId(R.id.input_field_ryft_card_number)
@@ -473,6 +711,25 @@ internal class RyftPaymentFragmentTest {
     }
 
     @Test
+    internal fun shouldRestrictTheMaxLengthOfTheCardNameField_WhenTypingText_AndDropInUsedForPayments() {
+        launchFragment(RyftDropInUsage.Payment, collectNameOnCard = true)
+
+        onView(
+            withId(R.id.input_field_ryft_card_name)
+        ).check(
+            matches(
+                withText("")
+            )
+        ).perform(
+            typeText("a".repeat(121))
+        ).check(
+            matches(
+                withText("a".repeat(120))
+            )
+        )
+    }
+
+    @Test
     internal fun shouldNotTruncateCvc_WhenCardTypeIsAmex_AndDropInUsedForPayments() {
         launchFragment(RyftDropInUsage.Payment)
 
@@ -514,10 +771,38 @@ internal class RyftPaymentFragmentTest {
     }
 
     @Test
-    internal fun shouldEnablePay_AfterInputtingValidCardDetails_WhenDropInUsedForPayments() {
-        launchFragment(RyftDropInUsage.Payment)
+    internal fun shouldEnablePay_AfterInputtingValidCardDetails_WhenDropInUsedForPayments_NoNameOnCard() {
+        launchFragment(RyftDropInUsage.Payment, collectNameOnCard = false)
 
-        inputValidCardDetails()
+        inputValidCardDetails(collectNameOnCard = false)
+
+        onView(withId(R.id.button_ryft_pay)).check(
+            matches(allOf(isEnabled(), isClickable()))
+        )
+    }
+
+    @Test
+    internal fun shouldNotEnablePay_AfterInputtingValidCardDetailsExceptNameOnCard_WhenDropInUsedForPayments() {
+        launchFragment(RyftDropInUsage.Payment, collectNameOnCard = true)
+
+        onView(
+            withId(R.id.input_field_ryft_card_name)
+        ).perform(
+            typeText("InvalidNameOnlyOneWord")
+        )
+
+        inputValidCardDetails(collectNameOnCard = false)
+
+        onView(withId(R.id.button_ryft_pay)).check(
+            matches(allOf(not(isEnabled()), not(isClickable())))
+        )
+    }
+
+    @Test
+    internal fun shouldEnablePay_AfterInputtingValidCardDetails_WhenDropInUsedForPayments_WithNameOnCard() {
+        launchFragment(RyftDropInUsage.Payment, collectNameOnCard = true)
+
+        inputValidCardDetails(collectNameOnCard = true)
 
         onView(withId(R.id.button_ryft_pay)).check(
             matches(allOf(isEnabled(), isClickable()))
@@ -605,6 +890,14 @@ internal class RyftPaymentFragmentTest {
         )
 
         onView(
+            withId(R.id.input_field_ryft_card_name)
+        ).check(
+            matches(
+                allOf(not(isEnabled()))
+            )
+        )
+
+        onView(
             withId(R.id.input_field_ryft_card_number)
         ).check(
             matches(
@@ -664,14 +957,110 @@ internal class RyftPaymentFragmentTest {
     }
 
     @Test
-    internal fun shouldShowExpectedData_OnLaunch_WhenDropInUsedForSetupCard() {
-        launchFragment(RyftDropInUsage.SetupCard)
+    internal fun shouldShowExpectedData_OnLaunch_WhenDropInUsedForSetupCard_NoNameOnCard() {
+        launchFragment(RyftDropInUsage.SetupCard, collectNameOnCard = false)
 
         onView(
             withId(R.id.text_ryft_payment_form_card_only_header)
         ).check(
             matches(
                 allOf(isDisplayed(), withText("Authorise Card"))
+            )
+        )
+
+        onView(
+            withId(R.id.input_field_ryft_card_name)
+        ).check(
+            matches(
+                not(isDisplayed())
+            )
+        )
+
+        onView(
+            withId(R.id.input_field_ryft_card_number)
+        ).check(
+            matches(
+                allOf(isDisplayed(), withHint("Card number"))
+            )
+        )
+
+        onView(
+            withId(R.id.input_field_ryft_card_expiry_date)
+        ).check(
+            matches(
+                allOf(isDisplayed(), withHint("MM/YY"))
+            )
+        )
+
+        onView(
+            withId(R.id.input_field_ryft_card_cvc)
+        ).check(
+            matches(
+                allOf(isDisplayed(), withHint("CVC"))
+            )
+        )
+
+        onView(
+            allOf(
+                withId(R.id.text_ryft_save_card_disclaimer)
+            )
+        ).check(
+            matches(
+                allOf(isDisplayed(), withText("By authorising your card, you consent to your details being stored securely for future payments"))
+            )
+        )
+
+        onView(
+            allOf(
+                withId(R.id.text_ryft_check_box),
+                isDescendantOfA(withId(R.id.check_box_ryft_save_card))
+            )
+        ).check(
+            matches(
+                not(isDisplayed())
+            )
+        )
+
+        onView(
+            allOf(
+                withId(R.id.text_ryft_button),
+                isDescendantOfA(withId(R.id.button_ryft_pay))
+            )
+        ).check(
+            matches(
+                allOf(isDisplayed(), withText("Save card"))
+            )
+        )
+
+        onView(
+            allOf(
+                withId(R.id.text_ryft_button),
+                isDescendantOfA(withId(R.id.button_ryft_cancel))
+            )
+        ).check(
+            matches(
+                allOf(isDisplayed(), withText("Cancel"))
+            )
+        )
+    }
+
+    @Test
+    internal fun shouldShowExpectedData_OnLaunch_WhenDropInUsedForSetupCard_WithNameOnCard() {
+        launchFragment(RyftDropInUsage.SetupCard, collectNameOnCard = true)
+
+        onView(
+            withId(R.id.text_ryft_payment_form_card_only_header)
+        ).check(
+            matches(
+                allOf(isDisplayed(), withText("Authorise Card"))
+            )
+        )
+
+        onView(
+            withId(R.id.input_field_ryft_card_name)
+        ).check(
+            matches(
+                allOf(isDisplayed(), withHint("Name on card"))
             )
         )
 
@@ -789,8 +1178,8 @@ internal class RyftPaymentFragmentTest {
     }
 
     @Test
-    internal fun shouldHaveExpectedLayout_OnLaunch_WhenDropInUsedForSetupCard() {
-        launchFragment(RyftDropInUsage.SetupCard)
+    internal fun shouldHaveExpectedLayout_OnLaunch_WhenDropInUsedForSetupCard_NoNameOnCard() {
+        launchFragment(RyftDropInUsage.SetupCard, collectNameOnCard = false)
 
         assertNoLayoutBreakages()
 
@@ -850,8 +1239,148 @@ internal class RyftPaymentFragmentTest {
     }
 
     @Test
-    internal fun shouldFocusOnFieldsAsExpected_OnLaunchAndAfterTypingText_WhenDropInUsedForSetupCard() {
-        launchFragment(RyftDropInUsage.SetupCard)
+    internal fun shouldHaveExpectedLayout_OnLaunch_WhenDropInUsedForSetupCard_WithNameOnCard() {
+        launchFragment(RyftDropInUsage.SetupCard, collectNameOnCard = true)
+
+        assertNoLayoutBreakages()
+
+        onView(
+            withId(R.id.text_ryft_payment_form_card_only_header)
+        ).check(
+            isCompletelyAbove(
+                withId(R.id.partial_ryft_payment_form_body)
+            )
+        )
+
+        onView(
+            withId(R.id.input_field_ryft_card_name)
+        ).check(
+            isCompletelyAbove(
+                withId(R.id.input_field_ryft_card_number)
+            )
+        ).check(
+            isCompletelyAbove(
+                withId(R.id.input_field_ryft_card_expiry_date)
+            )
+        ).check(
+            isCompletelyAbove(
+                withId(R.id.input_field_ryft_card_cvc)
+            )
+        )
+
+        onView(
+            withId(R.id.input_field_ryft_card_number)
+        ).check(
+            isCompletelyAbove(
+                withId(R.id.input_field_ryft_card_expiry_date)
+            )
+        ).check(
+            isCompletelyAbove(
+                withId(R.id.input_field_ryft_card_cvc)
+            )
+        )
+
+        onView(
+            withId(R.id.input_field_ryft_card_expiry_date)
+        ).check(
+            isCompletelyLeftOf(
+                withId(R.id.input_field_ryft_card_cvc)
+            )
+        ).check(
+            isCompletelyAbove(
+                withId(R.id.text_ryft_save_card_disclaimer)
+            )
+        )
+
+        onView(
+            withId(R.id.text_ryft_save_card_disclaimer)
+        ).check(
+            isCompletelyAbove(
+                withId(R.id.partial_ryft_payment_form_footer)
+            )
+        )
+
+        onView(
+            withId(R.id.button_ryft_pay)
+        ).check(
+            matches(isDisplayed())
+        ).check(
+            isCompletelyLeftOf(withId(R.id.button_ryft_cancel))
+        )
+
+        onView(
+            withId(R.id.button_ryft_cancel)
+        ).check(
+            matches(isDisplayed())
+        )
+    }
+
+    @Test
+    internal fun shouldFocusOnFieldsAsExpected_OnLaunchAndAfterTypingText_WhenDropInUsedForSetupCard_NoNameOnCard() {
+        launchFragment(RyftDropInUsage.SetupCard, collectNameOnCard = false)
+
+        onView(
+            withId(R.id.input_field_ryft_card_number)
+        ).check(
+            matches(
+                isFocused()
+            )
+        ).perform(
+            typeTextIntoFocusedView("4242424242424242")
+        ).check(
+            matches(
+                isNotFocused()
+            )
+        )
+
+        onView(
+            withId(R.id.input_field_ryft_card_expiry_date)
+        ).check(
+            matches(
+                isFocused()
+            )
+        ).perform(
+            typeTextIntoFocusedView("1225"),
+        ).check(
+            matches(
+                isNotFocused()
+            )
+        )
+
+        onView(
+            withId(R.id.input_field_ryft_card_cvc)
+        ).check(
+            matches(
+                isFocused()
+            )
+        ).perform(
+            typeTextIntoFocusedView("123"),
+        ).check(
+            matches(
+                isNotFocused()
+            )
+        )
+    }
+
+    @Test
+    internal fun shouldFocusOnFieldsAsExpected_OnLaunchAndAfterTypingText_WhenDropInUsedForSetupCard_WithNameOnCard() {
+        launchFragment(RyftDropInUsage.SetupCard, collectNameOnCard = true)
+
+        onView(
+            withId(R.id.input_field_ryft_card_name)
+        ).check(
+            matches(
+                isFocused()
+            )
+        ).perform(
+            typeTextIntoFocusedView("Example Name")
+        ).check(
+            matches(
+                isFocused()
+            )
+        ).perform(
+            pressImeActionButton()
+        )
 
         onView(
             withId(R.id.input_field_ryft_card_number)
@@ -1072,6 +1601,25 @@ internal class RyftPaymentFragmentTest {
     }
 
     @Test
+    internal fun shouldRestrictTheMaxLengthOfTheCardNameField_WhenTypingText_AndDropInUsedForSetupCard() {
+        launchFragment(RyftDropInUsage.SetupCard, collectNameOnCard = true)
+
+        onView(
+            withId(R.id.input_field_ryft_card_name)
+        ).check(
+            matches(
+                withText("")
+            )
+        ).perform(
+            typeText("a".repeat(121))
+        ).check(
+            matches(
+                withText("a".repeat(120))
+            )
+        )
+    }
+
+    @Test
     internal fun shouldNotTruncateCvc_WhenCardTypeIsAmex_AndDropInUsedForSetupCard() {
         launchFragment(RyftDropInUsage.SetupCard)
 
@@ -1113,10 +1661,38 @@ internal class RyftPaymentFragmentTest {
     }
 
     @Test
-    internal fun shouldEnablePay_AfterInputtingValidCardDetails_WhenDropInUsedForSetupCard() {
-        launchFragment(RyftDropInUsage.SetupCard)
+    internal fun shouldEnablePay_AfterInputtingValidCardDetails_WhenDropInUsedForSetupCard_NoNameOnCard() {
+        launchFragment(RyftDropInUsage.SetupCard, collectNameOnCard = false)
 
-        inputValidCardDetails()
+        inputValidCardDetails(collectNameOnCard = false)
+
+        onView(withId(R.id.button_ryft_pay)).check(
+            matches(allOf(isEnabled(), isClickable()))
+        )
+    }
+
+    @Test
+    internal fun shouldNotEnablePay_AfterInputtingValidCardDetailsExceptNameOnCard_WhenDropInUsedForSetupCard() {
+        launchFragment(RyftDropInUsage.SetupCard, collectNameOnCard = true)
+
+        onView(
+            withId(R.id.input_field_ryft_card_name)
+        ).perform(
+            typeText("InvalidNameOnlyOneWord")
+        )
+
+        inputValidCardDetails(collectNameOnCard = false)
+
+        onView(withId(R.id.button_ryft_pay)).check(
+            matches(allOf(not(isEnabled()), not(isClickable())))
+        )
+    }
+
+    @Test
+    internal fun shouldEnablePay_AfterInputtingValidCardDetails_WhenDropInUsedForSetupCard_WithNameOnCard() {
+        launchFragment(RyftDropInUsage.SetupCard, collectNameOnCard = true)
+
+        inputValidCardDetails(collectNameOnCard = true)
 
         onView(withId(R.id.button_ryft_pay)).check(
             matches(allOf(isEnabled(), isClickable()))
@@ -1164,6 +1740,14 @@ internal class RyftPaymentFragmentTest {
         ).check(
             matches(
                 allOf(not(isEnabled()), not(isClickable()))
+            )
+        )
+
+        onView(
+            withId(R.id.input_field_ryft_card_name)
+        ).check(
+            matches(
+                allOf(not(isEnabled()))
             )
         )
 
@@ -1226,7 +1810,15 @@ internal class RyftPaymentFragmentTest {
         onView(isRoot()).check(matches(not(hasDescendant(withId(R.id.fragment_ryft_payment)))))
     }
 
-    private fun inputValidCardDetails() {
+    private fun inputValidCardDetails(collectNameOnCard: Boolean = false) {
+        if (collectNameOnCard) {
+            onView(
+                withId(R.id.input_field_ryft_card_name)
+            ).perform(
+                typeText("Example Name")
+            )
+        }
+
         onView(
             withId(R.id.input_field_ryft_card_number)
         ).perform(
@@ -1246,10 +1838,13 @@ internal class RyftPaymentFragmentTest {
         )
     }
 
-    private fun launchFragment(usage: RyftDropInUsage) {
+    private fun launchFragment(
+        usage: RyftDropInUsage,
+        collectNameOnCard: Boolean = false
+    ) {
         val navController = TestNavHostController(ApplicationProvider.getApplicationContext())
 
-        launchFragmentInContainer(createFragmentArgs(usage)) {
+        launchFragmentInContainer(createFragmentArgs(usage, collectNameOnCard)) {
             RyftPaymentFragment().also { fragment ->
                 fragment.viewLifecycleOwnerLiveData.observeForever { viewLifecycleOwner ->
                     if (viewLifecycleOwner != null) {
@@ -1260,12 +1855,18 @@ internal class RyftPaymentFragmentTest {
         }
     }
 
-    private fun createFragmentArgs(usage: RyftDropInUsage): Bundle {
+    private fun createFragmentArgs(
+        usage: RyftDropInUsage,
+        collectNameOnCard: Boolean
+    ): Bundle {
         val configuration = RyftDropInConfiguration(
             clientSecret = "secret_123",
             subAccountId = null,
             display = RyftDropInDisplayConfiguration(
                 usage
+            ),
+            fieldCollection = RyftDropInFieldCollectionConfiguration(
+                nameOnCard = collectNameOnCard
             )
         )
         val publicApiKey = RyftPublicApiKey("pk_sandbox_123")

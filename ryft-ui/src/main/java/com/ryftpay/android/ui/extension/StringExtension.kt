@@ -36,3 +36,5 @@ internal fun String?.extractFirstAndLastNamesOrNulls(): Pair<String?, String?> {
         lastName
     )
 }
+
+internal fun String.numberOfWords(): Int = this.trim().split(' ').size

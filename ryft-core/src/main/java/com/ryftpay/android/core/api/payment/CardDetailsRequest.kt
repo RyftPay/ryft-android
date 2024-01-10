@@ -7,7 +7,8 @@ data class CardDetailsRequest(
     @JsonProperty("number") val number: String,
     @JsonProperty("expiryMonth") val expiryMonth: String,
     @JsonProperty("expiryYear") val expiryYear: String,
-    @JsonProperty("cvc") val cvc: String
+    @JsonProperty("cvc") val cvc: String,
+    @JsonProperty("name") val name: String?
 ) {
     companion object {
         internal fun from(cardDetails: CardDetails): CardDetailsRequest =
@@ -15,7 +16,8 @@ data class CardDetailsRequest(
                 cardDetails.number,
                 cardDetails.expiryMonth,
                 cardDetails.expiryYear,
-                cardDetails.cvc
+                cardDetails.cvc,
+                cardDetails.name
             )
     }
 }

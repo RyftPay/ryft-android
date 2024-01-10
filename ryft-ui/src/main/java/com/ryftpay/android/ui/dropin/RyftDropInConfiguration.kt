@@ -9,6 +9,7 @@ data class RyftDropInConfiguration(
     val clientSecret: String,
     val subAccountId: String?,
     val display: RyftDropInDisplayConfiguration = RyftDropInDisplayConfiguration.Default,
+    val fieldCollection: RyftDropInFieldCollectionConfiguration = RyftDropInFieldCollectionConfiguration.Default,
     val googlePayConfiguration: RyftDropInGooglePayConfiguration? = null
 ) : Parcelable {
     companion object {
@@ -16,21 +17,25 @@ data class RyftDropInConfiguration(
             clientSecret: String,
             subAccountId: String,
             display: RyftDropInDisplayConfiguration = RyftDropInDisplayConfiguration.Default,
+            fieldCollection: RyftDropInFieldCollectionConfiguration = RyftDropInFieldCollectionConfiguration.Default,
             googlePayConfiguration: RyftDropInGooglePayConfiguration? = null
         ): RyftDropInConfiguration = RyftDropInConfiguration(
             clientSecret,
             subAccountId,
             display,
+            fieldCollection,
             googlePayConfiguration
         )
         fun standardAccountPayment(
             clientSecret: String,
             display: RyftDropInDisplayConfiguration = RyftDropInDisplayConfiguration.Default,
+            fieldCollection: RyftDropInFieldCollectionConfiguration = RyftDropInFieldCollectionConfiguration.Default,
             googlePayConfiguration: RyftDropInGooglePayConfiguration? = null
         ): RyftDropInConfiguration = RyftDropInConfiguration(
             clientSecret,
             subAccountId = null,
             display,
+            fieldCollection,
             googlePayConfiguration
         )
     }

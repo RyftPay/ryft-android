@@ -12,6 +12,7 @@
     <string name="ryft_retry">Retry</string>
     <string name="ryft_cancel">Cancel</string>
     <string name="ryft_card_number">Card number</string>
+    <string name="ryft_card_name">Name on card</string>
     <string name="ryft_card_expiry_date">MM/YY</string>
     <string name="ryft_card_cvc">CVC</string>
     <string name="ryft_save_card_check_box">Save card for future payments</string>

@@ -23,6 +23,23 @@ internal class RyftDropInConfigurationTest {
     }
 
     @Test
+    internal fun `fieldCollection should be default when not provided`() {
+        RyftDropInConfiguration(
+            clientSecret = CLIENT_SECRET,
+            subAccountId = null
+        ).fieldCollection shouldBeEqualTo RyftDropInFieldCollectionConfiguration.Default
+    }
+
+    @Test
+    internal fun `fieldCollection should be non null when provided`() {
+        RyftDropInConfiguration(
+            clientSecret = CLIENT_SECRET,
+            subAccountId = null,
+            fieldCollection = RyftDropInFieldCollectionConfiguration(nameOnCard = true)
+        ).fieldCollection shouldBeEqualTo RyftDropInFieldCollectionConfiguration(nameOnCard = true)
+    }
+
+    @Test
     internal fun `subAccountPayment should return expected clientSecret and subAccountId`() {
         val subAccountId = "ac_123"
         val subAccountPaymentConfig = RyftDropInConfiguration.subAccountPayment(
@@ -50,6 +67,23 @@ internal class RyftDropInConfigurationTest {
     }
 
     @Test
+    internal fun `subAccountPayment should use default fieldCollection when not provided`() {
+        RyftDropInConfiguration.subAccountPayment(
+            clientSecret = CLIENT_SECRET,
+            subAccountId = "ac_123"
+        ).fieldCollection shouldBeEqualTo RyftDropInFieldCollectionConfiguration.Default
+    }
+
+    @Test
+    internal fun `subAccountPayment should use provided fieldCollection when provided`() {
+        RyftDropInConfiguration.subAccountPayment(
+            clientSecret = CLIENT_SECRET,
+            subAccountId = "ac_123",
+            fieldCollection = RyftDropInFieldCollectionConfiguration(nameOnCard = true)
+        ).fieldCollection shouldBeEqualTo RyftDropInFieldCollectionConfiguration(nameOnCard = true)
+    }
+
+    @Test
     internal fun `standardAccountPayment should return expected clientSecret with null subAccountId`() {
         val standardAccountPaymentConfig = RyftDropInConfiguration.standardAccountPayment(
             clientSecret = CLIENT_SECRET
@@ -70,5 +104,20 @@ internal class RyftDropInConfigurationTest {
         RyftDropInConfiguration.standardAccountPayment(
             clientSecret = CLIENT_SECRET
         ).googlePayConfiguration shouldBeEqualTo null
+    }
+
+    @Test
+    internal fun `standardAccountPayment should use default fieldCollection when not provided`() {
+        RyftDropInConfiguration.standardAccountPayment(
+            clientSecret = CLIENT_SECRET
+        ).fieldCollection shouldBeEqualTo RyftDropInFieldCollectionConfiguration.Default
+    }
+
+    @Test
+    internal fun `standardAccountPayment should use provided fieldCollection when provided`() {
+        RyftDropInConfiguration.standardAccountPayment(
+            clientSecret = CLIENT_SECRET,
+            fieldCollection = RyftDropInFieldCollectionConfiguration(nameOnCard = true)
+        ).fieldCollection shouldBeEqualTo RyftDropInFieldCollectionConfiguration(nameOnCard = true)
     }
 }

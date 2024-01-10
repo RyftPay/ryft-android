@@ -159,6 +159,37 @@ Google Pay will be available for users providing the following is true:
 
 Note: if you don't provide a RyftDropInGooglePayConfiguration object then Google Pay is disabled
 
+#### Optional: Collecting name on card
+
+The drop-in can be configured to collect the name on the card the customer pays with
+
+Note: This can help you prevent chargebacks and fraud and can lead to better approval rates and a more frequent 3ds frictionless flow.
+
+To collect this field, pass the `fieldCollection` object with `nameOnCard` set to `true` when constructing the RyftDropInConfiguration:
+
+**Example:**
+
+```kotlin
+// Example config for sub account payments
+RyftDropInConfiguration.subAccountPayment(
+    clientSecret = "<the client secret of the payment-session>",
+    subAccountId = "<the Id of the sub-account you are taking payments for>",
+    fieldCollection = RyftDropInFieldCollectionConfiguration(
+        nameOnCard = true
+    )
+)
+
+// Example config for standard account payments
+// RyftDropInConfiguration.standardAccountPayment(
+//     clientSecret = "<the client secret of the payment-session>",
+//     fieldCollection = RyftDropInFieldCollectionConfiguration(
+//         nameOnCard = true
+//     )
+// )
+```
+
+Note: if you don't provide a RyftDropInFieldCollectionConfiguration object then name on card will not be collected
+
 ### Implementing the RyftDropInResultListener
 
 Once the customer has submitted their payment, the drop-in will dismiss.

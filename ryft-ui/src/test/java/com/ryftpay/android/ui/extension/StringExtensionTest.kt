@@ -67,6 +67,15 @@ internal class StringExtensionTest {
         input.extractFirstAndLastNamesOrNulls() shouldBeEqualTo expected
     }
 
+    @Test
+    @Parameters(method = "expectedNumberOfWords")
+    internal fun `numberOfWords should return expectd number of words`(
+        input: String,
+        expected: Int
+    ) {
+        input.numberOfWords() shouldBeEqualTo expected
+    }
+
     private fun stringsContainingNonDigits(): Array<Any> = arrayOf(
         arrayOf("iok0934"),
         arrayOf("abc"),
@@ -175,5 +184,18 @@ internal class StringExtensionTest {
         arrayOf("MR J B DOE", Pair<String?, String?>("J", "DOE")),
         arrayOf("MRS J S DOE", Pair<String?, String?>("J", "DOE")),
         arrayOf("MS J S DOE", Pair<String?, String?>("J", "DOE"))
+    )
+
+    private fun expectedNumberOfWords(): Array<Any> = arrayOf(
+        arrayOf("t", 1),
+        arrayOf("t ", 1),
+        arrayOf("t t", 2),
+        arrayOf("timothy", 1),
+        arrayOf(" timothy ", 1),
+        arrayOf("timothy test", 2),
+        arrayOf("timothy test ", 2),
+        arrayOf(" timothy test ", 2),
+        arrayOf("lots of words", 3),
+        arrayOf("hyphen-word", 1),
     )
 }
