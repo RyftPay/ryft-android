@@ -1,7 +1,7 @@
 package com.ryftpay.android.ui.model.threeds
 
+import com.checkout.threeds.domain.model.AuthenticationCompleted
 import com.checkout.threeds.domain.model.AuthenticationResult
-import com.checkout.threeds.domain.model.ResultType
 
 internal sealed class ThreeDsIdentificationResult {
     object Success : ThreeDsIdentificationResult()
@@ -9,12 +9,15 @@ internal sealed class ThreeDsIdentificationResult {
     object Error : ThreeDsIdentificationResult()
 
     companion object {
+        private const val SuccessfulStatus = "Y"
         internal fun fromCheckoutResult(
             authenticationResult: AuthenticationResult
-        ): ThreeDsIdentificationResult = when (authenticationResult.resultType) {
-            ResultType.Successful -> Success
-            ResultType.Failed -> Fail
-            ResultType.Error -> Error
+        ): ThreeDsIdentificationResult = when (authenticationResult) {
+            is AuthenticationCompleted -> when (authenticationResult.transactionStatus) {
+                SuccessfulStatus -> Success
+                else -> Fail
+            }
+            else -> Error
         }
     }
 }

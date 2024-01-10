@@ -1,12 +1,12 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
-    ext.kotlin_version = '1.7.20'
+    ext.kotlin_version = '1.8.0'
     repositories {
         google()
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.3.1'
+        classpath 'com.android.tools.build:gradle:7.4.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -26,7 +26,7 @@ ext {
     kotlin_jvm_target = '1.8'
     min_sdk_version = 21
     compile_sdk_version = 33
-    target_sdk_version = 33
+    target_sdk_version = 34
     build_tools_version = '31.0.0'
 }
 
@@ -36,13 +36,6 @@ allprojects {
         mavenLocal()
         google()
         mavenCentral()
-        maven {
-            url 'https://maven.pkg.github.com/checkout/checkout-3ds-sdk-android'
-            credentials {
-                username = project.findProperty("ghUsername") ?: System.getenv('GH_USERNAME')
-                password = project.findProperty("ghPackagesToken") ?: System.getenv('GH_PACKAGES_TOKEN')
-            }
-        }
     }
 }
 
@@ -56,7 +49,7 @@ subprojects {
     }
 }
 
-task clean (type: Delete) {
+tasks.register('clean', Delete) {
     delete rootProject.buildDir
 }
 

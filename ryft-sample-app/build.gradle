@@ -30,6 +30,21 @@ android {
     kotlinOptions {
         jvmTarget = rootProject.ext.kotlin_jvm_target
     }
+    lintOptions {
+        // Disables a linting error that is a false positive (or one of our dependencies is using it)
+        disable 'NotificationPermission'
+    }
+}
+
+// TODO remove once ryft-android is upgraded from 1.4.0
+repositories {
+    maven {
+        url 'https://maven.pkg.github.com/checkout/checkout-3ds-sdk-android'
+        credentials {
+            username = project.findProperty("ghUsername") ?: System.getenv('GH_USERNAME')
+            password = project.findProperty("ghPackagesToken") ?: System.getenv('GH_PACKAGES_TOKEN')
+        }
+    }
 }
 
 dependencies {

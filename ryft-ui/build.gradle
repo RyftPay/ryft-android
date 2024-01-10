@@ -8,8 +8,7 @@ android {
     namespace 'com.ryftpay.ui'
 
     compileSdk rootProject.ext.compile_sdk_version
-    compileSdkVersion rootProject.ext.compile_sdk_version
-    buildToolsVersion rootProject.ext.build_tools_version
+    buildToolsVersion = rootProject.ext.build_tools_version
 
     defaultConfig {
         minSdk rootProject.ext.min_sdk_version
@@ -54,7 +53,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
-    implementation 'com.checkout:checkout-sdk-3ds-android:2.0.3'
+    implementation 'com.checkout:checkout-sdk-3ds-android:3.2.0'
     implementation 'com.google.android.gms:play-services-wallet:19.1.0'
     implementation 'com.google.android.material:material:1.7.0'
 

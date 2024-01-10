@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.VisibleForTesting
-import androidx.annotation.VisibleForTesting.PRIVATE
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.common.api.ApiException
@@ -401,7 +400,7 @@ internal class RyftPaymentFragment :
     }
 
     companion object {
-        @VisibleForTesting(otherwise = PRIVATE)
+        @VisibleForTesting
         internal const val ARGUMENTS_BUNDLE_KEY = "Arguments"
     }
 }
