@@ -9,12 +9,16 @@ internal sealed class ThreeDsIdentificationResult {
     object Error : ThreeDsIdentificationResult()
 
     companion object {
-        private const val SuccessfulStatus = "Y"
+        private val SuccessfulStatuses = setOf(
+            "Y",
+            "I",
+            "A"
+        )
         internal fun fromCheckoutResult(
             authenticationResult: AuthenticationResult
         ): ThreeDsIdentificationResult = when (authenticationResult) {
             is AuthenticationCompleted -> when (authenticationResult.transactionStatus) {
-                SuccessfulStatus -> Success
+                in SuccessfulStatuses -> Success
                 else -> Fail
             }
             else -> Error

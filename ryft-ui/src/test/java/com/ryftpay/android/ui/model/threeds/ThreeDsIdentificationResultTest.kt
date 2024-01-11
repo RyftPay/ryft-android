@@ -49,11 +49,11 @@ internal class ThreeDsIdentificationResultTest {
     private fun checkoutThreeDsTransactionStatusesToRyftThreeDsResults(): Array<Any> = arrayOf(
         arrayOf("N", ThreeDsIdentificationResult.Fail),
         arrayOf("U", ThreeDsIdentificationResult.Fail),
-        arrayOf("A", ThreeDsIdentificationResult.Fail),
         arrayOf("C", ThreeDsIdentificationResult.Fail),
         arrayOf("D", ThreeDsIdentificationResult.Fail),
         arrayOf("R", ThreeDsIdentificationResult.Fail),
-        arrayOf("I", ThreeDsIdentificationResult.Fail),
+        arrayOf("A", ThreeDsIdentificationResult.Success),
+        arrayOf("I", ThreeDsIdentificationResult.Success),
         arrayOf("Y", ThreeDsIdentificationResult.Success)
     )
 }
