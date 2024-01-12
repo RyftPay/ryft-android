@@ -8,8 +8,7 @@ android {
     namespace 'com.ryftpay.android'
 
     compileSdk rootProject.ext.compile_sdk_version
-    compileSdkVersion rootProject.ext.compile_sdk_version
-    buildToolsVersion rootProject.ext.build_tools_version
+    buildToolsVersion = rootProject.ext.build_tools_version
 
     defaultConfig {
         minSdk rootProject.ext.min_sdk_version

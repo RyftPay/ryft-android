@@ -1,5 +1,6 @@
 package com.ryftpay.android.ui.model.threeds
 
+import com.checkout.threeds.domain.model.AuthenticationCompleted
 import com.checkout.threeds.domain.model.AuthenticationResult
 import com.checkout.threeds.domain.model.ResultType
 import io.mockk.every
@@ -14,26 +15,45 @@ import org.junit.runner.RunWith
 internal class ThreeDsIdentificationResultTest {
 
     @Test
-    @Parameters(method = "checkoutThreeDsResultTypesToRyftThreeDsResults")
-    internal fun `fromCheckoutResult should return expected result`(
-        authenticationResultType: ResultType,
-        expected: ThreeDsIdentificationResult
-    ) {
+    internal fun `fromCheckoutResult should return expected result when AuthenticationError`() {
         val authenticationResult = mockk<AuthenticationResult>(relaxed = true)
         every {
             authenticationResult.resultType
         } answers {
-            authenticationResultType
+            ResultType.Error
         }
 
         ThreeDsIdentificationResult.fromCheckoutResult(
             authenticationResult
+        ) shouldBeEqualTo ThreeDsIdentificationResult.Error
+    }
+
+    @Test
+    @Parameters(method = "checkoutThreeDsTransactionStatusesToRyftThreeDsResults")
+    internal fun `fromCheckoutResult should return expected result when AuthenticationCompleted`(
+        transactionStatus: String,
+        expected: ThreeDsIdentificationResult
+    ) {
+        val authenticationCompleted = mockk<AuthenticationCompleted>(relaxed = true)
+        every {
+            authenticationCompleted.transactionStatus
+        } answers {
+            transactionStatus
+        }
+
+        ThreeDsIdentificationResult.fromCheckoutResult(
+            authenticationCompleted
         ) shouldBeEqualTo expected
     }
 
-    private fun checkoutThreeDsResultTypesToRyftThreeDsResults(): Array<Any> = arrayOf(
-        arrayOf(ResultType.Error, ThreeDsIdentificationResult.Error),
-        arrayOf(ResultType.Failed, ThreeDsIdentificationResult.Fail),
-        arrayOf(ResultType.Successful, ThreeDsIdentificationResult.Success)
+    private fun checkoutThreeDsTransactionStatusesToRyftThreeDsResults(): Array<Any> = arrayOf(
+        arrayOf("N", ThreeDsIdentificationResult.Fail),
+        arrayOf("U", ThreeDsIdentificationResult.Fail),
+        arrayOf("C", ThreeDsIdentificationResult.Fail),
+        arrayOf("D", ThreeDsIdentificationResult.Fail),
+        arrayOf("R", ThreeDsIdentificationResult.Fail),
+        arrayOf("A", ThreeDsIdentificationResult.Success),
+        arrayOf("I", ThreeDsIdentificationResult.Success),
+        arrayOf("Y", ThreeDsIdentificationResult.Success)
     )
 }
