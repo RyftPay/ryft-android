@@ -22,7 +22,7 @@ jobs:
         java-version: 11
 
     - name: Assemble release
-      run: ./gradlew assembleRelease
+      run: ./gradlew -x ryft-sample-app:assembleRelease assembleRelease
 
     - name: Generate source and javadoc jars
       run: ./gradlew sourcesJar javadocJar
