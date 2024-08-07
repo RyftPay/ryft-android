@@ -55,6 +55,3 @@ jobs:
         emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
         disable-animations: true
         script: ./gradlew -x ryft-sample-app:connectedCheck connectedCheck
-      env:
-        GH_USERNAME: ${{ secrets.GH_PACKAGES_USERNAME_3DS }}
-        GH_PACKAGES_TOKEN: ${{ secrets.GH_PACKAGES_PASS_3DS }}
