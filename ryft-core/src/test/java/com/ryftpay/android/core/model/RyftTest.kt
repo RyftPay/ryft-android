@@ -7,11 +7,11 @@ internal class RyftTest {
 
     @Test
     fun `Version should have current version of sdk`() {
-        Ryft.VERSION shouldBeEqualTo "1.5.0"
+        Ryft.VERSION shouldBeEqualTo "1.6.0"
     }
 
     @Test
     fun `User agent should identify sdk with current version`() {
-        Ryft.USER_AGENT shouldBeEqualTo "ryft-sdk-android/1.5.0"
+        Ryft.USER_AGENT shouldBeEqualTo "ryft-sdk-android/1.6.0"
     }
 }

@@ -32,14 +32,6 @@ allprojects {
     repositories {
         // ...
         mavenCentral()
-        // 3ds dependency - required
-        maven {
-            url 'https://maven.pkg.github.com/checkout/checkout-3ds-sdk-android'
-            credentials {
-                username = '<your github username>'
-                password = '<your github personal access token (classic)>'
-            }
-        }
         // ...
     }
 }
