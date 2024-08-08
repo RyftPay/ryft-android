@@ -36,17 +36,6 @@ android {
     }
 }
 
-// TODO remove once ryft-android is upgraded from 1.4.0
-repositories {
-    maven {
-        url 'https://maven.pkg.github.com/checkout/checkout-3ds-sdk-android'
-        credentials {
-            username = project.findProperty("ghUsername") ?: System.getenv('GH_USERNAME')
-            password = project.findProperty("ghPackagesToken") ?: System.getenv('GH_PACKAGES_TOKEN')
-        }
-    }
-}
-
 dependencies {
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.appcompat:appcompat:1.5.1'
@@ -56,5 +45,5 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
 
     // Ryft dependency
-    implementation 'com.ryftpay:ryft-android:1.4.0'
+    implementation 'com.ryftpay:ryft-android:1.5.0'
 }

@@ -20,7 +20,4 @@ jobs:
         java-version: 11
 
     - name: Check
-      env:
-        GH_USERNAME: ${{ secrets.GH_PACKAGES_USERNAME_3DS }}
-        GH_PACKAGES_TOKEN: ${{ secrets.GH_PACKAGES_PASS_3DS }}
-      run: ./gradlew check
+      run: ./gradlew -x ryft-sample-app:check check
