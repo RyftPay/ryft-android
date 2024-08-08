@@ -18,7 +18,7 @@ jobs:
         java-version: 17
 
     - name: Assemble release
-      run: ./gradlew -x ryft-sample-app:assembleRelease assembleRelease
+      run: ./gradlew assembleRelease
 
     - name: Generate source and javadoc jars
       run: ./gradlew sourcesJar javadocJar
