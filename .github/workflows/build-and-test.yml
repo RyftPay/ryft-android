@@ -20,4 +20,4 @@ jobs:
         java-version: 17
 
     - name: Check
-      run: ./gradlew -x ryft-sample-app:check check
+      run: ./gradlew check
