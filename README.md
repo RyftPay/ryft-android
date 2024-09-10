@@ -79,8 +79,7 @@ class CheckoutFragment : Fragment() {
             // The calling fragment (activity is also supported)
             fragment = this,
             // The class you want to listen for the result (see "Implementing the RyftDropInResultListener" below)
-            listener = paymentResultListener,
-            RyftPublicApiKey("<your public API key>")
+            listener = paymentResultListener
         )
         // ...
     }
@@ -122,20 +121,23 @@ class CheckoutFragment : Fragment() {
             // Example config for sub account payments
             RyftDropInConfiguration.subAccountPayment(
                 clientSecret = "<the client secret of the payment-session>",
+                publicApiKey = RyftPublicApiKey("<your public API key>"),
                 subAccountId = "<the Id of the sub-account you are taking payments for>",
                 googlePayConfiguration = RyftDropInGooglePayConfiguration(
                     merchantName = "<The name of your business>",
                     merchantCountryCode = "<The ISO 3166-1 alpha-2 country code of your business>"
                 )
-            )
+            ),
             // Example config for standard account payments
             // RyftDropInConfiguration.standardAccountPayment(
             //     clientSecret = "<the client secret of the payment-session>",
+            //     publicApiKey = RyftPublicApiKey("<your public API key>"),
             //     googlePayConfiguration = RyftDropInGooglePayConfiguration(
             //         merchantName = "<The name of your business>",
             //         merchantCountryCode = "<The ISO 3166-1 alpha-2 country code of your business>"
             //     )
-            // )
+            // ),
+            
         )
     }
     
@@ -165,6 +167,7 @@ To collect this field, pass the `fieldCollection` object with `nameOnCard` set t
 // Example config for sub account payments
 RyftDropInConfiguration.subAccountPayment(
     clientSecret = "<the client secret of the payment-session>",
+    publicApiKey = RyftPublicApiKey("<your public API key>"),
     subAccountId = "<the Id of the sub-account you are taking payments for>",
     fieldCollection = RyftDropInFieldCollectionConfiguration(
         nameOnCard = true
@@ -174,6 +177,7 @@ RyftDropInConfiguration.subAccountPayment(
 // Example config for standard account payments
 // RyftDropInConfiguration.standardAccountPayment(
 //     clientSecret = "<the client secret of the payment-session>",
+//     publicApiKey = RyftPublicApiKey("<your public API key>"),
 //     fieldCollection = RyftDropInFieldCollectionConfiguration(
 //         nameOnCard = true
 //     )
@@ -208,8 +212,7 @@ class CheckoutFragment : Fragment(), RyftDropInResultListener {
         // ...
         ryftDropIn = DefaultRyftDropIn(
             fragment = this,
-            listener = this, // This fragment will listen for the dropin result
-            RyftPublicApiKey("<your public API key>")
+            listener = this // This fragment will listen for the dropin result
         )
         // ...
     }
@@ -269,6 +272,7 @@ By default we will use `Payment`, however to customise the view simply pass the 
 // Account verifications must be done via the standard account holder
 RyftDropInConfiguration.standardAccountPayment(
     clientSecret = "<the client secret of the payment-session>",
+    publicApiKey = RyftPublicApiKey("<your public API key>"),
     display = RyftDropInDisplayConfiguration(
         usage = RyftDropInUsage.SetupCard
     )
@@ -306,8 +310,7 @@ class CheckoutFragment : Fragment() {
             // The calling fragment (activity is also supported)
             fragment = this,
             // The class you want to listen for the result (see "Implementing the RyftRequiredActionResultListener" below)
-            listener = this,
-            RyftPublicApiKey("<your public API key>")
+            listener = this
         )
         // ...
     }
@@ -332,6 +335,7 @@ class CheckoutFragment : Fragment() {
             // Example config for sub account payments
             RyftRequiredActionComponent.Configuration.subAccountPayment(
                 clientSecret = "<the client secret of the payment-session>",
+                publicApiKey = RyftPublicApiKey("<your public API key>"),
                 subAccountId = "<the Id of the sub-account you are taking payments for>"
             ),
             // Example config for standard account payments
@@ -370,8 +374,7 @@ class CheckoutFragment : Fragment(), RyftDropInResultListener {
         // ...
         ryftRequiredActionComponent = DefaultRyftRequiredActionComponent(
             fragment = this,
-            listener = this, // This fragment will listen for the dropin result
-            RyftPublicApiKey("<your public API key>")
+            listener = this // This fragment will listen for the dropin result
         )
         // ...
     }
@@ -416,6 +419,7 @@ You can customise the title of the pay button by providing `payButtonTitle` with
 // Example for sub account payments
 RyftDropInConfiguration.subAccountPayment(
     clientSecret = "<the client secret of the payment-session>",
+    publicApiKey = RyftPublicApiKey("<your public API key>"),
     subAccountId = "<the Id of the sub-account you are taking payments for>",
     display = RyftDropInDisplayConfiguration(
         payButtonTitle = "Pay now"
@@ -425,6 +429,7 @@ RyftDropInConfiguration.subAccountPayment(
 // Example for standard account payments
 RyftDropInConfiguration.standardAccountPayment(
     clientSecret = "<the client secret of the payment-session>",
+    publicApiKey = RyftPublicApiKey("<your public API key>"),
     display = RyftDropInDisplayConfiguration(
         payButtonTitle = "Pay now"
     )

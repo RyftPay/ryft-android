@@ -17,7 +17,7 @@ internal class DefaultRyftRequiredActionComponentTest {
     private val publicApiKey = RyftPublicApiKey("pk_sandbox_123")
 
     @Test
-    internal fun `DefaultRyftRequiredActionComponent should register fragment for activity on construction`() {
+    internal fun `DefaultRyftRequiredActionComponent should register fragment for activity on construction with public api key`() {
         DefaultRyftRequiredActionComponent(
             fragment,
             listener,
@@ -35,11 +35,45 @@ internal class DefaultRyftRequiredActionComponentTest {
     }
 
     @Test
-    internal fun `DefaultRyftRequiredActionComponent should register activity for activity on construction`() {
+    internal fun `DefaultRyftRequiredActionComponent should register activity for activity on construction with public api key`() {
         DefaultRyftRequiredActionComponent(
             activity,
             listener,
             publicApiKey
+        )
+
+        verify {
+            activity.registerForActivityResult(
+                match<ActivityResultContract<Intent, RyftRequiredActionResult>> {
+                    it is RyftRequiredActionResultContract
+                },
+                any()
+            )
+        }
+    }
+
+    @Test
+    internal fun `DefaultRyftRequiredActionComponent should register fragment for activity on construction without public api key`() {
+        DefaultRyftRequiredActionComponent(
+            fragment,
+            listener
+        )
+
+        verify {
+            fragment.registerForActivityResult(
+                match<ActivityResultContract<Intent, RyftRequiredActionResult>> {
+                    it is RyftRequiredActionResultContract
+                },
+                any()
+            )
+        }
+    }
+
+    @Test
+    internal fun `DefaultRyftRequiredActionComponent should register activity for activity on construction without public api key`() {
+        DefaultRyftRequiredActionComponent(
+            activity,
+            listener
         )
 
         verify {

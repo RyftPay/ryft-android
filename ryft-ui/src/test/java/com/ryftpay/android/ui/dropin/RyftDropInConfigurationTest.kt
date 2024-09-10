@@ -1,5 +1,6 @@
 package com.ryftpay.android.ui.dropin
 
+import com.ryftpay.android.core.model.api.RyftPublicApiKey
 import com.ryftpay.android.ui.TestData.CLIENT_SECRET
 import org.amshove.kluent.shouldBeEqualTo
 import org.junit.Test
@@ -12,6 +13,23 @@ internal class RyftDropInConfigurationTest {
             clientSecret = CLIENT_SECRET,
             subAccountId = null
         ).display shouldBeEqualTo RyftDropInDisplayConfiguration.Default
+    }
+
+    @Test
+    internal fun `publicApiKey should be null when not provided`() {
+        RyftDropInConfiguration(
+            clientSecret = CLIENT_SECRET,
+            subAccountId = null
+        ).publicApiKey shouldBeEqualTo null
+    }
+
+    @Test
+    internal fun `publicApiKey should be non null when provided`() {
+        RyftDropInConfiguration(
+            clientSecret = CLIENT_SECRET,
+            publicApiKey = RyftPublicApiKey(value = "pk_123"),
+            subAccountId = null
+        ).publicApiKey shouldBeEqualTo RyftPublicApiKey(value = "pk_123")
     }
 
     @Test
@@ -48,6 +66,23 @@ internal class RyftDropInConfigurationTest {
         )
         subAccountPaymentConfig.clientSecret shouldBeEqualTo CLIENT_SECRET
         subAccountPaymentConfig.subAccountId shouldBeEqualTo subAccountId
+    }
+
+    @Test
+    internal fun `subAccountPayment should use null publicApiKey when not provided`() {
+        RyftDropInConfiguration.subAccountPayment(
+            clientSecret = CLIENT_SECRET,
+            subAccountId = "ac_123"
+        ).publicApiKey shouldBeEqualTo null
+    }
+
+    @Test
+    internal fun `subAccountPayment should use publicApiKey when provided`() {
+        RyftDropInConfiguration.subAccountPayment(
+            clientSecret = CLIENT_SECRET,
+            publicApiKey = RyftPublicApiKey(value = "pk_123"),
+            subAccountId = "ac_123"
+        ).publicApiKey shouldBeEqualTo RyftPublicApiKey(value = "pk_123")
     }
 
     @Test
@@ -90,6 +125,21 @@ internal class RyftDropInConfigurationTest {
         )
         standardAccountPaymentConfig.clientSecret shouldBeEqualTo CLIENT_SECRET
         standardAccountPaymentConfig.subAccountId shouldBeEqualTo null
+    }
+
+    @Test
+    internal fun `standardAccountPayment should use null publicApiKey when not provided`() {
+        RyftDropInConfiguration.standardAccountPayment(
+            clientSecret = CLIENT_SECRET
+        ).publicApiKey shouldBeEqualTo null
+    }
+
+    @Test
+    internal fun `standardAccountPayment should use publicApiKey when provided`() {
+        RyftDropInConfiguration.standardAccountPayment(
+            clientSecret = CLIENT_SECRET,
+            publicApiKey = RyftPublicApiKey(value = "pk_123")
+        ).publicApiKey shouldBeEqualTo RyftPublicApiKey(value = "pk_123")
     }
 
     @Test

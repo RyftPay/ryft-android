@@ -12,7 +12,7 @@ class DefaultRyftDropIn : RyftDropIn {
 
     private val launcher: ActivityResultLauncher<Intent>
     private val context: Context
-    private val apiKey: RyftPublicApiKey
+    private var publicApiKey: RyftPublicApiKey? = null
 
     constructor(
         fragment: Fragment,
@@ -24,7 +24,7 @@ class DefaultRyftDropIn : RyftDropIn {
             listener::onPaymentResult
         )
         context = fragment.requireContext()
-        apiKey = publicApiKey
+        this.publicApiKey = publicApiKey
     }
 
     constructor(
@@ -37,17 +37,40 @@ class DefaultRyftDropIn : RyftDropIn {
             listener::onPaymentResult
         )
         context = activity
-        apiKey = publicApiKey
+        this.publicApiKey = publicApiKey
+    }
+
+    constructor(
+        fragment: Fragment,
+        listener: RyftDropInResultListener,
+    ) {
+        launcher = fragment.registerForActivityResult(
+            RyftDropInResultContract(),
+            listener::onPaymentResult
+        )
+        context = fragment.requireContext()
+    }
+
+    constructor(
+        activity: ComponentActivity,
+        listener: RyftDropInResultListener,
+    ) {
+        this.launcher = activity.registerForActivityResult(
+            RyftDropInResultContract(),
+            listener::onPaymentResult
+        )
+        context = activity
     }
 
     override fun show(
         configuration: RyftDropInConfiguration
     ) {
+        val publicApiKey = configuration.publicApiKey ?: this.publicApiKey ?: throw IllegalArgumentException("publicApiKey was null")
         launcher.launch(
             RyftDropInActivity.createIntent(
                 context,
                 configuration,
-                apiKey
+                publicApiKey
             )
         )
     }

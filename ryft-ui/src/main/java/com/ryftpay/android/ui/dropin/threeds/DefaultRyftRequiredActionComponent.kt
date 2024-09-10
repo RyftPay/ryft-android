@@ -13,7 +13,7 @@ class DefaultRyftRequiredActionComponent : RyftRequiredActionComponent {
 
     private val launcher: ActivityResultLauncher<Intent>
     private val context: Context
-    private val apiKey: RyftPublicApiKey
+    private var publicApiKey: RyftPublicApiKey? = null
 
     constructor(
         fragment: Fragment,
@@ -25,7 +25,7 @@ class DefaultRyftRequiredActionComponent : RyftRequiredActionComponent {
             listener::onRequiredActionResult
         )
         context = fragment.requireContext()
-        apiKey = publicApiKey
+        this.publicApiKey = publicApiKey
     }
 
     constructor(
@@ -38,18 +38,41 @@ class DefaultRyftRequiredActionComponent : RyftRequiredActionComponent {
             listener::onRequiredActionResult
         )
         context = activity
-        apiKey = publicApiKey
+        this.publicApiKey = publicApiKey
+    }
+
+    constructor(
+        fragment: Fragment,
+        listener: RyftRequiredActionResultListener
+    ) {
+        launcher = fragment.registerForActivityResult(
+            RyftRequiredActionResultContract(),
+            listener::onRequiredActionResult
+        )
+        context = fragment.requireContext()
+    }
+
+    constructor(
+        activity: ComponentActivity,
+        listener: RyftRequiredActionResultListener
+    ) {
+        this.launcher = activity.registerForActivityResult(
+            RyftRequiredActionResultContract(),
+            listener::onRequiredActionResult
+        )
+        context = activity
     }
 
     override fun handle(
         configuration: RyftRequiredActionComponent.Configuration,
         requiredAction: RequiredAction
     ) {
+        val publicApiKey = configuration.publicApiKey ?: this.publicApiKey ?: throw IllegalArgumentException("publicApiKey was null")
         launcher.launch(
             RyftRequiredActionActivity.createIntent(
                 context,
                 configuration,
-                apiKey,
+                publicApiKey,
                 requiredAction
             )
         )

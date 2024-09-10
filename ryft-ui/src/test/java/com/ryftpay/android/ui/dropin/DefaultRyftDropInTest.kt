@@ -17,7 +17,7 @@ internal class DefaultRyftDropInTest {
     private val publicApiKey = RyftPublicApiKey("pk_sandbox_123")
 
     @Test
-    internal fun `DefaultRyftDropIn should register fragment for activity on construction`() {
+    internal fun `DefaultRyftDropIn should register fragment for activity on construction with public api key`() {
         DefaultRyftDropIn(
             fragment,
             listener,
@@ -35,11 +35,45 @@ internal class DefaultRyftDropInTest {
     }
 
     @Test
-    internal fun `DefaultRyftDropIn should register activity for activity on construction`() {
+    internal fun `DefaultRyftDropIn should register activity for activity on construction with public api key`() {
         DefaultRyftDropIn(
             activity,
             listener,
             publicApiKey
+        )
+
+        verify {
+            activity.registerForActivityResult(
+                match<ActivityResultContract<Intent, RyftPaymentResult>> {
+                    it is RyftDropInResultContract
+                },
+                any()
+            )
+        }
+    }
+
+    @Test
+    internal fun `DefaultRyftDropIn should register fragment for activity on construction without public api key`() {
+        DefaultRyftDropIn(
+            fragment,
+            listener
+        )
+
+        verify {
+            fragment.registerForActivityResult(
+                match<ActivityResultContract<Intent, RyftPaymentResult>> {
+                    it is RyftDropInResultContract
+                },
+                any()
+            )
+        }
+    }
+
+    @Test
+    internal fun `DefaultRyftDropIn should register activity for activity on construction without public api key`() {
+        DefaultRyftDropIn(
+            activity,
+            listener
         )
 
         verify {
