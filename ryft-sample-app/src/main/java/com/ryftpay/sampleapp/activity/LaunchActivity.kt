@@ -16,7 +16,7 @@ class LaunchActivity : AppCompatActivity() {
         launchDemoButton = findViewById(R.id.button_launch_demo)
 
         launchDemoButton?.setOnClickListener {
-            launchDemo(publicApiKey = publicApiKeyInput?.text?.toString() ?: "")
+            launchDemo()
         }
     }
 
