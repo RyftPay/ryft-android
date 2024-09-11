@@ -2,7 +2,6 @@ package com.ryftpay.sampleapp.fragment
 
 import android.app.AlertDialog
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,13 +25,12 @@ import com.ryftpay.android.ui.dropin.threeds.RyftRequiredActionComponent
 import com.ryftpay.android.ui.dropin.threeds.RyftRequiredActionResult
 import com.ryftpay.android.ui.dropin.threeds.RyftRequiredActionResultListener
 import com.ryftpay.sampleapp.R
-import com.ryftpay.sampleapp.extension.getParcelableArgs
-import kotlinx.parcelize.Parcelize
 import org.json.JSONObject
 
 class DemoFragment : Fragment(), RyftDropInResultListener, RyftRequiredActionResultListener {
 
     // Sample app variables
+    private lateinit var publicApiKeyInput: EditText
     private lateinit var clientSecretInput: EditText
     private lateinit var subAccountIdInput: EditText
     private lateinit var requiredActionJsonInput: EditText
@@ -49,19 +47,15 @@ class DemoFragment : Fragment(), RyftDropInResultListener, RyftRequiredActionRes
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val input: Arguments = arguments?.getParcelableArgs(ARGUMENTS_BUNDLE_KEY, Arguments::class.java)
-            ?: throw IllegalArgumentException("No arguments provided to fragment")
         // Instantiate DefaultRyftDropIn in onCreate()
         ryftDropIn = DefaultRyftDropIn(
             fragment = this,
-            listener = this,
-            RyftPublicApiKey(input.publicApiKey)
+            listener = this
         )
         // Instantiate DefaultRyftRequiredActionComponent in onCreate()
         ryftRequiredActionComponent = DefaultRyftRequiredActionComponent(
             fragment = this,
-            listener = this,
-            RyftPublicApiKey(input.publicApiKey)
+            listener = this
         )
     }
 
@@ -77,6 +71,7 @@ class DemoFragment : Fragment(), RyftDropInResultListener, RyftRequiredActionRes
         super.onViewCreated(view, savedInstanceState)
 
         // Instantiate sample app variables
+        publicApiKeyInput = view.findViewById(R.id.input_public_api_key)
         clientSecretInput = view.findViewById(R.id.input_client_secret)
         subAccountIdInput = view.findViewById(R.id.input_sub_account_id)
         requiredActionJsonInput = view.findViewById(R.id.input_required_action_json)
@@ -157,6 +152,7 @@ class DemoFragment : Fragment(), RyftDropInResultListener, RyftRequiredActionRes
         ryftDropIn.show(
             RyftDropInConfiguration(
                 clientSecret = clientSecretInput.text.toString(),
+                publicApiKey = RyftPublicApiKey(publicApiKeyInput.text.toString()),
                 subAccountId = parseSubAccountId(),
                 display = RyftDropInDisplayConfiguration(
                     payButtonTitle = "Pay Demo",
@@ -175,11 +171,13 @@ class DemoFragment : Fragment(), RyftDropInResultListener, RyftRequiredActionRes
         val configuration = if (subAccountId != null) {
             RyftRequiredActionComponent.Configuration.subAccountPayment(
                 clientSecret = clientSecretInput.text.toString(),
+                publicApiKey = RyftPublicApiKey(publicApiKeyInput.text.toString()),
                 subAccountId = subAccountId
             )
         } else {
             RyftRequiredActionComponent.Configuration.standardAccountPayment(
-                clientSecret = clientSecretInput.text.toString()
+                clientSecret = clientSecretInput.text.toString(),
+                publicApiKey = RyftPublicApiKey(publicApiKeyInput.text.toString())
             )
         }
         ryftRequiredActionComponent.handle(
@@ -245,33 +243,11 @@ class DemoFragment : Fragment(), RyftDropInResultListener, RyftRequiredActionRes
         )
     }
 
-    @Parcelize
-    private class Arguments(
-        val publicApiKey: String
-    ) : Parcelable {
-        companion object {
-            fun bundleFrom(
-                publicApiKey: String
-            ): Bundle = Bundle().apply {
-                putParcelable(
-                    ARGUMENTS_BUNDLE_KEY,
-                    Arguments(publicApiKey)
-                )
-            }
-        }
-    }
-
     companion object {
         // Sample app constants
         private const val DEMO_MERCHANT_NAME = "Ryft"
         private const val DEMO_MERCHANT_COUNTRY_CODE = "GB"
 
-        private const val ARGUMENTS_BUNDLE_KEY = "Arguments"
-
-        fun newInstance(publicApiKey: String): DemoFragment {
-            val fragment = DemoFragment()
-            fragment.arguments = Arguments.bundleFrom(publicApiKey)
-            return fragment
-        }
+        fun newInstance(): DemoFragment = DemoFragment()
     }
 }

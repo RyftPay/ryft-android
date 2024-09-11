@@ -30,6 +30,15 @@
             android:padding="10dp">
 
             <EditText
+                android:id="@+id/input_public_api_key"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:importantForAutofill="no"
+                android:textSize="14sp"
+                android:hint="@string/hint_public_api_key"/>
+
+            <EditText
                 android:id="@+id/input_client_secret"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
