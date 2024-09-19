@@ -5,6 +5,7 @@ import com.ryftpay.android.core.api.error.RyftErrorResponse
 import com.ryftpay.android.core.api.payment.AttemptPaymentRequest
 import com.ryftpay.android.core.api.payment.PaymentSessionResponse
 import com.ryftpay.android.core.client.RyftApiClient
+import com.ryftpay.android.core.extension.extractPaymentSessionIdFromClientSecret
 import com.ryftpay.android.core.model.error.RyftError
 import com.ryftpay.android.core.model.payment.CustomerDetails
 import com.ryftpay.android.core.model.payment.PaymentMethod
@@ -68,7 +69,7 @@ class DefaultRyftPaymentService(
         listener.onLoadingPayment()
         client.loadPaymentSession(
             subAccountId,
-            extractPaymentSessionIdFromClientSecret(clientSecret),
+            clientSecret.extractPaymentSessionIdFromClientSecret(),
             clientSecret
         ).enqueue(
             callbackForLoadingPayment(listener)
@@ -174,8 +175,4 @@ class DefaultRyftPaymentService(
         } catch (exception: Exception) {
             RyftError.Unknown
         }
-
-    private fun extractPaymentSessionIdFromClientSecret(
-        clientSecret: String
-    ) = clientSecret.substring(0, clientSecret.indexOf("_secret_"))
 }

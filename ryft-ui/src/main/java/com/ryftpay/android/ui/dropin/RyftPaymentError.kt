@@ -3,6 +3,7 @@ package com.ryftpay.android.ui.dropin
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Parcelable
+import com.ryftpay.android.core.model.error.RyftError
 import com.ryftpay.android.core.model.payment.PaymentSessionError
 import com.ryftpay.ui.R
 import kotlinx.parcelize.Parcelize
@@ -40,16 +41,20 @@ class RyftPaymentError(
         )
 
         internal fun from(
+            error: RyftError?,
             throwable: Throwable?,
             context: Context
         ): RyftPaymentError {
-            val displayError = if (throwable is IOException) {
-                context.getString(R.string.ryft_network_error)
-            } else {
-                context.getString(R.string.ryft_unknown_error)
+            val stringResourceId = when (error?.httpStatusCode) {
+                "403" -> R.string.ryft_invalid_api_key_developer_error_message
+                "404" -> R.string.ryft_payment_not_found_developer_error_message
+                else -> if (throwable is IOException)
+                    R.string.ryft_network_error
+                else
+                    R.string.ryft_unknown_error
             }
             return RyftPaymentError(
-                displayError = displayError
+                displayError = context.getString(stringResourceId)
             )
         }
     }

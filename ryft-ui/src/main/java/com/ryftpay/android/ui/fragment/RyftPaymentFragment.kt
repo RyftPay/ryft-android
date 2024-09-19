@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Parcelable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.gms.common.api.ApiException
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.ryftpay.android.core.client.RyftApiClientFactory
+import com.ryftpay.android.core.extension.extractPaymentSessionIdFromClientSecret
 import com.ryftpay.android.core.model.api.RyftPublicApiKey
 import com.ryftpay.android.core.model.error.RyftError
 import com.ryftpay.android.core.model.payment.CardDetails
@@ -69,6 +71,8 @@ internal class RyftPaymentFragment :
     RyftPaymentResultListener,
     RyftLoadPaymentListener,
     ThreeDsIdentificationResultListener {
+
+    private val tag: String = RyftPaymentFragment::class.java.name
 
     private lateinit var delegate: RyftPaymentDelegate
     private lateinit var ryftPaymentService: RyftPaymentService
@@ -224,8 +228,10 @@ internal class RyftPaymentFragment :
         error: RyftError?,
         throwable: Throwable?
     ) {
+        val paymentSessionId = clientSecret.extractPaymentSessionIdFromClientSecret()
+        Log.e(tag, "Error obtaining payment result for: $paymentSessionId due to error: $error, throwable: $throwable")
         paymentResultViewModel.updateResult(
-            RyftPaymentResult.Failed(RyftPaymentError.from(throwable, requireContext()))
+            RyftPaymentResult.Failed(RyftPaymentError.from(error, throwable, requireContext()))
         )
         safeDismiss()
     }
@@ -234,6 +240,8 @@ internal class RyftPaymentFragment :
         error: RyftError?,
         throwable: Throwable?
     ) {
+        val paymentSessionId = clientSecret.extractPaymentSessionIdFromClientSecret()
+        Log.e(tag, "Error loading payment for: $paymentSessionId due to error: $error, throwable: $throwable")
         val stringResourceId = when (error?.httpStatusCode) {
             "400" -> R.string.ryft_invalid_client_secret_developer_error_message
             "403" -> R.string.ryft_invalid_api_key_developer_error_message

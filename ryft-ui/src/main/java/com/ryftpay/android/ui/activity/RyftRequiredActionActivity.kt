@@ -6,8 +6,10 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Parcelable
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.ryftpay.android.core.client.RyftApiClientFactory
+import com.ryftpay.android.core.extension.extractPaymentSessionIdFromClientSecret
 import com.ryftpay.android.core.model.api.RyftPublicApiKey
 import com.ryftpay.android.core.model.error.RyftError
 import com.ryftpay.android.core.model.payment.IdentifyAction
@@ -38,6 +40,8 @@ internal class RyftRequiredActionActivity :
     AppCompatActivity(),
     ThreeDsIdentificationResultListener,
     RyftRawPaymentResultListener {
+
+    private val tag: String = RyftRequiredActionActivity::class.java.name
 
     private lateinit var ryftPaymentService: RyftPaymentService
     private lateinit var threeDsService: ThreeDsService
@@ -82,12 +86,15 @@ internal class RyftRequiredActionActivity :
         RyftRequiredActionResult.Success(response)
     )
 
-    override fun onErrorObtainingPaymentResult(error: RyftError?, throwable: Throwable?) =
+    override fun onErrorObtainingPaymentResult(error: RyftError?, throwable: Throwable?) {
+        val paymentSessionId = clientSecret.extractPaymentSessionIdFromClientSecret()
+        Log.e(tag, "Error obtaining payment result for: $paymentSessionId due to error: $error, throwable: $throwable")
         returnRequiredActionResult(
             RyftRequiredActionResult.Error(
-                RyftPaymentError.from(throwable, context = this)
+                RyftPaymentError.from(error, throwable, context = this)
             )
         )
+    }
 
     private fun setupRyftPaymentService(publicApiKey: RyftPublicApiKey) {
         ryftPaymentService = DefaultRyftPaymentService(
