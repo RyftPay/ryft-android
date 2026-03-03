@@ -6,13 +6,13 @@ on:
   workflow_dispatch:
     inputs:
       branch:
-        description: the branch to deploy
+        description: the branch to run UI Test
         required: true
         default: master
 
 jobs:
   ui-test:
-    runs-on: macos-14
+    runs-on: macos-14-large
     strategy:
       matrix:
         api-level: [23]
