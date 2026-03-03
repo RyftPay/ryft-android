@@ -21,7 +21,7 @@ import retrofit2.Response
 import java.lang.Exception
 
 class DefaultRyftPaymentService(
-    private val client: RyftApiClient,
+    private val client: RyftApiClient
 ) : RyftPaymentService {
 
     override fun attemptPayment(

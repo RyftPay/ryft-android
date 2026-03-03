@@ -48,7 +48,7 @@ internal data class TransactionInfo(
 
         internal fun from(
             paymentSession: PaymentSession,
-            countryCode: String,
+            countryCode: String
         ) = TransactionInfo(
             paymentSession.id,
             paymentSession.amount,

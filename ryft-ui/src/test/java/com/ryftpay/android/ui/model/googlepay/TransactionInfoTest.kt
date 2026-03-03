@@ -99,6 +99,6 @@ internal class TransactionInfoTest {
 
     private fun checkoutOptions(): Array<Any> = arrayOf(
         arrayOf(TransactionInfo.CheckoutOption.CompleteImmediatePurchase, "COMPLETE_IMMEDIATE_PURCHASE"),
-        arrayOf(TransactionInfo.CheckoutOption.Default, "DEFAULT"),
+        arrayOf(TransactionInfo.CheckoutOption.Default, "DEFAULT")
     )
 }

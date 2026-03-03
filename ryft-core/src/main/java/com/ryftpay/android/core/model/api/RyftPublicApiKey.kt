@@ -10,7 +10,9 @@ data class RyftPublicApiKey(
     fun getEnvironment(): RyftEnvironment =
         if (value.startsWith(SANDBOX_KEY_PREFIX)) {
             RyftEnvironment.Sandbox
-        } else RyftEnvironment.Prod
+        } else {
+            RyftEnvironment.Prod
+        }
 
     companion object {
         private const val KEY_PREFIX = "pk_"

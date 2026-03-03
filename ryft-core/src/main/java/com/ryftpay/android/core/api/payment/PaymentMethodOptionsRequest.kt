@@ -11,8 +11,10 @@ data class PaymentMethodOptionsRequest(
             options: PaymentMethodOptions?
         ): PaymentMethodOptionsRequest? = if (options == null) {
             null
-        } else PaymentMethodOptionsRequest(
-            store = options.store
-        )
+        } else {
+            PaymentMethodOptionsRequest(
+                store = options.store
+            )
+        }
     }
 }

@@ -62,7 +62,9 @@ internal class RyftCardExpiryDate private constructor(
             1 -> {
                 if (year[0].digitToInt() >= currentDecade) {
                     ValidationState.Incomplete
-                } else ValidationState.Invalid
+                } else {
+                    ValidationState.Invalid
+                }
             }
             2 -> {
                 if (year.toInt() > currentYear) {
@@ -72,7 +74,9 @@ internal class RyftCardExpiryDate private constructor(
                         month.toInt() >= currentMonth
                     ) {
                         ValidationState.Valid
-                    } else ValidationState.Invalid
+                    } else {
+                        ValidationState.Invalid
+                    }
                 }
             }
             else -> ValidationState.Invalid

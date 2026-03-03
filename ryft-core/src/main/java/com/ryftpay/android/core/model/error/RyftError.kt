@@ -19,7 +19,7 @@ data class RyftError(
             RyftError(
                 requestId = response.requestId,
                 httpStatusCode = response.code,
-                errors = response.errors.map { RyftErrorElement.from(it) },
+                errors = response.errors.map { RyftErrorElement.from(it) }
             )
     }
 }

@@ -30,20 +30,20 @@ android {
     kotlinOptions {
         jvmTarget = rootProject.ext.kotlin_jvm_target
     }
-    lintOptions {
+    lint {
         // Disables a linting error that is a false positive (or one of our dependencies is using it)
         disable 'NotificationPermission'
     }
 }
 
 dependencies {
-    implementation 'androidx.core:core-ktx:1.9.0'
-    implementation 'androidx.appcompat:appcompat:1.5.1'
-    implementation 'com.google.android.material:material:1.7.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+    implementation 'androidx.core:core-ktx:1.17.0'
+    implementation 'androidx.appcompat:appcompat:1.7.1'
+    implementation 'com.google.android.material:material:1.13.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.10.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.10.0'
 
     // Ryft dependency
-    implementation 'com.ryftpay:ryft-android:1.7.0'
+    implementation project(':ryft-sdk')
 }

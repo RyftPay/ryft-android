@@ -84,7 +84,7 @@ internal class RyftCardCvcTest {
         arrayOf("90", RyftCardType.Mastercard),
         arrayOf("374", RyftCardType.Unknown),
         arrayOf("738", RyftCardType.Amex),
-        arrayOf("374", RyftCardType.Unknown),
+        arrayOf("374", RyftCardType.Unknown)
     )
 
     private fun invalidCvcs(): Array<Any> = arrayOf(

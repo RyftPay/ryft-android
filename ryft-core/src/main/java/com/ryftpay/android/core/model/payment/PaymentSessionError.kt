@@ -39,6 +39,8 @@ enum class PaymentSessionError(
 
         internal fun from(error: String?): PaymentSessionError? = if (error == null) {
             null
-        } else rawValues[error] ?: Unknown
+        } else {
+            rawValues[error] ?: Unknown
+        }
     }
 }

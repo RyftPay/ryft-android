@@ -68,7 +68,9 @@ internal enum class RyftCardType(
             }
             return if (matchingCardTypes.size == 1) {
                 matchingCardTypes.first()
-            } else Unknown
+            } else {
+                Unknown
+            }
         }
 
         internal fun getGooglePaySupportedTypeNames(): List<String> =
