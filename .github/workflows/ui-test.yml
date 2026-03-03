@@ -3,15 +3,23 @@ name: ui-test
 on:
   push:
     branches: [ master ]
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: the branch to deploy
+        required: true
+        default: master
 
 jobs:
   ui-test:
-    runs-on: macos-13
+    runs-on: macos-14
     strategy:
       matrix:
         api-level: [23]
     steps:
     - uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event.inputs.branch }}
 
     - name: Set up JDK
       uses: actions/setup-java@v4
