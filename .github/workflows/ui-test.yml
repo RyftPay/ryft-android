@@ -3,6 +3,12 @@ name: ui-test
 on:
   push:
     branches: [ master ]
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: the branch to deploy
+        required: true
+        default: master
 
 jobs:
   ui-test:
@@ -13,6 +19,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.inputs.branch }}
 
     - name: Set up JDK
       uses: actions/setup-java@v2
