@@ -13,13 +13,13 @@ java {
 
 dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-stdlib:' + kotlin_version
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.retrofit2:converter-jackson:2.9.0'
+    implementation 'com.squareup.retrofit2:retrofit:3.0.0'
+    implementation 'com.squareup.retrofit2:converter-jackson:3.0.0'
 
 
-    testImplementation 'io.mockk:mockk:1.12.2'
+    testImplementation 'io.mockk:mockk:1.14.9'
     testImplementation 'junit:junit:4.13.2'
-    testImplementation 'org.amshove.kluent:kluent-android:1.68'
+    testImplementation 'org.amshove.kluent:kluent-android:1.73'
     testImplementation 'pl.pragmatists:JUnitParams:1.1.1'
 }
 
