@@ -450,7 +450,7 @@ internal class RyftPaymentFragmentTest {
                 isFocused()
             )
         ).perform(
-            typeTextIntoFocusedView("1225")
+            typeTextIntoFocusedView("1230")
         ).check(
             matches(
                 isNotFocused()
@@ -513,7 +513,7 @@ internal class RyftPaymentFragmentTest {
                 isFocused()
             )
         ).perform(
-            typeTextIntoFocusedView("1225")
+            typeTextIntoFocusedView("1230")
         ).check(
             matches(
                 isNotFocused()
@@ -1340,7 +1340,7 @@ internal class RyftPaymentFragmentTest {
                 isFocused()
             )
         ).perform(
-            typeTextIntoFocusedView("1225")
+            typeTextIntoFocusedView("1230")
         ).check(
             matches(
                 isNotFocused()
@@ -1403,7 +1403,7 @@ internal class RyftPaymentFragmentTest {
                 isFocused()
             )
         ).perform(
-            typeTextIntoFocusedView("1225")
+            typeTextIntoFocusedView("1230")
         ).check(
             matches(
                 isNotFocused()
