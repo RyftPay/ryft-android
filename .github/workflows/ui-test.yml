@@ -15,7 +15,7 @@ jobs:
     runs-on: macos-14-large
     strategy:
       matrix:
-        api-level: [24]
+        api-level: [23]
     steps:
     - uses: actions/checkout@v4
       with:
