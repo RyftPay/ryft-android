@@ -196,6 +196,6 @@ internal class StringExtensionTest {
         arrayOf("timothy test ", 2),
         arrayOf(" timothy test ", 2),
         arrayOf("lots of words", 3),
-        arrayOf("hyphen-word", 1),
+        arrayOf("hyphen-word", 1)
     )
 }

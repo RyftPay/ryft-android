@@ -48,10 +48,11 @@ class RyftPaymentError(
             val stringResourceId = when (error?.httpStatusCode) {
                 "403" -> R.string.ryft_invalid_api_key_developer_error_message
                 "404" -> R.string.ryft_payment_not_found_developer_error_message
-                else -> if (throwable is IOException)
+                else -> if (throwable is IOException) {
                     R.string.ryft_network_error
-                else
+                } else {
                     R.string.ryft_unknown_error
+                }
             }
             return RyftPaymentError(
                 displayError = context.getString(stringResourceId)

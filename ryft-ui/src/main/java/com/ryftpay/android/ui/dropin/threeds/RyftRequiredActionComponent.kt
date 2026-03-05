@@ -26,7 +26,7 @@ interface RyftRequiredActionComponent {
                 clientSecret: String,
                 subAccountId: String,
                 returnUrl: String? = null,
-                publicApiKey: RyftPublicApiKey? = null,
+                publicApiKey: RyftPublicApiKey? = null
             ): Configuration = Configuration(
                 clientSecret,
                 subAccountId,
@@ -36,7 +36,7 @@ interface RyftRequiredActionComponent {
             fun standardAccountPayment(
                 clientSecret: String,
                 returnUrl: String? = null,
-                publicApiKey: RyftPublicApiKey? = null,
+                publicApiKey: RyftPublicApiKey? = null
             ): Configuration = Configuration(
                 clientSecret,
                 subAccountId = null,

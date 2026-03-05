@@ -35,6 +35,6 @@ internal class CurrencyExtensionTest {
         arrayOf("CHF", 100.0),
         arrayOf("AED", 100.0),
         arrayOf("BHD", 1000.0),
-        arrayOf("VND", 1.0),
+        arrayOf("VND", 1.0)
     )
 }

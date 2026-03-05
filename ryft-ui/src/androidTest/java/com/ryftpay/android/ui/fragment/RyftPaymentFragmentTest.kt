@@ -450,7 +450,7 @@ internal class RyftPaymentFragmentTest {
                 isFocused()
             )
         ).perform(
-            typeTextIntoFocusedView("1225"),
+            typeTextIntoFocusedView("1230")
         ).check(
             matches(
                 isNotFocused()
@@ -464,7 +464,7 @@ internal class RyftPaymentFragmentTest {
                 isFocused()
             )
         ).perform(
-            typeTextIntoFocusedView("123"),
+            typeTextIntoFocusedView("123")
         ).check(
             matches(
                 isNotFocused()
@@ -513,7 +513,7 @@ internal class RyftPaymentFragmentTest {
                 isFocused()
             )
         ).perform(
-            typeTextIntoFocusedView("1225"),
+            typeTextIntoFocusedView("1230")
         ).check(
             matches(
                 isNotFocused()
@@ -527,7 +527,7 @@ internal class RyftPaymentFragmentTest {
                 isFocused()
             )
         ).perform(
-            typeTextIntoFocusedView("123"),
+            typeTextIntoFocusedView("123")
         ).check(
             matches(
                 isNotFocused()
@@ -702,7 +702,7 @@ internal class RyftPaymentFragmentTest {
                 withText("")
             )
         ).perform(
-            typeText("1234567890"),
+            typeText("1234567890")
         ).check(
             matches(
                 withText("123")
@@ -740,7 +740,7 @@ internal class RyftPaymentFragmentTest {
                 withText("")
             )
         ).perform(
-            typeText("7373"),
+            typeText("7373")
         ).check(
             matches(
                 withText("7373")
@@ -1340,7 +1340,7 @@ internal class RyftPaymentFragmentTest {
                 isFocused()
             )
         ).perform(
-            typeTextIntoFocusedView("1225"),
+            typeTextIntoFocusedView("1230")
         ).check(
             matches(
                 isNotFocused()
@@ -1354,7 +1354,7 @@ internal class RyftPaymentFragmentTest {
                 isFocused()
             )
         ).perform(
-            typeTextIntoFocusedView("123"),
+            typeTextIntoFocusedView("123")
         ).check(
             matches(
                 isNotFocused()
@@ -1403,7 +1403,7 @@ internal class RyftPaymentFragmentTest {
                 isFocused()
             )
         ).perform(
-            typeTextIntoFocusedView("1225"),
+            typeTextIntoFocusedView("1230")
         ).check(
             matches(
                 isNotFocused()
@@ -1417,7 +1417,7 @@ internal class RyftPaymentFragmentTest {
                 isFocused()
             )
         ).perform(
-            typeTextIntoFocusedView("123"),
+            typeTextIntoFocusedView("123")
         ).check(
             matches(
                 isNotFocused()
@@ -1592,7 +1592,7 @@ internal class RyftPaymentFragmentTest {
                 withText("")
             )
         ).perform(
-            typeText("1234567890"),
+            typeText("1234567890")
         ).check(
             matches(
                 withText("123")
@@ -1630,7 +1630,7 @@ internal class RyftPaymentFragmentTest {
                 withText("")
             )
         ).perform(
-            typeText("7373"),
+            typeText("7373")
         ).check(
             matches(
                 withText("7373")
@@ -1828,13 +1828,13 @@ internal class RyftPaymentFragmentTest {
         onView(
             withId(R.id.input_field_ryft_card_expiry_date)
         ).perform(
-            typeText("1230"),
+            typeText("1230")
         )
 
         onView(
             withId(R.id.input_field_ryft_card_cvc)
         ).perform(
-            typeText("123"),
+            typeText("123")
         )
     }
 
@@ -1880,7 +1880,8 @@ internal class RyftPaymentFragmentTest {
         onView(isRoot()).check(noOverlaps())
         onView(isRoot()).check(
             selectedDescendantsMatch(
-                isAssignableFrom(RyftButton::class.java), not(hasEllipsizedText())
+                isAssignableFrom(RyftButton::class.java),
+                not(hasEllipsizedText())
             )
         )
     }

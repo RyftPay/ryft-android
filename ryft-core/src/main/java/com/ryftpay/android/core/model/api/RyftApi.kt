@@ -7,5 +7,7 @@ internal object RyftApi {
     internal fun generateBaseApiUrl(publicApiKey: RyftPublicApiKey): String =
         if (publicApiKey.getEnvironment() == RyftEnvironment.Sandbox) {
             SANDBOX_API_URL
-        } else PROD_API_URL
+        } else {
+            PROD_API_URL
+        }
 }

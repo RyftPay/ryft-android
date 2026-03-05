@@ -42,7 +42,7 @@ class DefaultRyftDropIn : RyftDropIn {
 
     constructor(
         fragment: Fragment,
-        listener: RyftDropInResultListener,
+        listener: RyftDropInResultListener
     ) {
         launcher = fragment.registerForActivityResult(
             RyftDropInResultContract(),
@@ -53,7 +53,7 @@ class DefaultRyftDropIn : RyftDropIn {
 
     constructor(
         activity: ComponentActivity,
-        listener: RyftDropInResultListener,
+        listener: RyftDropInResultListener
     ) {
         this.launcher = activity.registerForActivityResult(
             RyftDropInResultContract(),

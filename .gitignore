@@ -38,24 +38,11 @@ captures/
 
 # IntelliJ
 *.iml
-.idea/workspace.xml
-.idea/tasks.xml
-.idea/gradle.xml
-.idea/misc.xml
-.idea/assetWizardSettings.xml
-.idea/jarRepositories.xml
-.idea/compiler.xml
-.idea/dictionaries
-.idea/libraries
-.idea/.gitignore
-# Android Studio 3 in .gitignore file.
-.idea/caches
-.idea/modules.xml
-# Comment next line if keeping position of elements in Navigation Editor is relevant for you
-.idea/navEditor.xml
-.idea/deploymentTargetDropDown.xml
+.idea/
+!.idea/codeStyles
+!.idea/inspectionProfiles
 
-# Keystore files
+#Keystore files
 # Uncomment the following lines if you do not want to check your keystore files in.
 #*.jks
 #*.keystore
@@ -87,3 +74,7 @@ lint/generated/
 lint/outputs/
 lint/tmp/
 # lint/reports/
+
+# Local development scripts (paths may differ between machines)
+gradlew-java17
+/.idea/AndroidProjectSystem.xml

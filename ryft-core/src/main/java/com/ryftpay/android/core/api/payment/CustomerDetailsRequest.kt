@@ -11,8 +11,10 @@ data class CustomerDetailsRequest(
             customerDetails: CustomerDetails?
         ): CustomerDetailsRequest? = if (customerDetails == null) {
             null
-        } else CustomerDetailsRequest(
-            email = customerDetails.email
-        )
+        } else {
+            CustomerDetailsRequest(
+                email = customerDetails.email
+            )
+        }
     }
 }

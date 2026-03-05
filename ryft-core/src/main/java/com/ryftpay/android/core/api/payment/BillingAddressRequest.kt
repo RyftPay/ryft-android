@@ -11,7 +11,7 @@ data class BillingAddressRequest(
     @JsonProperty("city") val city: String?,
     @JsonProperty("country") val country: String,
     @JsonProperty("postalCode") val postalCode: String,
-    @JsonProperty("region") val region: String?,
+    @JsonProperty("region") val region: String?
 ) {
     companion object {
         internal fun from(billingAddress: Address?): BillingAddressRequest? =

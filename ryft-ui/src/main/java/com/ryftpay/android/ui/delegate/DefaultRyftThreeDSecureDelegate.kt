@@ -57,7 +57,9 @@ internal class DefaultRyftThreeDSecureDelegate(
             return if (request?.isThreeDSecureCompleted(returnUrl) == true) {
                 paymentSessionId = request.extractPaymentSessionId()
                 true
-            } else super.shouldOverrideUrlLoading(view, request)
+            } else {
+                super.shouldOverrideUrlLoading(view, request)
+            }
         }
 
         override fun onPageFinished(view: WebView?, url: String?) {

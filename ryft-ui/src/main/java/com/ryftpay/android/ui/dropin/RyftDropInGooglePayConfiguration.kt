@@ -11,6 +11,7 @@ data class RyftDropInGooglePayConfiguration(
 ) : Parcelable {
     @IgnoredOnParcel
     internal val existingPaymentMethodRequired = false
+
     @IgnoredOnParcel
     internal val billingAddressRequired = true
 }
