@@ -6,14 +6,15 @@
     android:layout_height="113dp"
     android:orientation="vertical">
 
-        <include layout="@layout/ryft_googlepay_button"
-            android:id="@+id/button_ryft_googlepay"
-            android:layout_height="48dp"
-            android:layout_width="match_parent"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="12dp"/>
+    <com.google.android.gms.wallet.button.PayButton
+        android:id="@+id/button_ryft_googlepay"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="12dp"
+        android:contentDescription="@string/googlepay_button_content_description" />
 
     <include layout="@layout/partial_ryft_divider_with_text"/>
 
