@@ -8,9 +8,9 @@ import com.google.android.gms.wallet.button.ButtonConstants
 import com.google.android.gms.wallet.button.ButtonOptions
 import com.google.android.gms.wallet.button.PayButton
 import com.ryftpay.android.ui.listener.RyftPaymentFormGooglePayHeaderListener
+import com.ryftpay.android.ui.model.googlepay.CardPaymentMethod
 import com.ryftpay.ui.R
 import org.json.JSONArray
-import org.json.JSONObject
 
 internal class RyftPaymentFormGooglePayHeader @JvmOverloads constructor(
     context: Context,
@@ -25,36 +25,15 @@ internal class RyftPaymentFormGooglePayHeader @JvmOverloads constructor(
         googlePayButton = findViewById(R.id.button_ryft_googlepay)
 
         val allowedPaymentMethods = JSONArray().put(
-            JSONObject().apply {
-                put("type", "CARD")
-                put(
-                    "parameters",
-                    JSONObject().apply {
-                        put(
-                            "allowedAuthMethods",
-                            JSONArray().apply {
-                                put("PAN_ONLY")
-                                put("CRYPTOGRAM_3DS")
-                            }
-                        )
-                        put(
-                            "allowedCardNetworks",
-                            JSONArray().apply {
-                                put("VISA")
-                                put("MASTERCARD")
-                                put("AMEX")
-                                put("DISCOVER")
-                            }
-                        )
-                    }
-                )
-            }
+            CardPaymentMethod().toApiV2RequestJson(
+                billingAddressRequired = false,
+                tokenizationSpecification = null
+            )
         )
 
         try {
             googlePayButton.initialize(
                 ButtonOptions.newBuilder()
-                    .setButtonTheme(ButtonConstants.ButtonTheme.DARK)
                     .setButtonType(ButtonConstants.ButtonType.PAY)
                     .setAllowedPaymentMethods(allowedPaymentMethods.toString())
                     .build()
@@ -70,16 +49,7 @@ internal class RyftPaymentFormGooglePayHeader @JvmOverloads constructor(
         googlePayButton.visibility = View.VISIBLE
 
         googlePayButton.setOnClickListener {
-            toggleGooglePayButton(enabled = false)
             listener.onGooglePayClicked()
-        }
-    }
-
-    internal fun toggleGooglePayButton(enabled: Boolean) {
-        if (enabled) {
-            googlePayButton.visibility = View.VISIBLE
-        } else {
-            googlePayButton.visibility = View.GONE
         }
     }
 }

@@ -105,7 +105,6 @@ internal class DefaultRyftPaymentDelegate(
         enabled: Boolean,
         footerState: RyftPaymentFormFooter.State
     ) {
-        googlePayHeader.toggleGooglePayButton(enabled)
         body.toggleInput(enabled)
         footer.setState(footerState)
     }

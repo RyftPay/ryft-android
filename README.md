@@ -10,8 +10,9 @@ Ryft for Android allows you to accept in-app payments securely and safely using 
 
 ## Requirements
 
-- Android `minSdkVersion` 21 or above
-- Android `compileSdkVersion` 28 or above (required for [Google Pay™](https://developer.ryftpay.com/google-pay))
+- Android `minSdkVersion` 23 or above
+- Android `compileSdkVersion` 36 or above (required for [Google Pay™](https://developer.ryftpay.com/google-pay))
+- Google Play Services Wallet 19.5.0 or above (automatically included)
 
 ### Google Pay
 
