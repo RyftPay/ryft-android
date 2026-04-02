@@ -20,7 +20,7 @@ plugins {
 }
 
 ext {
-    version = '1.8.0'
+    version = '1.8.1'
     group = "com.ryftpay"
     java_version = JavaVersion.VERSION_17
     kotlin_jvm_target = '17'
