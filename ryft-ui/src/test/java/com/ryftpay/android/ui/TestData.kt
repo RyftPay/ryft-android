@@ -144,9 +144,7 @@ internal object TestData {
         lastUpdatedTimestamp = 1642138419
     )
     internal val identifyAction = IdentifyAction(
-        sessionId = "session_123",
-        sessionSecret = "secret_123",
         scheme = "visa",
-        paymentMethodId = "pmt_123"
+        messageVersion = "2.2.0"
     )
 }

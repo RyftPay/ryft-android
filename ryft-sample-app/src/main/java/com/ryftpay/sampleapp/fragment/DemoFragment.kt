@@ -228,10 +228,8 @@ class DemoFragment : Fragment(), RyftDropInResultListener, RyftRequiredActionRes
         val identifyJson = requiredActionJson.optJSONObject("identify")
         val identify = if (identifyJson != null) {
             IdentifyAction(
-                sessionId = identifyJson.getString("sessionId"),
-                sessionSecret = identifyJson.getString("sessionSecret"),
                 scheme = identifyJson.getString("scheme"),
-                paymentMethodId = identifyJson.getString("paymentMethodId")
+                messageVersion = identifyJson.getString("messageVersion")
             )
         } else {
             null

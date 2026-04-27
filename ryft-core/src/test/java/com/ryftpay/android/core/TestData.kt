@@ -74,10 +74,8 @@ internal object TestData {
     )
 
     internal val identifyActionResponse = IdentifyActionResponse(
-        sessionId = "session_123",
-        sessionSecret = "secret_123",
         scheme = "visa",
-        paymentMethodId = PAYMENT_METHOD_ID
+        messageVersion = "2.2.0"
     )
 
     internal val identifyRequiredActionResponse = RequiredActionResponse(
