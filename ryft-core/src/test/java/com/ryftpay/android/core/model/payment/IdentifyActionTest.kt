@@ -10,6 +10,7 @@ internal class IdentifyActionTest {
     fun `from should return expected values`() {
         val identifyAction = IdentifyAction.from(identifyActionResponse)
         identifyAction.scheme shouldBeEqualTo identifyActionResponse.scheme
-        identifyAction.messageVersion shouldBeEqualTo identifyActionResponse.messageVersion
+        identifyAction.paymentMethodId shouldBeEqualTo identifyActionResponse.paymentMethodId
+        identifyAction.protocolVersion shouldBeEqualTo identifyActionResponse.protocolVersion
     }
 }

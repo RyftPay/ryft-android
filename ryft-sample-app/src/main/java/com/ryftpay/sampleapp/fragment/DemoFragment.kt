@@ -229,7 +229,8 @@ class DemoFragment : Fragment(), RyftDropInResultListener, RyftRequiredActionRes
         val identify = if (identifyJson != null) {
             IdentifyAction(
                 scheme = identifyJson.getString("scheme"),
-                messageVersion = identifyJson.getString("messageVersion")
+                paymentMethodId = identifyJson.getString("paymentMethodId"),
+                protocolVersion = identifyJson.getString("protocolVersion")
             )
         } else {
             null

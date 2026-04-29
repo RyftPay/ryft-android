@@ -144,7 +144,8 @@ internal object TestData {
         lastUpdatedTimestamp = 1642138419
     )
     internal val identifyAction = IdentifyAction(
-        scheme = "visa",
-        messageVersion = "2.2.0"
+        scheme = "Visa",
+        paymentMethodId = "pmt_123",
+        protocolVersion = "2.2.0"
     )
 }

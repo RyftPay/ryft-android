@@ -4,13 +4,15 @@ import com.ryftpay.android.core.api.payment.IdentifyActionResponse
 
 data class IdentifyAction(
     val scheme: String,
-    val messageVersion: String
+    val paymentMethodId: String,
+    val protocolVersion: String
 ) {
     companion object {
         internal fun from(response: IdentifyActionResponse): IdentifyAction =
             IdentifyAction(
                 scheme = response.scheme,
-                messageVersion = response.messageVersion
+                paymentMethodId = response.paymentMethodId,
+                protocolVersion = response.protocolVersion
             )
     }
 }

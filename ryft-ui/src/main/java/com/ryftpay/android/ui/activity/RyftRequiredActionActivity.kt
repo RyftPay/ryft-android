@@ -20,15 +20,16 @@ import com.ryftpay.android.core.model.payment.RequiredActionType
 import com.ryftpay.android.core.service.DefaultRyftPaymentService
 import com.ryftpay.android.core.service.RyftPaymentService
 import com.ryftpay.android.core.service.listener.RyftRawPaymentResultListener
-import com.ryftpay.android.ui.client.Checkout3dsServiceFactory
+import com.ryftpay.android.ui.client.RavelinThreeDsServiceFactory
 import com.ryftpay.android.ui.dropin.RyftPaymentError
 import com.ryftpay.android.ui.dropin.threeds.RyftRequiredActionComponent
 import com.ryftpay.android.ui.dropin.threeds.RyftRequiredActionResult
 import com.ryftpay.android.ui.extension.getParcelableArgs
-import com.ryftpay.android.ui.model.threeds.ThreeDsIdentificationResult
-import com.ryftpay.android.ui.model.threeds.ThreeDsIdentificationResultListener
-import com.ryftpay.android.ui.service.DefaultCheckoutThreeDsService
 import com.ryftpay.android.ui.service.ThreeDsService
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import com.ryftpay.android.ui.util.RequiredActionParceler
 import com.ryftpay.android.ui.util.RyftPublicApiKeyParceler
 import com.ryftpay.ui.R
@@ -38,13 +39,12 @@ import java.lang.IllegalArgumentException
 
 internal class RyftRequiredActionActivity :
     AppCompatActivity(),
-    ThreeDsIdentificationResultListener,
     RyftRawPaymentResultListener {
 
     private val tag: String = RyftRequiredActionActivity::class.java.name
 
     private lateinit var ryftPaymentService: RyftPaymentService
-    private lateinit var threeDsService: ThreeDsService
+    private var threeDsServiceDeferred: Deferred<ThreeDsService>? = null
     private lateinit var clientSecret: String
     private var subAccountId: String? = null
 
@@ -55,6 +55,7 @@ internal class RyftRequiredActionActivity :
         val input = intent.getParcelableArgs(ARGUMENTS_INTENT_EXTRA, Arguments::class.java)
             ?: throw IllegalArgumentException("No arguments provided to activity")
         setupRyftPaymentService(input.publicApiKey)
+        setupRavelinThreeDsService(input.publicApiKey)
         clientSecret = input.configuration.clientSecret
         subAccountId = input.configuration.subAccountId
         handleRequiredAction(
@@ -69,18 +70,14 @@ internal class RyftRequiredActionActivity :
         overridePendingTransition(0, 0)
     }
 
-    override fun onThreeDsIdentificationResult(
-        result: ThreeDsIdentificationResult,
-        paymentMethodId: String
-    ) = ryftPaymentService.attemptPayment(
-        clientSecret = clientSecret,
-        paymentMethod = PaymentMethod.id(
-            id = paymentMethodId
-        ),
-        customerDetails = null,
-        subAccountId = subAccountId,
-        listener = this
-    )
+    @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
+    override fun onDestroy() {
+        super.onDestroy()
+        threeDsServiceDeferred?.let { deferred ->
+            if (deferred.isCompleted) deferred.getCompleted().cleanup()
+            else deferred.cancel()
+        }
+    }
 
     override fun onRawPaymentResult(response: PaymentSession) = returnRequiredActionResult(
         RyftRequiredActionResult.Success(response)
@@ -100,6 +97,16 @@ internal class RyftRequiredActionActivity :
         ryftPaymentService = DefaultRyftPaymentService(
             RyftApiClientFactory(publicApiKey).createRyftApiClient()
         )
+    }
+
+    private fun setupRavelinThreeDsService(publicApiKey: RyftPublicApiKey) {
+        threeDsServiceDeferred = lifecycleScope.async {
+            RavelinThreeDsServiceFactory.create(
+                context = this@RyftRequiredActionActivity,
+                ryftEnvironment = publicApiKey.getEnvironment(),
+                coroutineScope = this
+            )
+        }
     }
 
     private fun handleRequiredAction(
@@ -129,17 +136,10 @@ internal class RyftRequiredActionActivity :
         publicApiKey: RyftPublicApiKey,
         returnUrl: String?
     ) {
-        threeDsService = DefaultCheckoutThreeDsService(
-            Checkout3dsServiceFactory.create(
-                context = this,
-                publicApiKey.getEnvironment(),
-                returnUrl
-            )
-        )
-        threeDsService.handleIdentification(
-            identifyAction,
-            listener = this
-        )
+        lifecycleScope.launch {
+            val transactionParams = threeDsServiceDeferred!!.await().createTransaction(identifyAction)
+            // TODO: call continuePayment with transactionParams
+        }
     }
 
     private fun returnRequiredActionResult(requiredActionResult: RyftRequiredActionResult) {

@@ -30,8 +30,8 @@ import com.ryftpay.android.core.service.DefaultRyftPaymentService
 import com.ryftpay.android.core.service.RyftPaymentService
 import com.ryftpay.android.core.service.listener.RyftLoadPaymentListener
 import com.ryftpay.android.core.service.listener.RyftPaymentResultListener
-import com.ryftpay.android.ui.client.Checkout3dsServiceFactory
 import com.ryftpay.android.ui.client.PaymentsClientFactory
+import com.ryftpay.android.ui.client.RavelinThreeDsServiceFactory
 import com.ryftpay.android.ui.delegate.DefaultRyftPaymentDelegate
 import com.ryftpay.android.ui.delegate.RyftPaymentDelegate
 import com.ryftpay.android.ui.dropin.RyftDropInConfiguration
@@ -51,13 +51,14 @@ import com.ryftpay.android.ui.model.googlepay.LoadPaymentDataRequest
 import com.ryftpay.android.ui.model.googlepay.MerchantInfo
 import com.ryftpay.android.ui.model.googlepay.TokenizationSpecification
 import com.ryftpay.android.ui.model.googlepay.TransactionInfo
-import com.ryftpay.android.ui.model.threeds.ThreeDsIdentificationResult
-import com.ryftpay.android.ui.model.threeds.ThreeDsIdentificationResultListener
-import com.ryftpay.android.ui.service.DefaultCheckoutThreeDsService
 import com.ryftpay.android.ui.service.DefaultGooglePayService
 import com.ryftpay.android.ui.service.GooglePayService
 import com.ryftpay.android.ui.service.ThreeDsService
 import com.ryftpay.android.ui.util.RyftPublicApiKeyParceler
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import com.ryftpay.android.ui.viewmodel.GooglePayResultViewModel
 import com.ryftpay.android.ui.viewmodel.RyftPaymentResultViewModel
 import com.ryftpay.ui.R
@@ -69,15 +70,14 @@ internal class RyftPaymentFragment :
     BottomSheetDialogFragment(),
     RyftPaymentFormListener,
     RyftPaymentResultListener,
-    RyftLoadPaymentListener,
-    ThreeDsIdentificationResultListener {
+    RyftLoadPaymentListener {
 
     private val tag: String = RyftPaymentFragment::class.java.name
 
     private lateinit var delegate: RyftPaymentDelegate
     private lateinit var ryftPaymentService: RyftPaymentService
     private lateinit var paymentResultViewModel: RyftPaymentResultViewModel
-    private lateinit var threeDsService: ThreeDsService
+    private var threeDsServiceDeferred: Deferred<ThreeDsService>? = null
     private lateinit var publicApiKey: RyftPublicApiKey
     private lateinit var clientSecret: String
     private lateinit var displayConfiguration: RyftDropInDisplayConfiguration
@@ -122,6 +122,7 @@ internal class RyftPaymentFragment :
         setupRyftPaymentService()
         setupPaymentResultViewModel()
         setupThreeDSecureResultObserver()
+        setupRavelinThreeDsService()
         val googlePayEnabled = googlePayConfiguration != null &&
             displayConfiguration.usage == RyftDropInUsage.Payment
         if (!googlePayEnabled) {
@@ -204,17 +205,10 @@ internal class RyftPaymentFragment :
         returnUrl: String,
         identifyAction: IdentifyAction
     ) {
-        threeDsService = DefaultCheckoutThreeDsService(
-            Checkout3dsServiceFactory.create(
-                requireContext(),
-                publicApiKey.getEnvironment(),
-                returnUrl
-            )
-        )
-        threeDsService.handleIdentification(
-            identifyAction,
-            listener = this
-        )
+        viewLifecycleOwner.lifecycleScope.launch {
+            val transactionParams = threeDsServiceDeferred!!.await().createTransaction(identifyAction)
+            // TODO: call continuePayment with transactionParams
+        }
     }
 
     override fun onPaymentHasError(lastError: PaymentSessionError) {
@@ -272,19 +266,13 @@ internal class RyftPaymentFragment :
         )
     }
 
-    override fun onThreeDsIdentificationResult(
-        result: ThreeDsIdentificationResult,
-        paymentMethodId: String
-    ) {
-        ryftPaymentService.attemptPayment(
-            clientSecret = clientSecret,
-            paymentMethod = PaymentMethod.id(
-                id = paymentMethodId
-            ),
-            customerDetails = null,
-            subAccountId = subAccountId,
-            listener = this
-        )
+    @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
+    override fun onDestroyView() {
+        super.onDestroyView()
+        threeDsServiceDeferred?.let { deferred ->
+            if (deferred.isCompleted) deferred.getCompleted().cleanup()
+            else deferred.cancel()
+        }
     }
 
     override fun onCancel(dialog: DialogInterface) {
@@ -296,6 +284,16 @@ internal class RyftPaymentFragment :
         ryftPaymentService = DefaultRyftPaymentService(
             RyftApiClientFactory(publicApiKey).createRyftApiClient()
         )
+    }
+
+    private fun setupRavelinThreeDsService() {
+        threeDsServiceDeferred = viewLifecycleOwner.lifecycleScope.async {
+            RavelinThreeDsServiceFactory.create(
+                context = requireContext(),
+                ryftEnvironment = publicApiKey.getEnvironment(),
+                coroutineScope = this
+            )
+        }
     }
 
     private fun setupPaymentResultViewModel() {

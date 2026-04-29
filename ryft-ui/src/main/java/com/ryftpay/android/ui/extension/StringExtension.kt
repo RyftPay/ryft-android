@@ -42,3 +42,13 @@ internal fun String?.extractFirstAndLastNamesOrNulls(): Pair<String?, String?> {
 }
 
 internal fun String.numberOfWords(): Int = this.trim().split(' ').size
+
+internal fun String.toDirectoryServerId(): String = when (this.lowercase()) {
+    "visa" -> "A000000003"
+    "mastercard" -> "A000000004"
+    "amex" -> "A000000025"
+    "discover" -> "A000000152"
+    "jcb" -> "A000000065"
+    "unionpay" -> "A000000333"
+    else -> throw IllegalArgumentException("Unsupported card scheme: $this")
+}

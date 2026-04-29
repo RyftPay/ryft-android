@@ -6,5 +6,6 @@ import com.fasterxml.jackson.annotation.JsonProperty
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class IdentifyActionResponse(
     @JsonProperty("scheme") val scheme: String,
-    @JsonProperty("messageVersion") val messageVersion: String
+    @JsonProperty("paymentMethodId") val paymentMethodId: String,
+    @JsonProperty("protocolVersion") val protocolVersion: String
 )
