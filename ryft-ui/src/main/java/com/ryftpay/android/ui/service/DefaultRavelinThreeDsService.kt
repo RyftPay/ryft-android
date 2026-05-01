@@ -4,8 +4,8 @@ import android.content.Context
 import com.ul.emvco3ds.sdk.spec.ThreeDS2Service
 import com.ul.emvco3ds.sdk.spec.Transaction
 import com.ryftpay.android.core.model.payment.IdentifyAction
+import com.ryftpay.android.core.model.payment.ThreeDsTransactionParams
 import com.ryftpay.android.ui.extension.toDirectoryServerId
-import com.ryftpay.android.ui.model.threeds.ThreeDsTransactionParams
 
 internal class DefaultRavelinThreeDsService(
     private val context: Context,

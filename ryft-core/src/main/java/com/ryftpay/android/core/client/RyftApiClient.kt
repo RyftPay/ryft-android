@@ -1,6 +1,7 @@
 package com.ryftpay.android.core.client
 
 import com.ryftpay.android.core.api.payment.AttemptPaymentRequest
+import com.ryftpay.android.core.api.payment.ContinuePaymentRequest
 import com.ryftpay.android.core.api.payment.PaymentSessionResponse
 import com.ryftpay.android.core.model.api.HttpHeaders
 import com.ryftpay.android.core.model.api.RyftApiParameters
@@ -18,6 +19,12 @@ interface RyftApiClient {
     fun attemptPayment(
         @Header(HttpHeaders.ACCOUNT) subAccountId: String?,
         @Body body: AttemptPaymentRequest
+    ): Call<PaymentSessionResponse>
+
+    @POST("payment-sessions/continue-payment")
+    fun continuePayment(
+        @Header(HttpHeaders.ACCOUNT) subAccountId: String?,
+        @Body body: ContinuePaymentRequest
     ): Call<PaymentSessionResponse>
 
     @GET("payment-sessions/{${RyftApiParameters.PAYMENT_SESSION_ID}}")

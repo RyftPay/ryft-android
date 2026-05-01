@@ -1,6 +1,6 @@
-package com.ryftpay.android.ui.model.threeds
+package com.ryftpay.android.core.model.payment
 
-internal data class ThreeDsTransactionParams(
+data class ThreeDsTransactionParams(
     val sdkTransactionId: String,
     val sdkApplicationId: String,
     val sdkEncryptedData: String,

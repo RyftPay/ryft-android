@@ -207,7 +207,12 @@ internal class RyftPaymentFragment :
     ) {
         viewLifecycleOwner.lifecycleScope.launch {
             val transactionParams = threeDsServiceDeferred!!.await().createTransaction(identifyAction)
-            // TODO: call continuePayment with transactionParams
+            ryftPaymentService.continuePayment(
+                clientSecret = clientSecret,
+                subAccountId = subAccountId,
+                threeDsTransactionParams = transactionParams,
+                listener = this@RyftPaymentFragment
+            )
         }
     }
 

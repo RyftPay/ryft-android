@@ -3,6 +3,7 @@ package com.ryftpay.android.core.service
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.ryftpay.android.core.api.error.RyftErrorResponse
 import com.ryftpay.android.core.api.payment.AttemptPaymentRequest
+import com.ryftpay.android.core.api.payment.ContinuePaymentRequest
 import com.ryftpay.android.core.api.payment.PaymentSessionResponse
 import com.ryftpay.android.core.client.RyftApiClient
 import com.ryftpay.android.core.extension.extractPaymentSessionIdFromClientSecret
@@ -10,6 +11,7 @@ import com.ryftpay.android.core.model.error.RyftError
 import com.ryftpay.android.core.model.payment.CustomerDetails
 import com.ryftpay.android.core.model.payment.PaymentMethod
 import com.ryftpay.android.core.model.payment.PaymentSession
+import com.ryftpay.android.core.model.payment.ThreeDsTransactionParams
 import com.ryftpay.android.core.model.payment.PaymentSessionStatus
 import com.ryftpay.android.core.model.payment.RequiredActionType
 import com.ryftpay.android.core.service.listener.RyftLoadPaymentListener
@@ -40,6 +42,20 @@ class DefaultRyftPaymentService(
         client.attemptPayment(
             subAccountId,
             attemptPaymentRequest
+        ).enqueue(
+            callbackForPaymentResult(listener)
+        )
+    }
+
+    override fun continuePayment(
+        clientSecret: String,
+        subAccountId: String?,
+        threeDsTransactionParams: ThreeDsTransactionParams,
+        listener: RyftPaymentResultListener
+    ) {
+        client.continuePayment(
+            subAccountId,
+            ContinuePaymentRequest.from(clientSecret, threeDsTransactionParams)
         ).enqueue(
             callbackForPaymentResult(listener)
         )
