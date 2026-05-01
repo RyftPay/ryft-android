@@ -22,6 +22,14 @@ interface RyftPaymentService {
         listener: RyftPaymentResultListener
     )
 
+    fun continuePaymentAfterChallenge(
+        clientSecret: String,
+        subAccountId: String?,
+        transactionStatus: String,
+        threeDSServerTransactionId: String,
+        listener: RyftPaymentResultListener
+    )
+
     fun getLatestPaymentResult(
         paymentSessionId: String,
         clientSecret: String,

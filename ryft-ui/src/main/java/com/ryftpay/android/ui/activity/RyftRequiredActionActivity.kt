@@ -12,6 +12,7 @@ import com.ryftpay.android.core.client.RyftApiClientFactory
 import com.ryftpay.android.core.extension.extractPaymentSessionIdFromClientSecret
 import com.ryftpay.android.core.model.api.RyftPublicApiKey
 import com.ryftpay.android.core.model.error.RyftError
+import com.ryftpay.android.core.model.payment.ChallengeAction
 import com.ryftpay.android.core.model.payment.IdentifyAction
 import com.ryftpay.android.core.model.payment.PaymentMethod
 import com.ryftpay.android.core.model.payment.PaymentSession
@@ -22,6 +23,7 @@ import com.ryftpay.android.core.service.RyftPaymentService
 import com.ryftpay.android.core.service.listener.RyftRawPaymentResultListener
 import com.ryftpay.android.ui.client.RavelinThreeDsServiceFactory
 import com.ryftpay.android.ui.dropin.RyftPaymentError
+import com.ryftpay.android.ui.model.threeds.ThreeDsChallengeResult
 import com.ryftpay.android.ui.dropin.threeds.RyftRequiredActionComponent
 import com.ryftpay.android.ui.dropin.threeds.RyftRequiredActionResult
 import com.ryftpay.android.ui.extension.getParcelableArgs
@@ -144,6 +146,26 @@ internal class RyftRequiredActionActivity :
                 threeDsTransactionParams = transactionParams,
                 listener = this@RyftRequiredActionActivity
             )
+        }
+    }
+
+    override fun onPaymentRequiresChallenge(challengeAction: ChallengeAction) {
+        lifecycleScope.launch {
+            when (val result = threeDsServiceDeferred!!.await().doChallenge(this@RyftRequiredActionActivity, challengeAction)) {
+                is ThreeDsChallengeResult.Completed -> ryftPaymentService.continuePaymentAfterChallenge(
+                    clientSecret = clientSecret,
+                    subAccountId = subAccountId,
+                    transactionStatus = result.transactionStatus,
+                    threeDSServerTransactionId = result.threeDSServerTransactionId,
+                    listener = this@RyftRequiredActionActivity
+                )
+                is ThreeDsChallengeResult.Cancelled -> returnRequiredActionResult(
+                    RyftRequiredActionResult.Error(RyftPaymentError(displayError = "Challenge cancelled"))
+                )
+                is ThreeDsChallengeResult.Failed -> returnRequiredActionResult(
+                    RyftRequiredActionResult.Error(RyftPaymentError(displayError = result.message))
+                )
+            }
         }
     }
 

@@ -61,6 +61,21 @@ class DefaultRyftPaymentService(
         )
     }
 
+    override fun continuePaymentAfterChallenge(
+        clientSecret: String,
+        subAccountId: String?,
+        transactionStatus: String,
+        threeDSServerTransactionId: String,
+        listener: RyftPaymentResultListener
+    ) {
+        client.continuePayment(
+            subAccountId,
+            ContinuePaymentRequest.fromChallengeResult(clientSecret, transactionStatus, threeDSServerTransactionId)
+        ).enqueue(
+            callbackForPaymentResult(listener)
+        )
+    }
+
     override fun getLatestPaymentResult(
         paymentSessionId: String,
         clientSecret: String,
@@ -140,6 +155,14 @@ class DefaultRyftPaymentService(
                             paymentSession.returnUrl,
                             paymentSession.requiredAction.identify
                         )
+                        return
+                    }
+                    if (paymentSession.status == PaymentSessionStatus.PendingAction &&
+                        paymentSession.requiredAction != null &&
+                        paymentSession.requiredAction.type == RequiredActionType.Challenge &&
+                        paymentSession.requiredAction.challenge != null
+                    ) {
+                        listener.onPaymentRequiresChallenge(paymentSession.requiredAction.challenge)
                         return
                     }
                     if (paymentSession.status == PaymentSessionStatus.PendingPayment &&

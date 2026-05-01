@@ -3,6 +3,7 @@ package com.ryftpay.android.ui.util
 import android.os.Parcel
 import com.ryftpay.android.core.model.payment.RequiredAction
 import com.ryftpay.android.core.model.payment.RequiredActionType
+import com.ryftpay.android.ui.util.ChallengeActionParceler.write
 import com.ryftpay.android.ui.util.IdentifyActionParceler.write
 import kotlinx.parcelize.Parceler
 
@@ -12,6 +13,11 @@ internal object RequiredActionParceler : Parceler<RequiredAction> {
         url = parcel.readString(),
         identify = if (parcel.readInt() != 0) {
             IdentifyActionParceler.create(parcel)
+        } else {
+            null
+        },
+        challenge = if (parcel.readInt() != 0) {
+            ChallengeActionParceler.create(parcel)
         } else {
             null
         }
@@ -25,6 +31,12 @@ internal object RequiredActionParceler : Parceler<RequiredAction> {
         } else {
             parcel.writeInt(1)
             identify!!.write(parcel, flags)
+        }
+        if (challenge == null) {
+            parcel.writeInt(0)
+        } else {
+            parcel.writeInt(1)
+            challenge!!.write(parcel, flags)
         }
     }
 }

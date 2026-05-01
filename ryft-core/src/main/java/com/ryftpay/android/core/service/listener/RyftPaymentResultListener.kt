@@ -1,6 +1,7 @@
 package com.ryftpay.android.core.service.listener
 
 import com.ryftpay.android.core.model.error.RyftError
+import com.ryftpay.android.core.model.payment.ChallengeAction
 import com.ryftpay.android.core.model.payment.IdentifyAction
 import com.ryftpay.android.core.model.payment.PaymentSession
 import com.ryftpay.android.core.model.payment.PaymentSessionError
@@ -17,6 +18,7 @@ interface RyftPaymentResultListener {
         returnUrl: String,
         identifyAction: IdentifyAction
     )
+    fun onPaymentRequiresChallenge(challengeAction: ChallengeAction) { }
     fun onPaymentHasError(lastError: PaymentSessionError)
     fun onErrorObtainingPaymentResult(error: RyftError?, throwable: Throwable?)
 }

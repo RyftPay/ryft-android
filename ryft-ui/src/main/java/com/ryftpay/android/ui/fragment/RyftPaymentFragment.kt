@@ -20,6 +20,7 @@ import com.ryftpay.android.core.extension.extractPaymentSessionIdFromClientSecre
 import com.ryftpay.android.core.model.api.RyftPublicApiKey
 import com.ryftpay.android.core.model.error.RyftError
 import com.ryftpay.android.core.model.payment.CardDetails
+import com.ryftpay.android.core.model.payment.ChallengeAction
 import com.ryftpay.android.core.model.payment.CustomerDetails
 import com.ryftpay.android.core.model.payment.IdentifyAction
 import com.ryftpay.android.core.model.payment.PaymentMethod
@@ -51,6 +52,7 @@ import com.ryftpay.android.ui.model.googlepay.LoadPaymentDataRequest
 import com.ryftpay.android.ui.model.googlepay.MerchantInfo
 import com.ryftpay.android.ui.model.googlepay.TokenizationSpecification
 import com.ryftpay.android.ui.model.googlepay.TransactionInfo
+import com.ryftpay.android.ui.model.threeds.ThreeDsChallengeResult
 import com.ryftpay.android.ui.service.DefaultGooglePayService
 import com.ryftpay.android.ui.service.GooglePayService
 import com.ryftpay.android.ui.service.ThreeDsService
@@ -213,6 +215,30 @@ internal class RyftPaymentFragment :
                 threeDsTransactionParams = transactionParams,
                 listener = this@RyftPaymentFragment
             )
+        }
+    }
+
+    override fun onPaymentRequiresChallenge(challengeAction: ChallengeAction) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            when (val result = threeDsServiceDeferred!!.await().doChallenge(requireActivity(), challengeAction)) {
+                is ThreeDsChallengeResult.Completed -> ryftPaymentService.continuePaymentAfterChallenge(
+                    clientSecret = clientSecret,
+                    subAccountId = subAccountId,
+                    transactionStatus = result.transactionStatus,
+                    threeDSServerTransactionId = result.threeDSServerTransactionId,
+                    listener = this@RyftPaymentFragment
+                )
+                is ThreeDsChallengeResult.Cancelled -> {
+                    paymentResultViewModel.updateResult(RyftPaymentResult.Cancelled)
+                    safeDismiss()
+                }
+                is ThreeDsChallengeResult.Failed -> {
+                    paymentResultViewModel.updateResult(
+                        RyftPaymentResult.Failed(RyftPaymentError(displayError = result.message))
+                    )
+                    safeDismiss()
+                }
+            }
         }
     }
 

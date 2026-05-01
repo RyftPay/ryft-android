@@ -1,14 +1,18 @@
 package com.ryftpay.android.core.api.payment
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.ryftpay.android.core.model.payment.ThreeDsTransactionParams
+import java.util.Base64
 
 data class ContinuePaymentRequest(
     @JsonProperty("clientSecret") val clientSecret: String,
     @JsonProperty("threeDs") val threeDs: ThreeDsDetails
 ) {
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     data class ThreeDsDetails(
-        @JsonProperty("appAuthentication") val appAuthentication: AppAuthentication
+        @JsonProperty("appAuthentication") val appAuthentication: AppAuthentication?,
+        @JsonProperty("challengeResult") val challengeResult: String?
     )
 
     data class AppAuthentication(
@@ -48,8 +52,25 @@ data class ContinuePaymentRequest(
                         sdkInterface = SDK_INTERFACE,
                         sdkUiTypes = SDK_UI_TYPES
                     )
-                )
+                ),
+                challengeResult = null
             )
         )
+
+        internal fun fromChallengeResult(
+            clientSecret: String,
+            transactionStatus: String,
+            threeDSServerTransactionId: String
+        ): ContinuePaymentRequest {
+            val json = """{"transStatus":"$transactionStatus","threeDSServerTransID":"$threeDSServerTransactionId"}"""
+            val encoded = Base64.getEncoder().encodeToString(json.toByteArray())
+            return ContinuePaymentRequest(
+                clientSecret = clientSecret,
+                threeDs = ThreeDsDetails(
+                    appAuthentication = null,
+                    challengeResult = encoded
+                )
+            )
+        }
     }
 }
