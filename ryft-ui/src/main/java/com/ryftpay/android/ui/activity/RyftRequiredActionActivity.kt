@@ -60,11 +60,7 @@ internal class RyftRequiredActionActivity :
         setupRavelinThreeDsService(input.publicApiKey)
         clientSecret = input.configuration.clientSecret
         subAccountId = input.configuration.subAccountId
-        handleRequiredAction(
-            input.requiredAction,
-            input.publicApiKey,
-            input.configuration.returnUrl
-        )
+        handleRequiredAction(input.requiredAction)
     }
 
     override fun onPause() {
@@ -102,24 +98,21 @@ internal class RyftRequiredActionActivity :
     }
 
     private fun setupRavelinThreeDsService(publicApiKey: RyftPublicApiKey) {
-        threeDsServiceDeferred = lifecycleScope.async {
+        val scope = lifecycleScope
+        threeDsServiceDeferred = scope.async {
             RavelinThreeDsServiceFactory.create(
-                context = this@RyftRequiredActionActivity,
+                context = applicationContext,
                 ryftEnvironment = publicApiKey.getEnvironment(),
-                coroutineScope = this
+                coroutineScope = scope
             )
         }
     }
 
     private fun handleRequiredAction(
-        requiredAction: RequiredAction,
-        publicApiKey: RyftPublicApiKey,
-        returnUrl: String?
+        requiredAction: RequiredAction
     ) = when (requiredAction.type) {
         RequiredActionType.Identify -> handleIdentification(
-            requiredAction.identify!!,
-            publicApiKey,
-            returnUrl
+            requiredAction.identify!!
         )
         else -> returnRequiredActionResult(
             RyftRequiredActionResult.Error(
@@ -134,9 +127,7 @@ internal class RyftRequiredActionActivity :
     }
 
     private fun handleIdentification(
-        identifyAction: IdentifyAction,
-        publicApiKey: RyftPublicApiKey,
-        returnUrl: String?
+        identifyAction: IdentifyAction
     ) {
         lifecycleScope.launch {
             val transactionParams = threeDsServiceDeferred!!.await().createTransaction(identifyAction)

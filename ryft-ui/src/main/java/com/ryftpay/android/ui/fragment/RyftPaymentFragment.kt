@@ -207,19 +207,29 @@ internal class RyftPaymentFragment :
         returnUrl: String,
         identifyAction: IdentifyAction
     ) {
+        Log.d(tag, "onPaymentRequiresIdentification called, scheme=${identifyAction.scheme}, threeDsServiceDeferred=${threeDsServiceDeferred}")
         viewLifecycleOwner.lifecycleScope.launch {
-            val transactionParams = threeDsServiceDeferred!!.await().createTransaction(identifyAction)
-            ryftPaymentService.continuePayment(
-                clientSecret = clientSecret,
-                subAccountId = subAccountId,
-                threeDsTransactionParams = transactionParams,
-                listener = this@RyftPaymentFragment
-            )
+            Log.d(tag, "3DS identification coroutine started")
+            try {
+                Log.d(tag, "Awaiting threeDsService...")
+                val transactionParams = threeDsServiceDeferred!!.await().createTransaction(identifyAction)
+                Log.d(tag, "createTransaction complete, calling continuePayment")
+                ryftPaymentService.continuePayment(
+                    clientSecret = clientSecret,
+                    subAccountId = subAccountId,
+                    threeDsTransactionParams = transactionParams,
+                    listener = this@RyftPaymentFragment
+                )
+            } catch (e: Exception) {
+                Log.e(tag, "Error during 3DS identification", e)
+                onErrorObtainingPaymentResult(null, e)
+            }
         }
     }
 
     override fun onPaymentRequiresChallenge(challengeAction: ChallengeAction) {
         viewLifecycleOwner.lifecycleScope.launch {
+            try {
             when (val result = threeDsServiceDeferred!!.await().doChallenge(requireActivity(), challengeAction)) {
                 is ThreeDsChallengeResult.Completed -> ryftPaymentService.continuePaymentAfterChallenge(
                     clientSecret = clientSecret,
@@ -238,6 +248,10 @@ internal class RyftPaymentFragment :
                     )
                     safeDismiss()
                 }
+            }
+            } catch (e: Exception) {
+                Log.e(tag, "Error during 3DS challenge", e)
+                onErrorObtainingPaymentResult(null, e)
             }
         }
     }
@@ -318,11 +332,12 @@ internal class RyftPaymentFragment :
     }
 
     private fun setupRavelinThreeDsService() {
-        threeDsServiceDeferred = viewLifecycleOwner.lifecycleScope.async {
+        val scope = viewLifecycleOwner.lifecycleScope
+        threeDsServiceDeferred = scope.async {
             RavelinThreeDsServiceFactory.create(
-                context = requireContext(),
+                context = requireContext().applicationContext,
                 ryftEnvironment = publicApiKey.getEnvironment(),
-                coroutineScope = this
+                coroutineScope = scope
             )
         }
     }

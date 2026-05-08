@@ -10,7 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 
 internal object RavelinThreeDsServiceFactory {
 
-    private const val SANDBOX_API_TOKEN = "pk_sandbox_ravelin_placeholder"
+    private const val SANDBOX_API_TOKEN = "Bearer publishable_key_test_Vr7SqPZFjLgqtnnS4bfPCwgRzIZCsgDrvyJRAx"
     private const val PRODUCTION_API_TOKEN = "pk_live_ravelin_placeholder"
 
     suspend fun create(
@@ -24,10 +24,10 @@ internal object RavelinThreeDsServiceFactory {
         }
         val config = ConfigParametersBuilder.Builder()
             .setApiToken(apiToken)
-            .setEnvironment(ryftEnvironment.toRavelinEnvironment())
+            .setEnvironment("EuLive")
             .build()
         val service = ThreeDS2ServiceInstance.get()
         service.initialize(context, config, null, null, coroutineScope)
-        return DefaultRavelinThreeDsService(context, service)
+        return DefaultRavelinThreeDsService(context, service, ryftEnvironment)
     }
 }

@@ -9,25 +9,31 @@ import com.ul.emvco3ds.sdk.spec.ProtocolErrorEvent
 import com.ul.emvco3ds.sdk.spec.RuntimeErrorEvent
 import com.ul.emvco3ds.sdk.spec.ThreeDS2Service
 import com.ul.emvco3ds.sdk.spec.Transaction
+import com.ryftpay.android.core.model.api.RyftEnvironment
 import com.ryftpay.android.core.model.payment.ChallengeAction
 import com.ryftpay.android.core.model.payment.IdentifyAction
 import com.ryftpay.android.core.model.payment.ThreeDsTransactionParams
 import com.ryftpay.android.ui.extension.toDirectoryServerId
 import com.ryftpay.android.ui.model.threeds.ThreeDsChallengeResult
+import android.util.Log
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
 internal class DefaultRavelinThreeDsService(
     private val context: Context,
-    private val threeDS2Service: ThreeDS2Service
+    private val threeDS2Service: ThreeDS2Service,
+    private val environment: RyftEnvironment
 ) : ThreeDsService {
 
     private var transaction: Transaction? = null
 
     override suspend fun createTransaction(identifyAction: IdentifyAction): ThreeDsTransactionParams {
+        val directoryServerId = identifyAction.scheme.toDirectoryServerId(environment)
+        val protocolVersion = resolveProtocolVersion(identifyAction.protocolVersion, environment)
+        Log.d(TAG, "createTransaction: scheme=${identifyAction.scheme}, directoryServerId=$directoryServerId, protocolVersion=$protocolVersion (original=${identifyAction.protocolVersion})")
         val tx = threeDS2Service.createTransaction(
-            identifyAction.scheme.toDirectoryServerId(),
-            identifyAction.protocolVersion  // Ravelin calls this messageVersion
+            directoryServerId,
+            protocolVersion
         )
         transaction = tx
         val params = requireNotNull(tx.getAuthenticationRequestParameters()) {
@@ -99,6 +105,15 @@ internal class DefaultRavelinThreeDsService(
     }
 
     companion object {
+        private const val TAG = "DefaultRavelinThreeDsService"
         private const val CHALLENGE_TIMEOUT_MINUTES = 5
+        private const val MIN_SUPPORTED_PROTOCOL_VERSION = "2.2.0"
+
+        internal fun resolveProtocolVersion(protocolVersion: String, environment: RyftEnvironment): String =
+            if (environment != RyftEnvironment.Prod && protocolVersion < MIN_SUPPORTED_PROTOCOL_VERSION) {
+                MIN_SUPPORTED_PROTOCOL_VERSION
+            } else {
+                protocolVersion
+            }
     }
 }
