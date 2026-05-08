@@ -26,13 +26,14 @@ Ryft Android is available via Maven Central
 
 ### Maven Central
 
-Add the Maven Central repository and our 3ds dependency repository to your project's `build.gradle`:
+Add the Maven Central repository and the Ravelin 3DS repository to your project's `build.gradle`:
 
 ```groovy
 allprojects {
     repositories {
         // ...
         mavenCentral()
+        maven { url 'https://maven.ravelin.com/public/repositories/threeds2service/' }
         // ...
     }
 }
@@ -43,7 +44,7 @@ Add the ryft-android dependency to your module's `build.gradle`:
 ```groovy
 dependencies {
     // ...
-    implementation 'com.ryftpay:ryft-android:1.8.0'
+    implementation 'com.ryftpay:ryft-android:2.0.0'
     // ...
 }
 ```
