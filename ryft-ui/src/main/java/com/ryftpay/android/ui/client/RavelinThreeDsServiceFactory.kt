@@ -10,24 +10,25 @@ import kotlinx.coroutines.CoroutineScope
 
 internal object RavelinThreeDsServiceFactory {
 
-    private const val SANDBOX_API_TOKEN = "Bearer publishable_key_test_Vr7SqPZFjLgqtnnS4bfPCwgRzIZCsgDrvyJRAx"
-    private const val PRODUCTION_API_TOKEN = "pk_live_ravelin_placeholder"
+    private const val BEARER_PREFIX = "Bearer "
 
     suspend fun create(
         context: Context,
         ryftEnvironment: RyftEnvironment,
+        ravelinPublicKey: String,
         coroutineScope: CoroutineScope
     ): DefaultRavelinThreeDsService {
-        val apiToken = when (ryftEnvironment) {
-            RyftEnvironment.Prod -> PRODUCTION_API_TOKEN
-            else -> SANDBOX_API_TOKEN
-        }
+        val key = ravelinPublicKey.trim()
+        require(key.isNotEmpty()) { "Ravelin public key cannot be empty" }
         val config = ConfigParametersBuilder.Builder()
-            .setApiToken(apiToken)
+            .setApiToken(key.toApiToken())
             .setEnvironment("EuLive")
             .build()
         val service = ThreeDS2ServiceInstance.get()
         service.initialize(context, config, null, null, coroutineScope)
         return DefaultRavelinThreeDsService(context, service, ryftEnvironment)
     }
+
+    private fun String.toApiToken(): String =
+        if (startsWith(BEARER_PREFIX)) this else "$BEARER_PREFIX$this"
 }

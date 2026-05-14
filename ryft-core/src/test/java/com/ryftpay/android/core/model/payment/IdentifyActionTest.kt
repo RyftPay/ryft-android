@@ -12,5 +12,6 @@ internal class IdentifyActionTest {
         identifyAction.scheme shouldBeEqualTo identifyActionResponse.scheme
         identifyAction.paymentMethodId shouldBeEqualTo identifyActionResponse.paymentMethodId
         identifyAction.protocolVersion shouldBeEqualTo identifyActionResponse.protocolVersion
+        identifyAction.ravelinPublicKey shouldBeEqualTo identifyActionResponse.ravelinPublicKey
     }
 }

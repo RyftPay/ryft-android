@@ -58,8 +58,6 @@ import com.ryftpay.android.ui.service.GooglePayService
 import com.ryftpay.android.ui.service.ThreeDsService
 import com.ryftpay.android.ui.util.RyftPublicApiKeyParceler
 import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import com.ryftpay.android.ui.viewmodel.GooglePayResultViewModel
 import com.ryftpay.android.ui.viewmodel.RyftPaymentResultViewModel
@@ -79,7 +77,7 @@ internal class RyftPaymentFragment :
     private lateinit var delegate: RyftPaymentDelegate
     private lateinit var ryftPaymentService: RyftPaymentService
     private lateinit var paymentResultViewModel: RyftPaymentResultViewModel
-    private var threeDsServiceDeferred: Deferred<ThreeDsService>? = null
+    private var threeDsService: ThreeDsService? = null
     private lateinit var publicApiKey: RyftPublicApiKey
     private lateinit var clientSecret: String
     private lateinit var displayConfiguration: RyftDropInDisplayConfiguration
@@ -124,7 +122,6 @@ internal class RyftPaymentFragment :
         setupRyftPaymentService()
         setupPaymentResultViewModel()
         setupThreeDSecureResultObserver()
-        setupRavelinThreeDsService()
         val googlePayEnabled = googlePayConfiguration != null &&
             displayConfiguration.usage == RyftDropInUsage.Payment
         if (!googlePayEnabled) {
@@ -207,13 +204,11 @@ internal class RyftPaymentFragment :
         returnUrl: String,
         identifyAction: IdentifyAction
     ) {
-        Log.d(tag, "onPaymentRequiresIdentification called, scheme=${identifyAction.scheme}, threeDsServiceDeferred=${threeDsServiceDeferred}")
+        Log.d(tag, "onPaymentRequiresIdentification called, scheme=${identifyAction.scheme}")
         viewLifecycleOwner.lifecycleScope.launch {
-            Log.d(tag, "3DS identification coroutine started")
             try {
-                Log.d(tag, "Awaiting threeDsService...")
-                val transactionParams = threeDsServiceDeferred!!.await().createTransaction(identifyAction)
-                Log.d(tag, "createTransaction complete, calling continuePayment")
+                val ravelinService = setupRavelinThreeDsService(identifyAction)
+                val transactionParams = ravelinService.createTransaction(identifyAction)
                 ryftPaymentService.continuePayment(
                     clientSecret = clientSecret,
                     subAccountId = subAccountId,
@@ -230,25 +225,28 @@ internal class RyftPaymentFragment :
     override fun onPaymentRequiresChallenge(challengeAction: ChallengeAction) {
         viewLifecycleOwner.lifecycleScope.launch {
             try {
-            when (val result = threeDsServiceDeferred!!.await().doChallenge(requireActivity(), challengeAction)) {
-                is ThreeDsChallengeResult.Completed -> ryftPaymentService.continuePaymentAfterChallenge(
-                    clientSecret = clientSecret,
-                    subAccountId = subAccountId,
-                    transactionStatus = result.transactionStatus,
-                    threeDSServerTransactionId = result.threeDSServerTransactionId,
-                    listener = this@RyftPaymentFragment
+                val ravelinService = threeDsService ?: throw IllegalStateException(
+                    "Cannot perform 3DS challenge before 3DS identification"
                 )
-                is ThreeDsChallengeResult.Cancelled -> {
-                    paymentResultViewModel.updateResult(RyftPaymentResult.Cancelled)
-                    safeDismiss()
-                }
-                is ThreeDsChallengeResult.Failed -> {
-                    paymentResultViewModel.updateResult(
-                        RyftPaymentResult.Failed(RyftPaymentError(displayError = result.message))
+                when (val result = ravelinService.doChallenge(requireActivity(), challengeAction)) {
+                    is ThreeDsChallengeResult.Completed -> ryftPaymentService.continuePaymentAfterChallenge(
+                        clientSecret = clientSecret,
+                        subAccountId = subAccountId,
+                        transactionStatus = result.transactionStatus,
+                        threeDSServerTransactionId = result.threeDSServerTransactionId,
+                        listener = this@RyftPaymentFragment
                     )
-                    safeDismiss()
+                    is ThreeDsChallengeResult.Cancelled -> {
+                        paymentResultViewModel.updateResult(RyftPaymentResult.Cancelled)
+                        safeDismiss()
+                    }
+                    is ThreeDsChallengeResult.Failed -> {
+                        paymentResultViewModel.updateResult(
+                            RyftPaymentResult.Failed(RyftPaymentError(displayError = result.message))
+                        )
+                        safeDismiss()
+                    }
                 }
-            }
             } catch (e: Exception) {
                 Log.e(tag, "Error during 3DS challenge", e)
                 onErrorObtainingPaymentResult(null, e)
@@ -311,13 +309,10 @@ internal class RyftPaymentFragment :
         )
     }
 
-    @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
     override fun onDestroyView() {
         super.onDestroyView()
-        threeDsServiceDeferred?.let { deferred ->
-            if (deferred.isCompleted) deferred.getCompleted().cleanup()
-            else deferred.cancel()
-        }
+        threeDsService?.cleanup()
+        threeDsService = null
     }
 
     override fun onCancel(dialog: DialogInterface) {
@@ -331,14 +326,18 @@ internal class RyftPaymentFragment :
         )
     }
 
-    private fun setupRavelinThreeDsService() {
+    private suspend fun setupRavelinThreeDsService(
+        identifyAction: IdentifyAction
+    ): ThreeDsService {
+        threeDsService?.cleanup()
         val scope = viewLifecycleOwner.lifecycleScope
-        threeDsServiceDeferred = scope.async {
-            RavelinThreeDsServiceFactory.create(
-                context = requireContext().applicationContext,
-                ryftEnvironment = publicApiKey.getEnvironment(),
-                coroutineScope = scope
-            )
+        return RavelinThreeDsServiceFactory.create(
+            context = requireContext().applicationContext,
+            ryftEnvironment = publicApiKey.getEnvironment(),
+            ravelinPublicKey = identifyAction.ravelinPublicKey,
+            coroutineScope = scope
+        ).also {
+            threeDsService = it
         }
     }
 

@@ -29,8 +29,6 @@ import com.ryftpay.android.ui.dropin.threeds.RyftRequiredActionResult
 import com.ryftpay.android.ui.extension.getParcelableArgs
 import com.ryftpay.android.ui.service.ThreeDsService
 import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import com.ryftpay.android.ui.util.RequiredActionParceler
 import com.ryftpay.android.ui.util.RyftPublicApiKeyParceler
@@ -46,7 +44,8 @@ internal class RyftRequiredActionActivity :
     private val tag: String = RyftRequiredActionActivity::class.java.name
 
     private lateinit var ryftPaymentService: RyftPaymentService
-    private var threeDsServiceDeferred: Deferred<ThreeDsService>? = null
+    private var threeDsService: ThreeDsService? = null
+    private lateinit var publicApiKey: RyftPublicApiKey
     private lateinit var clientSecret: String
     private var subAccountId: String? = null
 
@@ -57,7 +56,7 @@ internal class RyftRequiredActionActivity :
         val input = intent.getParcelableArgs(ARGUMENTS_INTENT_EXTRA, Arguments::class.java)
             ?: throw IllegalArgumentException("No arguments provided to activity")
         setupRyftPaymentService(input.publicApiKey)
-        setupRavelinThreeDsService(input.publicApiKey)
+        publicApiKey = input.publicApiKey
         clientSecret = input.configuration.clientSecret
         subAccountId = input.configuration.subAccountId
         handleRequiredAction(input.requiredAction)
@@ -68,13 +67,10 @@ internal class RyftRequiredActionActivity :
         overridePendingTransition(0, 0)
     }
 
-    @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
     override fun onDestroy() {
         super.onDestroy()
-        threeDsServiceDeferred?.let { deferred ->
-            if (deferred.isCompleted) deferred.getCompleted().cleanup()
-            else deferred.cancel()
-        }
+        threeDsService?.cleanup()
+        threeDsService = null
     }
 
     override fun onRawPaymentResult(response: PaymentSession) = returnRequiredActionResult(
@@ -95,17 +91,6 @@ internal class RyftRequiredActionActivity :
         ryftPaymentService = DefaultRyftPaymentService(
             RyftApiClientFactory(publicApiKey).createRyftApiClient()
         )
-    }
-
-    private fun setupRavelinThreeDsService(publicApiKey: RyftPublicApiKey) {
-        val scope = lifecycleScope
-        threeDsServiceDeferred = scope.async {
-            RavelinThreeDsServiceFactory.create(
-                context = applicationContext,
-                ryftEnvironment = publicApiKey.getEnvironment(),
-                coroutineScope = scope
-            )
-        }
     }
 
     private fun handleRequiredAction(
@@ -130,7 +115,8 @@ internal class RyftRequiredActionActivity :
         identifyAction: IdentifyAction
     ) {
         lifecycleScope.launch {
-            val transactionParams = threeDsServiceDeferred!!.await().createTransaction(identifyAction)
+            val ravelinService = setupRavelinThreeDsService(identifyAction)
+            val transactionParams = ravelinService.createTransaction(identifyAction)
             ryftPaymentService.continuePayment(
                 clientSecret = clientSecret,
                 subAccountId = subAccountId,
@@ -142,7 +128,10 @@ internal class RyftRequiredActionActivity :
 
     override fun onPaymentRequiresChallenge(challengeAction: ChallengeAction) {
         lifecycleScope.launch {
-            when (val result = threeDsServiceDeferred!!.await().doChallenge(this@RyftRequiredActionActivity, challengeAction)) {
+            val ravelinService = threeDsService ?: throw IllegalStateException(
+                "Cannot perform 3DS challenge before 3DS identification"
+            )
+            when (val result = ravelinService.doChallenge(this@RyftRequiredActionActivity, challengeAction)) {
                 is ThreeDsChallengeResult.Completed -> ryftPaymentService.continuePaymentAfterChallenge(
                     clientSecret = clientSecret,
                     subAccountId = subAccountId,
@@ -157,6 +146,20 @@ internal class RyftRequiredActionActivity :
                     RyftRequiredActionResult.Error(RyftPaymentError(displayError = result.message))
                 )
             }
+        }
+    }
+
+    private suspend fun setupRavelinThreeDsService(
+        identifyAction: IdentifyAction
+    ): ThreeDsService {
+        threeDsService?.cleanup()
+        return RavelinThreeDsServiceFactory.create(
+            context = applicationContext,
+            ryftEnvironment = publicApiKey.getEnvironment(),
+            ravelinPublicKey = identifyAction.ravelinPublicKey,
+            coroutineScope = lifecycleScope
+        ).also {
+            threeDsService = it
         }
     }
 

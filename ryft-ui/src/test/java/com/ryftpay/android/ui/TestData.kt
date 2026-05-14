@@ -18,6 +18,7 @@ internal object TestData {
 
     private const val PAYMENT_SESSION_ID = "ps_123"
     private const val SANDBOX_PUBLIC_API_KEY_VALUE = "pk_sandbox_123"
+    private const val RAVELIN_PUBLIC_KEY = "publishable_key_test_123"
     private const val GBP_CURRENCY_CODE = "GBP"
     private const val AMOUNT = 402
 
@@ -146,6 +147,7 @@ internal object TestData {
     internal val identifyAction = IdentifyAction(
         scheme = "Visa",
         paymentMethodId = "pmt_123",
-        protocolVersion = "2.2.0"
+        protocolVersion = "2.2.0",
+        ravelinPublicKey = RAVELIN_PUBLIC_KEY
     )
 }

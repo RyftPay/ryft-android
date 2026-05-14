@@ -230,7 +230,8 @@ class DemoFragment : Fragment(), RyftDropInResultListener, RyftRequiredActionRes
             IdentifyAction(
                 scheme = identifyJson.getString("scheme"),
                 paymentMethodId = identifyJson.getString("paymentMethodId"),
-                protocolVersion = identifyJson.getString("protocolVersion")
+                protocolVersion = identifyJson.getString("protocolVersion"),
+                ravelinPublicKey = identifyJson.getString("ravelinPublicKey")
             )
         } else {
             null
