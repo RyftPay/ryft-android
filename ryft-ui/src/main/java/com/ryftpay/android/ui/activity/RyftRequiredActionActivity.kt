@@ -8,13 +8,13 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.ryftpay.android.core.client.RyftApiClientFactory
 import com.ryftpay.android.core.extension.extractPaymentSessionIdFromClientSecret
 import com.ryftpay.android.core.model.api.RyftPublicApiKey
 import com.ryftpay.android.core.model.error.RyftError
 import com.ryftpay.android.core.model.payment.ChallengeAction
 import com.ryftpay.android.core.model.payment.IdentifyAction
-import com.ryftpay.android.core.model.payment.PaymentMethod
 import com.ryftpay.android.core.model.payment.PaymentSession
 import com.ryftpay.android.core.model.payment.RequiredAction
 import com.ryftpay.android.core.model.payment.RequiredActionType
@@ -23,19 +23,17 @@ import com.ryftpay.android.core.service.RyftPaymentService
 import com.ryftpay.android.core.service.listener.RyftRawPaymentResultListener
 import com.ryftpay.android.ui.client.RavelinThreeDsServiceFactory
 import com.ryftpay.android.ui.dropin.RyftPaymentError
-import com.ryftpay.android.ui.model.threeds.ThreeDsChallengeResult
 import com.ryftpay.android.ui.dropin.threeds.RyftRequiredActionComponent
 import com.ryftpay.android.ui.dropin.threeds.RyftRequiredActionResult
 import com.ryftpay.android.ui.extension.getParcelableArgs
+import com.ryftpay.android.ui.model.threeds.ThreeDsChallengeResult
 import com.ryftpay.android.ui.service.ThreeDsService
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.launch
 import com.ryftpay.android.ui.util.RequiredActionParceler
 import com.ryftpay.android.ui.util.RyftPublicApiKeyParceler
 import com.ryftpay.ui.R
+import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.WriteWith
-import java.lang.IllegalArgumentException
 
 internal class RyftRequiredActionActivity :
     AppCompatActivity(),

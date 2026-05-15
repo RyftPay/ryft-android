@@ -4,7 +4,6 @@ import android.content.Context
 import com.ravelin.core.configparameters.ConfigParametersBuilder
 import com.ravelin.threeDS2Service.instantiation.ThreeDS2ServiceInstance
 import com.ryftpay.android.core.model.api.RyftEnvironment
-import com.ryftpay.android.ui.extension.toRavelinEnvironment
 import com.ryftpay.android.ui.service.DefaultRavelinThreeDsService
 import kotlinx.coroutines.CoroutineScope
 

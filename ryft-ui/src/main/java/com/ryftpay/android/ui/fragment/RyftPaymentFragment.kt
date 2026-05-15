@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.common.api.ApiException
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -57,14 +58,12 @@ import com.ryftpay.android.ui.service.DefaultGooglePayService
 import com.ryftpay.android.ui.service.GooglePayService
 import com.ryftpay.android.ui.service.ThreeDsService
 import com.ryftpay.android.ui.util.RyftPublicApiKeyParceler
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.launch
 import com.ryftpay.android.ui.viewmodel.GooglePayResultViewModel
 import com.ryftpay.android.ui.viewmodel.RyftPaymentResultViewModel
 import com.ryftpay.ui.R
+import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.WriteWith
-import java.lang.IllegalArgumentException
 
 internal class RyftPaymentFragment :
     BottomSheetDialogFragment(),

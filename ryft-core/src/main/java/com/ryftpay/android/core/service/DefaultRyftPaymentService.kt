@@ -11,16 +11,15 @@ import com.ryftpay.android.core.model.error.RyftError
 import com.ryftpay.android.core.model.payment.CustomerDetails
 import com.ryftpay.android.core.model.payment.PaymentMethod
 import com.ryftpay.android.core.model.payment.PaymentSession
-import com.ryftpay.android.core.model.payment.ThreeDsTransactionParams
 import com.ryftpay.android.core.model.payment.PaymentSessionStatus
 import com.ryftpay.android.core.model.payment.RequiredActionType
+import com.ryftpay.android.core.model.payment.ThreeDsTransactionParams
 import com.ryftpay.android.core.service.listener.RyftLoadPaymentListener
 import com.ryftpay.android.core.service.listener.RyftPaymentResultListener
 import com.ryftpay.android.core.service.listener.RyftRawPaymentResultListener
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.lang.Exception
 
 class DefaultRyftPaymentService(
     private val client: RyftApiClient
