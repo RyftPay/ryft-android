@@ -22,8 +22,8 @@ plugins {
 ext {
     version = '2.0.0'
     group = "com.ryftpay"
-    java_version = JavaVersion.VERSION_21
-    kotlin_jvm_target = '21'
+    java_version = JavaVersion.VERSION_17
+    kotlin_jvm_target = '17'
     min_sdk_version = 24
     compile_sdk_version = 36
     target_sdk_version = 36
