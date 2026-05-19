@@ -32,7 +32,15 @@ data class ContinuePaymentRequest(
 
     companion object {
         private const val SDK_MAX_TIMEOUT_MINUTES = 10
+
+        // 01 == Native
         private const val SDK_INTERFACE = "01"
+
+        // These are challenge types:
+        // 01 == Text field
+        // 02 == Single select field
+        // 03 == Multi select field
+        // The Ravelin SDK will dictate which is used, we just provide options
         private val SDK_UI_TYPES = listOf("01", "02", "03")
 
         internal fun from(
