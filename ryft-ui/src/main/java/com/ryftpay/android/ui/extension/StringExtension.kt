@@ -1,5 +1,7 @@
 package com.ryftpay.android.ui.extension
 
+import com.ryftpay.android.core.model.api.RyftEnvironment
+
 private val TITLES = arrayOf("MISS", "MR", "MRS", "MS")
 
 // Returns a string of digits if all characters are digits, else null
@@ -42,3 +44,16 @@ internal fun String?.extractFirstAndLastNamesOrNulls(): Pair<String?, String?> {
 }
 
 internal fun String.numberOfWords(): Int = this.trim().split(' ').size
+
+internal fun String.toDirectoryServerId(environment: RyftEnvironment): String {
+    val prefix = if (environment == RyftEnvironment.Prod) "A" else "M"
+    return when (this.lowercase()) {
+        "visa" -> "${prefix}000000003"
+        "mastercard" -> "${prefix}000000004"
+        "amex" -> "${prefix}000000025"
+        "discover" -> "${prefix}000000152"
+        "jcb" -> "${prefix}000000065"
+        "unionpay" -> "${prefix}000000333"
+        else -> throw IllegalArgumentException("Unsupported card scheme: $this")
+    }
+}

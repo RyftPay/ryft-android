@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     id 'java-library'
     id 'kotlin'
@@ -9,6 +11,12 @@ java {
 
     withJavadocJar()
     withSourcesJar()
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_17
+    }
 }
 
 dependencies {

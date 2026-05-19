@@ -6,16 +6,16 @@ import kotlinx.parcelize.Parceler
 
 internal object IdentifyActionParceler : Parceler<IdentifyAction> {
     override fun create(parcel: Parcel): IdentifyAction = IdentifyAction(
-        sessionId = parcel.readString()!!,
-        sessionSecret = parcel.readString()!!,
         scheme = parcel.readString()!!,
-        paymentMethodId = parcel.readString()!!
+        paymentMethodId = parcel.readString()!!,
+        protocolVersion = parcel.readString()!!,
+        ravelinPublicKey = parcel.readString()!!
     )
 
     override fun IdentifyAction.write(parcel: Parcel, flags: Int) {
-        parcel.writeString(sessionId)
-        parcel.writeString(sessionSecret)
         parcel.writeString(scheme)
         parcel.writeString(paymentMethodId)
+        parcel.writeString(protocolVersion)
+        parcel.writeString(ravelinPublicKey)
     }
 }

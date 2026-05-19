@@ -7,5 +7,6 @@ import com.fasterxml.jackson.annotation.JsonProperty
 data class RequiredActionResponse(
     @JsonProperty("type") val type: String,
     @JsonProperty("url") val url: String?,
-    @JsonProperty("identify") val identify: IdentifyActionResponse?
+    @JsonProperty("identify") val identify: IdentifyActionResponse?,
+    @JsonProperty("challenge") val challenge: ChallengeActionResponse?
 )

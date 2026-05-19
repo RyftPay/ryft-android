@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.common.api.ApiException
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -20,6 +21,7 @@ import com.ryftpay.android.core.extension.extractPaymentSessionIdFromClientSecre
 import com.ryftpay.android.core.model.api.RyftPublicApiKey
 import com.ryftpay.android.core.model.error.RyftError
 import com.ryftpay.android.core.model.payment.CardDetails
+import com.ryftpay.android.core.model.payment.ChallengeAction
 import com.ryftpay.android.core.model.payment.CustomerDetails
 import com.ryftpay.android.core.model.payment.IdentifyAction
 import com.ryftpay.android.core.model.payment.PaymentMethod
@@ -30,8 +32,8 @@ import com.ryftpay.android.core.service.DefaultRyftPaymentService
 import com.ryftpay.android.core.service.RyftPaymentService
 import com.ryftpay.android.core.service.listener.RyftLoadPaymentListener
 import com.ryftpay.android.core.service.listener.RyftPaymentResultListener
-import com.ryftpay.android.ui.client.Checkout3dsServiceFactory
 import com.ryftpay.android.ui.client.PaymentsClientFactory
+import com.ryftpay.android.ui.client.RavelinThreeDsServiceFactory
 import com.ryftpay.android.ui.delegate.DefaultRyftPaymentDelegate
 import com.ryftpay.android.ui.delegate.RyftPaymentDelegate
 import com.ryftpay.android.ui.dropin.RyftDropInConfiguration
@@ -51,9 +53,7 @@ import com.ryftpay.android.ui.model.googlepay.LoadPaymentDataRequest
 import com.ryftpay.android.ui.model.googlepay.MerchantInfo
 import com.ryftpay.android.ui.model.googlepay.TokenizationSpecification
 import com.ryftpay.android.ui.model.googlepay.TransactionInfo
-import com.ryftpay.android.ui.model.threeds.ThreeDsIdentificationResult
-import com.ryftpay.android.ui.model.threeds.ThreeDsIdentificationResultListener
-import com.ryftpay.android.ui.service.DefaultCheckoutThreeDsService
+import com.ryftpay.android.ui.model.threeds.ThreeDsChallengeResult
 import com.ryftpay.android.ui.service.DefaultGooglePayService
 import com.ryftpay.android.ui.service.GooglePayService
 import com.ryftpay.android.ui.service.ThreeDsService
@@ -61,23 +61,22 @@ import com.ryftpay.android.ui.util.RyftPublicApiKeyParceler
 import com.ryftpay.android.ui.viewmodel.GooglePayResultViewModel
 import com.ryftpay.android.ui.viewmodel.RyftPaymentResultViewModel
 import com.ryftpay.ui.R
+import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 import kotlinx.parcelize.WriteWith
-import java.lang.IllegalArgumentException
 
 internal class RyftPaymentFragment :
     BottomSheetDialogFragment(),
     RyftPaymentFormListener,
     RyftPaymentResultListener,
-    RyftLoadPaymentListener,
-    ThreeDsIdentificationResultListener {
+    RyftLoadPaymentListener {
 
     private val tag: String = RyftPaymentFragment::class.java.name
 
     private lateinit var delegate: RyftPaymentDelegate
     private lateinit var ryftPaymentService: RyftPaymentService
     private lateinit var paymentResultViewModel: RyftPaymentResultViewModel
-    private lateinit var threeDsService: ThreeDsService
+    private var threeDsService: ThreeDsService? = null
     private lateinit var publicApiKey: RyftPublicApiKey
     private lateinit var clientSecret: String
     private lateinit var displayConfiguration: RyftDropInDisplayConfiguration
@@ -204,17 +203,54 @@ internal class RyftPaymentFragment :
         returnUrl: String,
         identifyAction: IdentifyAction
     ) {
-        threeDsService = DefaultCheckoutThreeDsService(
-            Checkout3dsServiceFactory.create(
-                requireContext(),
-                publicApiKey.getEnvironment(),
-                returnUrl
-            )
-        )
-        threeDsService.handleIdentification(
-            identifyAction,
-            listener = this
-        )
+        Log.d(tag, "onPaymentRequiresIdentification called, scheme=${identifyAction.scheme}")
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val ravelinService = setupRavelinThreeDsService(identifyAction)
+                val transactionParams = ravelinService.createTransaction(identifyAction)
+                ryftPaymentService.continuePayment(
+                    clientSecret = clientSecret,
+                    subAccountId = subAccountId,
+                    threeDsTransactionParams = transactionParams,
+                    listener = this@RyftPaymentFragment
+                )
+            } catch (e: Exception) {
+                Log.e(tag, "Error during 3DS identification", e)
+                onErrorObtainingPaymentResult(null, e)
+            }
+        }
+    }
+
+    override fun onPaymentRequiresChallenge(challengeAction: ChallengeAction) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val ravelinService = threeDsService ?: throw IllegalStateException(
+                    "Cannot perform 3DS challenge before 3DS identification"
+                )
+                when (val result = ravelinService.doChallenge(requireActivity(), challengeAction)) {
+                    is ThreeDsChallengeResult.Completed -> ryftPaymentService.continuePaymentAfterChallenge(
+                        clientSecret = clientSecret,
+                        subAccountId = subAccountId,
+                        transactionStatus = result.transactionStatus,
+                        threeDSServerTransactionId = result.threeDSServerTransactionId,
+                        listener = this@RyftPaymentFragment
+                    )
+                    is ThreeDsChallengeResult.Cancelled -> {
+                        paymentResultViewModel.updateResult(RyftPaymentResult.Cancelled)
+                        safeDismiss()
+                    }
+                    is ThreeDsChallengeResult.Failed -> {
+                        paymentResultViewModel.updateResult(
+                            RyftPaymentResult.Failed(RyftPaymentError(displayError = result.message))
+                        )
+                        safeDismiss()
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e(tag, "Error during 3DS challenge", e)
+                onErrorObtainingPaymentResult(null, e)
+            }
+        }
     }
 
     override fun onPaymentHasError(lastError: PaymentSessionError) {
@@ -272,19 +308,10 @@ internal class RyftPaymentFragment :
         )
     }
 
-    override fun onThreeDsIdentificationResult(
-        result: ThreeDsIdentificationResult,
-        paymentMethodId: String
-    ) {
-        ryftPaymentService.attemptPayment(
-            clientSecret = clientSecret,
-            paymentMethod = PaymentMethod.id(
-                id = paymentMethodId
-            ),
-            customerDetails = null,
-            subAccountId = subAccountId,
-            listener = this
-        )
+    override fun onDestroyView() {
+        super.onDestroyView()
+        threeDsService?.cleanup()
+        threeDsService = null
     }
 
     override fun onCancel(dialog: DialogInterface) {
@@ -296,6 +323,21 @@ internal class RyftPaymentFragment :
         ryftPaymentService = DefaultRyftPaymentService(
             RyftApiClientFactory(publicApiKey).createRyftApiClient()
         )
+    }
+
+    private suspend fun setupRavelinThreeDsService(
+        identifyAction: IdentifyAction
+    ): ThreeDsService {
+        threeDsService?.cleanup()
+        val scope = viewLifecycleOwner.lifecycleScope
+        return RavelinThreeDsServiceFactory.create(
+            context = requireContext().applicationContext,
+            ryftEnvironment = publicApiKey.getEnvironment(),
+            ravelinPublicKey = identifyAction.ravelinPublicKey,
+            coroutineScope = scope
+        ).also {
+            threeDsService = it
+        }
     }
 
     private fun setupPaymentResultViewModel() {

@@ -25,6 +25,7 @@ internal object TestData {
     internal const val GOOGLE_PAY_TOKEN = "google_pay_token_123"
     internal const val CUSTOMER_EMAIL = "test@example.com"
     internal const val PAYMENT_METHOD_ID = "pmt_123"
+    internal const val RAVELIN_PUBLIC_KEY = "publishable_key_test_123"
 
     internal val prodPublicApiKey = RyftPublicApiKey(PROD_PUBLIC_API_KEY_VALUE)
     internal val sandboxPublicApiKey = RyftPublicApiKey(SANDBOX_PUBLIC_API_KEY_VALUE)
@@ -70,20 +71,22 @@ internal object TestData {
     internal val redirectRequiredActionResponse = RequiredActionResponse(
         type = RequiredActionType.Redirect.toString(),
         url = "https://redirect.to.me/",
-        identify = null
+        identify = null,
+        challenge = null
     )
 
     internal val identifyActionResponse = IdentifyActionResponse(
-        sessionId = "session_123",
-        sessionSecret = "secret_123",
-        scheme = "visa",
-        paymentMethodId = PAYMENT_METHOD_ID
+        scheme = "Visa",
+        paymentMethodId = PAYMENT_METHOD_ID,
+        protocolVersion = "2.2.0",
+        ravelinPublicKey = RAVELIN_PUBLIC_KEY
     )
 
     internal val identifyRequiredActionResponse = RequiredActionResponse(
         type = RequiredActionType.Identify.toString(),
         url = null,
-        identify = identifyActionResponse
+        identify = identifyActionResponse,
+        challenge = null
     )
 
     internal val paymentSessionResponse = PaymentSessionResponse(

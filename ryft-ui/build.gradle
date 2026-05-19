@@ -28,6 +28,7 @@ android {
     }
 
     compileOptions {
+        coreLibraryDesugaringEnabled true
         sourceCompatibility rootProject.ext.java_version
         targetCompatibility rootProject.ext.java_version
     }
@@ -53,10 +54,12 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.7.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.9.7'
-    implementation 'com.checkout:checkout-sdk-3ds-android:3.3.6'
+    implementation 'com.ravelin.threeds2service:threeds2service-sdk:2.0.2'
     implementation 'com.google.android.gms:play-services-wallet:19.5.0'
     implementation 'com.google.android.material:material:1.13.0'
     implementation("com.fasterxml.jackson.core:jackson-core:2.9.0")
+
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
 
     testImplementation 'io.mockk:mockk:1.14.9'
     testImplementation 'junit:junit:4.13.2'
