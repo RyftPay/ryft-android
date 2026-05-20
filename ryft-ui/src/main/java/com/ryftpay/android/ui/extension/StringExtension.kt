@@ -46,14 +46,17 @@ internal fun String?.extractFirstAndLastNamesOrNulls(): Pair<String?, String?> {
 internal fun String.numberOfWords(): Int = this.trim().split(' ').size
 
 internal fun String.toDirectoryServerId(environment: RyftEnvironment): String {
-    val prefix = if (environment == RyftEnvironment.Prod) "A" else "M"
+    // In sandbox all Luhn-valid test cards are wired to mock-directory-server-a (M000000003)
+    if (environment != RyftEnvironment.Prod) {
+        return "M000000003"
+    }
     return when (this.lowercase()) {
-        "visa" -> "${prefix}000000003"
-        "mastercard" -> "${prefix}000000004"
-        "amex" -> "${prefix}000000025"
-        "discover" -> "${prefix}000000152"
-        "jcb" -> "${prefix}000000065"
-        "unionpay" -> "${prefix}000000333"
+        "visa" -> "A000000003"
+        "mastercard" -> "A000000004"
+        "amex" -> "A000000025"
+        "discover" -> "A000000152"
+        "jcb" -> "A000000065"
+        "unionpay" -> "A000000333"
         else -> throw IllegalArgumentException("Unsupported card scheme: $this")
     }
 }

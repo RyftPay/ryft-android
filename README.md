@@ -440,7 +440,7 @@ RyftDropInConfiguration.standardAccountPayment(
 
 ### Further documentation
 
-For more information, please find our docs [here](https://developer.ryftpay.com/docs/build/android-mobile)
+For more information, please find our docs [here](https://developer.ryftpay.com/documentation/get_started/process_payments/android/initial_setup)
 
 ## Sample app
 
