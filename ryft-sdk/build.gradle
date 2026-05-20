@@ -16,6 +16,7 @@ android {
     }
 
     compileOptions {
+        coreLibraryDesugaringEnabled true
         sourceCompatibility rootProject.ext.java_version
         targetCompatibility rootProject.ext.java_version
     }
@@ -33,6 +34,7 @@ android {
 }
 
 dependencies {
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
     api project(':ryft-core')
     api project(':ryft-ui')
 }
