@@ -40,8 +40,9 @@ data class ContinuePaymentRequest(
         // 01 == Text field
         // 02 == Single select field
         // 03 == Multi select field
+        // 04 == OOB
         // The Ravelin SDK will dictate which is used, we just provide options
-        private val SDK_UI_TYPES = listOf("01", "02", "03")
+        private val SDK_UI_TYPES = listOf("01", "02", "03", "04")
 
         internal fun from(
             clientSecret: String,
