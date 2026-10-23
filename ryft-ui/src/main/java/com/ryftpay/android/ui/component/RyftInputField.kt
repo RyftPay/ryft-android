@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Build
 import android.util.AttributeSet
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import com.ryftpay.android.ui.model.ValidationState
 import com.ryftpay.ui.R
 
@@ -15,6 +16,7 @@ internal open class RyftInputField @JvmOverloads constructor(
 
     init {
         isFocusableInTouchMode = true
+        imeOptions = imeOptions or EditorInfo.IME_FLAG_NO_EXTRACT_UI
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             focusable = View.FOCUSABLE
         }

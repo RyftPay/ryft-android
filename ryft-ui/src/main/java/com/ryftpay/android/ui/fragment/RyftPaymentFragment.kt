@@ -15,6 +15,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.common.api.ApiException
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.ryftpay.android.core.client.RyftApiClientFactory
 import com.ryftpay.android.core.extension.extractPaymentSessionIdFromClientSecret
@@ -130,6 +132,14 @@ internal class RyftPaymentFragment :
         setupGooglePayService()
         setupGooglePayResultViewModel()
         checkGooglePayIsAvailableBeforeInitialisingDelegate(root)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        (dialog as? BottomSheetDialog)?.behavior?.apply {
+            skipCollapsed = true
+            state = BottomSheetBehavior.STATE_EXPANDED
+        }
     }
 
     override fun getTheme(): Int = R.style.RyftBottomSheetDialog
