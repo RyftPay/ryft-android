@@ -253,6 +253,12 @@ class CheckoutFragment : Fragment(), RyftDropInResultListener {
 }
 ```
 
+When the failure came from an API error response, `result.error` also carries:
+- `errorCode` - the API error code (e.g. `bad_request`)
+- `errorMessage` - the API error message, intended for logging and debugging. It is in English and not suitable to show to customers, so keep displaying `displayError`
+
+Both are `null` for card declines, which are described by `result.error.paymentSessionError` instead.
+
 Note that if a payment requires further action for the payment to be approved (e.g. 3ds), this is handled internally within the drop-in.
 
 No action is required from you in this use-case and you will either be notified that the payment was then approved, or that it failed (e.g. due to 3ds authentication)
