@@ -16,6 +16,7 @@
 # Ravelin 3DS SDK ships ~630 pre-obfuscated classes in Windows device-name top-level packages
 # (AuX, Con, NUL, Prn, COM1..9, LPT1..9 case variants). Its own consumer rules do not keep them,
 # and R8 leaves the challenge screen unable to submit or cancel.
+# The package list matches threeds2service-sdk 2.0.2 and must be rechecked whenever that dependency changes.
 -keep class AuX.**,Con.**,cOn.**,con.**,NUL.**,Nul.**,nuL.**,Prn.**,prN.** { *; }
 -keep class COM?.**,COm?.**,CoM?.**,Com?.**,cOM?.**,cOm?.**,coM?.**,com?.** { *; }
 -keep class LPT?.**,LPt?.**,LpT?.**,Lpt?.**,lPT?.**,lPt?.**,lpT?.**,lpt?.** { *; }

@@ -90,6 +90,18 @@ internal class RyftPaymentErrorTest {
     }
 
     @Test
+    internal fun `from should return null error code when status is 400 with blank code`() {
+        val error = RyftPaymentError.from(
+            ryftError("400", RyftErrorElement(" ", "The request was invalid")),
+            throwable = null,
+            context
+        )
+        error.displayError shouldBeEqualTo "unknown error"
+        error.errorCode shouldBeEqualTo null
+        error.errorMessage shouldBeEqualTo "The request was invalid"
+    }
+
+    @Test
     internal fun `from should return invalid api key error with api error code and message when status is 403`() {
         val error = RyftPaymentError.from(
             ryftError("403", RyftErrorElement("forbidden", "Forbidden")),

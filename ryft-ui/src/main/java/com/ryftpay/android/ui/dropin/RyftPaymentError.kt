@@ -70,7 +70,7 @@ class RyftPaymentError(
             }
             return RyftPaymentError(
                 displayError = context.getString(stringResourceId),
-                errorCode = apiError?.code,
+                errorCode = apiError?.code?.takeIf { it.isNotBlank() },
                 errorMessage = apiError?.message?.takeIf { it.isNotBlank() }
             )
         }
