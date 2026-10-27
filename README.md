@@ -49,6 +49,12 @@ dependencies {
 }
 ```
 
+### Configuration changes
+
+The SDK sets `android:configChanges` on its drop-in activities and on the 3DS SDK's `com.ravelin.feature.presentation.ChallengeActivity`, so rotation, dark mode or font size changes do not interrupt a payment or 3DS challenge.
+
+If your app's manifest declares its own `android:configChanges` for any of these activities, the manifest merge will fail. Remove your declaration, or add `tools:replace="android:configChanges"` to it if you need to keep your own values.
+
 ## Usage
 
 The drop-in component provides you with all the necessary functions in order to enter and pay with your customer's card details.
