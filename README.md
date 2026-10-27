@@ -44,7 +44,7 @@ Add the ryft-android dependency to your module's `build.gradle`:
 ```groovy
 dependencies {
     // ...
-    implementation 'com.ryftpay:ryft-android:2.0.2'
+    implementation 'com.ryftpay:ryft-android:2.1.0'
     // ...
 }
 ```
@@ -263,9 +263,7 @@ When the failure came from an API error response, `result.error` also carries:
 - `errorCode` - the API error code (e.g. `bad_request`)
 - `errorMessage` - the API error message, intended for logging and debugging. It is in English and not suitable to show to customers, so keep displaying `displayError`
 
-Both are `null` for card declines, which are described by `result.error.paymentSessionError` instead.
-
-New decline reasons may be added to `PaymentSessionError` in future releases. If you branch on it with `when`, include an `else` branch so your code keeps compiling when one is added.
+Both are `null` for card declines. Show `displayError` to your customer; it covers every decline reason. If you need to act on a specific reason, check `result.error.paymentSessionError` and include an `else` branch, as new reasons may be added in future releases.
 
 Note that if a payment requires further action for the payment to be approved (e.g. 3ds), this is handled internally within the drop-in.
 
