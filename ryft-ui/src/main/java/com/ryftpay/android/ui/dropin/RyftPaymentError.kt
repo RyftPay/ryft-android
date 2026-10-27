@@ -16,6 +16,16 @@ class RyftPaymentError(
     val errorCode: String? = null
 ) : Parcelable {
 
+    @Deprecated("Maintained for binary compatibility", level = DeprecationLevel.HIDDEN)
+    constructor(
+        paymentSessionError: PaymentSessionError? = null,
+        displayError: String
+    ) : this(
+        paymentSessionError = paymentSessionError,
+        displayError = displayError,
+        errorCode = null
+    )
+
     companion object {
         private const val RESOURCE_TYPE_STRING = "string"
         private const val RESOURCE_STRING_PREFIX = "ryft_"

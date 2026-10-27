@@ -42,6 +42,18 @@ internal class RyftPaymentErrorTest {
     }
 
     @Test
+    internal fun `two argument constructor should remain binary compatible`() {
+        val constructor = RyftPaymentError::class.java.getDeclaredConstructor(
+            PaymentSessionError::class.java,
+            String::class.java
+        )
+        val error = constructor.newInstance(PaymentSessionError.InsufficientFunds, "display")
+        error.paymentSessionError shouldBeEqualTo PaymentSessionError.InsufficientFunds
+        error.displayError shouldBeEqualTo "display"
+        error.errorCode shouldBeEqualTo null
+    }
+
+    @Test
     internal fun `from should return api error message and code when status is 400 with errors`() {
         val error = RyftPaymentError.from(
             ryftError("400", RyftErrorElement("card_declined", "The card was declined")),
