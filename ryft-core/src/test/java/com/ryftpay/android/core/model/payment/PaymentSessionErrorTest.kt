@@ -34,6 +34,7 @@ class PaymentSessionErrorTest {
 
     private fun errorsToExpectedRawValues(): Array<Any> = arrayOf(
         arrayOf(PaymentSessionError.BadTrackData, "bad_track_data"),
+        arrayOf(PaymentSessionError.Cvv2Failure, "cvv2_failure"),
         arrayOf(PaymentSessionError.DeclinedDoNotHonour, "declined_do_not_honour"),
         arrayOf(PaymentSessionError.ExpiredCard, "expired_card"),
         arrayOf(PaymentSessionError.GatewayReject, "gateway_reject"),
@@ -50,6 +51,7 @@ class PaymentSessionErrorTest {
         arrayOf("some_random_error", PaymentSessionError.Unknown),
         arrayOf("unknown_error", PaymentSessionError.Unknown),
         arrayOf("bad_track_data", PaymentSessionError.BadTrackData),
+        arrayOf("cvv2_failure", PaymentSessionError.Cvv2Failure),
         arrayOf("declined_do_not_honour", PaymentSessionError.DeclinedDoNotHonour),
         arrayOf("expired_card", PaymentSessionError.ExpiredCard),
         arrayOf("gateway_reject", PaymentSessionError.GatewayReject),

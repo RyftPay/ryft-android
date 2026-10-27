@@ -6,6 +6,9 @@ enum class PaymentSessionError(
     BadTrackData(
         rawValue = "bad_track_data"
     ),
+    Cvv2Failure(
+        rawValue = "cvv2_failure"
+    ),
     DeclinedDoNotHonour(
         rawValue = "declined_do_not_honour"
     ),

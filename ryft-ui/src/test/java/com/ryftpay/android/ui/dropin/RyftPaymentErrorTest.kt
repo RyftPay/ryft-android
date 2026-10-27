@@ -32,6 +32,21 @@ internal class RyftPaymentErrorTest {
     }
 
     @Test
+    internal fun `from should map every payment session error to its display string resource`() {
+        PaymentSessionError.values().forEach { sessionError ->
+            val stringResourceId = R.string::class.java.getField("ryft_${sessionError.rawValue}").getInt(null)
+            every { context.getString(stringResourceId) } returns "display_${sessionError.rawValue}"
+
+            val error = RyftPaymentError.from(sessionError, context)
+
+            error.paymentSessionError shouldBeEqualTo sessionError
+            error.displayError shouldBeEqualTo "display_${sessionError.rawValue}"
+            error.errorCode shouldBeEqualTo null
+            error.errorMessage shouldBeEqualTo null
+        }
+    }
+
+    @Test
     internal fun `constructor should default error code and message to null`() {
         val error = RyftPaymentError(
             paymentSessionError = PaymentSessionError.InsufficientFunds,
