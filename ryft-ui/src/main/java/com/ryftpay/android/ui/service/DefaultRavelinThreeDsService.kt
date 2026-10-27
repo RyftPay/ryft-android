@@ -10,10 +10,6 @@ import com.ryftpay.android.core.model.payment.IdentifyAction
 import com.ryftpay.android.core.model.payment.ThreeDsTransactionParams
 import com.ryftpay.android.ui.extension.toDirectoryServerId
 import com.ryftpay.android.ui.model.threeds.ThreeDsChallengeResult
-import com.ul.emvco3ds.sdk.spec.ChallengeStatusReceiver
-import com.ul.emvco3ds.sdk.spec.CompletionEvent
-import com.ul.emvco3ds.sdk.spec.ProtocolErrorEvent
-import com.ul.emvco3ds.sdk.spec.RuntimeErrorEvent
 import com.ul.emvco3ds.sdk.spec.ThreeDS2Service
 import com.ul.emvco3ds.sdk.spec.Transaction
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -58,42 +54,9 @@ internal class DefaultRavelinThreeDsService(
             setAcsRefNumber(challengeAction.acsRefNumber)
             setAcsSignedContent(challengeAction.acsSignedContent)
         }
-        val receiver = object : ChallengeStatusReceiver {
-            override fun completed(completionEvent: CompletionEvent?) {
-                val event = requireNotNull(completionEvent) {
-                    "Ravelin SDK returned null CompletionEvent"
-                }
-
-                cont.resume(
-                    ThreeDsChallengeResult.Completed(
-                        transactionStatus = requireNotNull(event.getTransactionStatus()) {
-                            "Ravelin SDK returned null transactionStatus"
-                        },
-                        threeDSServerTransactionId = challengeAction.threeDSServerTransactionId
-                    )
-                )
-            }
-            override fun cancelled() {
-                cont.resume(ThreeDsChallengeResult.Cancelled)
-            }
-            override fun timedout() {
-                cont.resume(ThreeDsChallengeResult.Failed("Challenge timed out"))
-            }
-
-            override fun protocolError(protocolErrorEvent: ProtocolErrorEvent?) {
-                cont.resume(
-                    ThreeDsChallengeResult.Failed(
-                        "Protocol error: ${protocolErrorEvent?.getErrorMessage()?.getErrorDescription()}"
-                    )
-                )
-            }
-
-            override fun runtimeError(runtimeErrorEvent: RuntimeErrorEvent?) {
-                cont.resume(
-                    ThreeDsChallengeResult.Failed(
-                        "Runtime error: ${runtimeErrorEvent?.getErrorMessage()}"
-                    )
-                )
+        val receiver = ThreeDsChallengeStatusReceiver(challengeAction.threeDSServerTransactionId) { result ->
+            if (cont.isActive) {
+                cont.resume(result)
             }
         }
         transaction!!.doChallenge(activity, challengeParameters, receiver, CHALLENGE_TIMEOUT_MINUTES)
