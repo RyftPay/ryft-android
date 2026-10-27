@@ -13,7 +13,8 @@ import java.io.IOException
 class RyftPaymentError(
     val paymentSessionError: PaymentSessionError? = null,
     val displayError: String,
-    val errorCode: String? = null
+    val errorCode: String? = null,
+    val errorMessage: String? = null
 ) : Parcelable {
 
     @Deprecated("Maintained for binary compatibility", level = DeprecationLevel.HIDDEN)
@@ -23,7 +24,8 @@ class RyftPaymentError(
     ) : this(
         paymentSessionError = paymentSessionError,
         displayError = displayError,
-        errorCode = null
+        errorCode = null,
+        errorMessage = null
     )
 
     companion object {
@@ -57,20 +59,19 @@ class RyftPaymentError(
             context: Context
         ): RyftPaymentError {
             val apiError = error?.errors?.firstOrNull()
-            val displayError = when (error?.httpStatusCode) {
-                "400" -> apiError?.message?.takeIf { it.isNotBlank() }
-                    ?: context.getString(R.string.ryft_unknown_error)
-                "403" -> context.getString(R.string.ryft_invalid_api_key_developer_error_message)
-                "404" -> context.getString(R.string.ryft_payment_not_found_developer_error_message)
+            val stringResourceId = when (error?.httpStatusCode) {
+                "403" -> R.string.ryft_invalid_api_key_developer_error_message
+                "404" -> R.string.ryft_payment_not_found_developer_error_message
                 else -> if (throwable is IOException) {
-                    context.getString(R.string.ryft_network_error)
+                    R.string.ryft_network_error
                 } else {
-                    context.getString(R.string.ryft_unknown_error)
+                    R.string.ryft_unknown_error
                 }
             }
             return RyftPaymentError(
-                displayError = displayError,
-                errorCode = apiError?.code
+                displayError = context.getString(stringResourceId),
+                errorCode = apiError?.code,
+                errorMessage = apiError?.message?.takeIf { it.isNotBlank() }
             )
         }
     }

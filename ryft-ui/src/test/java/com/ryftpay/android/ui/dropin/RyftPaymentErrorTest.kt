@@ -28,10 +28,11 @@ internal class RyftPaymentErrorTest {
         error.paymentSessionError shouldBeEqualTo null
         error.displayError shouldBeEqualTo "An unexpected error occurred"
         error.errorCode shouldBeEqualTo null
+        error.errorMessage shouldBeEqualTo null
     }
 
     @Test
-    internal fun `constructor should default error code to null`() {
+    internal fun `constructor should default error code and message to null`() {
         val error = RyftPaymentError(
             paymentSessionError = PaymentSessionError.InsufficientFunds,
             displayError = "display"
@@ -39,6 +40,7 @@ internal class RyftPaymentErrorTest {
         error.paymentSessionError shouldBeEqualTo PaymentSessionError.InsufficientFunds
         error.displayError shouldBeEqualTo "display"
         error.errorCode shouldBeEqualTo null
+        error.errorMessage shouldBeEqualTo null
     }
 
     @Test
@@ -51,17 +53,19 @@ internal class RyftPaymentErrorTest {
         error.paymentSessionError shouldBeEqualTo PaymentSessionError.InsufficientFunds
         error.displayError shouldBeEqualTo "display"
         error.errorCode shouldBeEqualTo null
+        error.errorMessage shouldBeEqualTo null
     }
 
     @Test
-    internal fun `from should return api error message and code when status is 400 with errors`() {
+    internal fun `from should return unknown error with api error code and message when status is 400 with errors`() {
         val error = RyftPaymentError.from(
             ryftError("400", RyftErrorElement("card_declined", "The card was declined")),
             throwable = null,
             context
         )
-        error.displayError shouldBeEqualTo "The card was declined"
+        error.displayError shouldBeEqualTo "unknown error"
         error.errorCode shouldBeEqualTo "card_declined"
+        error.errorMessage shouldBeEqualTo "The card was declined"
         error.paymentSessionError shouldBeEqualTo null
     }
 
@@ -70,10 +74,11 @@ internal class RyftPaymentErrorTest {
         val error = RyftPaymentError.from(ryftError("400"), throwable = null, context)
         error.displayError shouldBeEqualTo "unknown error"
         error.errorCode shouldBeEqualTo null
+        error.errorMessage shouldBeEqualTo null
     }
 
     @Test
-    internal fun `from should return unknown error when status is 400 with blank message`() {
+    internal fun `from should return null error message when status is 400 with blank message`() {
         val error = RyftPaymentError.from(
             ryftError("400", RyftErrorElement("bad_request", " ")),
             throwable = null,
@@ -81,10 +86,11 @@ internal class RyftPaymentErrorTest {
         )
         error.displayError shouldBeEqualTo "unknown error"
         error.errorCode shouldBeEqualTo "bad_request"
+        error.errorMessage shouldBeEqualTo null
     }
 
     @Test
-    internal fun `from should return invalid api key error and code when status is 403`() {
+    internal fun `from should return invalid api key error with api error code and message when status is 403`() {
         val error = RyftPaymentError.from(
             ryftError("403", RyftErrorElement("forbidden", "Forbidden")),
             throwable = null,
@@ -92,10 +98,11 @@ internal class RyftPaymentErrorTest {
         )
         error.displayError shouldBeEqualTo "invalid api key"
         error.errorCode shouldBeEqualTo "forbidden"
+        error.errorMessage shouldBeEqualTo "Forbidden"
     }
 
     @Test
-    internal fun `from should return payment not found error and code when status is 404`() {
+    internal fun `from should return payment not found error with api error code and message when status is 404`() {
         val error = RyftPaymentError.from(
             ryftError("404", RyftErrorElement("not_found", "Not found")),
             throwable = null,
@@ -103,10 +110,11 @@ internal class RyftPaymentErrorTest {
         )
         error.displayError shouldBeEqualTo "payment not found"
         error.errorCode shouldBeEqualTo "not_found"
+        error.errorMessage shouldBeEqualTo "Not found"
     }
 
     @Test
-    internal fun `from should return unknown error and code when status is not mapped`() {
+    internal fun `from should return unknown error with api error code and message when status is not mapped`() {
         val error = RyftPaymentError.from(
             ryftError("500", RyftErrorElement("internal_error", "Internal error")),
             throwable = null,
@@ -114,6 +122,7 @@ internal class RyftPaymentErrorTest {
         )
         error.displayError shouldBeEqualTo "unknown error"
         error.errorCode shouldBeEqualTo "internal_error"
+        error.errorMessage shouldBeEqualTo "Internal error"
     }
 
     @Test
