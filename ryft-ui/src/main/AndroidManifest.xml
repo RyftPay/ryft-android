@@ -6,14 +6,18 @@
     <application>
         <activity
             android:name="com.ryftpay.android.ui.activity.RyftDropInActivity"
-            android:exported="true"
-            android:launchMode="singleTask"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboard|keyboardHidden|navigation|uiMode|fontScale|fontWeightAdjustment|density|locale|layoutDirection"
+            android:exported="false"
             android:theme="@style/Theme.AppCompat.RyftTransparent" />
         <activity
             android:name="com.ryftpay.android.ui.activity.RyftRequiredActionActivity"
-            android:exported="true"
-            android:launchMode="singleTask"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboard|keyboardHidden|navigation|uiMode|fontScale|fontWeightAdjustment|density|locale|layoutDirection"
+            android:exported="false"
             android:theme="@style/Theme.AppCompat.RyftTransparent" />
+        <!-- The 3DS SDK keeps challenge state in memory only, so its challenge screen must not be recreated -->
+        <activity
+            android:name="com.ravelin.feature.presentation.ChallengeActivity"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboard|keyboardHidden|navigation|uiMode|fontScale|fontWeightAdjustment|density|locale|layoutDirection" />
         <meta-data
             android:name="com.google.android.gms.wallet.api.enabled"
             android:value="true" />

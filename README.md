@@ -44,10 +44,16 @@ Add the ryft-android dependency to your module's `build.gradle`:
 ```groovy
 dependencies {
     // ...
-    implementation 'com.ryftpay:ryft-android:2.0.2'
+    implementation 'com.ryftpay:ryft-android:2.1.0'
     // ...
 }
 ```
+
+### Configuration changes
+
+The SDK sets `android:configChanges` on its drop-in activities and on the 3DS SDK's `com.ravelin.feature.presentation.ChallengeActivity`, so rotation, dark mode or font size changes do not interrupt a payment or 3DS challenge.
+
+If your app's manifest declares its own `android:configChanges` for any of these activities, the manifest merge will fail. Remove your declaration, or add `tools:replace="android:configChanges"` to it if you need to keep your own values.
 
 ## Usage
 
@@ -252,6 +258,12 @@ class CheckoutFragment : Fragment(), RyftDropInResultListener {
     // ...
 }
 ```
+
+When the failure came from an API error response, `result.error` also carries:
+- `errorCode` - the API error code (e.g. `bad_request`)
+- `errorMessage` - the API error message, intended for logging and debugging. It is in English and not suitable to show to customers, so keep displaying `displayError`
+
+Both are `null` for card declines. Show `displayError` to your customer; it covers every decline reason. If you need to act on a specific reason, check `result.error.paymentSessionError` and include an `else` branch, as new reasons may be added in future releases.
 
 Note that if a payment requires further action for the payment to be approved (e.g. 3ds), this is handled internally within the drop-in.
 
